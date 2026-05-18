@@ -40,20 +40,21 @@ function Book(){
     }
 
     function handleLastCoverClick() {
+
         let newHidden;
         if(!lastCoverFlipped){
-            setLastCoverFlipped(true);
             if(currentPage !== NUMBER_OF_SPORTS+1)return;
+            setLastCoverFlipped(true);
             setTimeout(()=>{
                 newHidden = [...pagesHidden];
-                newHidden[currentPage] = false;
+                newHidden[currentPage-1] = true;
                 setPagesHide(newHidden);
             }, 350)
         }else{
             setLastCoverFlipped(false);
             setTimeout(()=>{
                 newHidden = [...pagesHidden];
-                newHidden[currentPage] = false;
+                newHidden[currentPage-1] = false;
                 setPagesHide(newHidden);
 
             }, 150)
@@ -89,11 +90,17 @@ function Book(){
     function handleLogin(id) {
         setIsConnected(true);
         setUsername(id);
-        // TODO : modifier pour changer le texte affiché pour montrer que l'utilisateur est connecté
     }
 
     return (
         <div className="book" id="book">
+            <div className="rings" id="rings">
+
+                {Array.from({ length: 18 }).map((_, index) => (
+                    <div key={index} className="ring" />
+                ))}
+
+            </div>
 
             <div className={`cover ${coverFlipped ? 'flipping-forward' : ''}`} id="cover" onClick={handleCoverClick}>
                 <div className="front face">
@@ -105,10 +112,11 @@ function Book(){
             </div>
 
             <div className={`cover last-cover ${lastCoverFlipped ? 'flipping-forward' : ''}`} id="lastCover"
-                 onClick={handleLastCoverClick} style={{ zIndex: lastCoverFlipped ? 1 : -10 }}></div>
+                 onClick={handleLastCoverClick} style={{zIndex: lastCoverFlipped ? 1 : -10}}></div>
 
             <div
-                className={`page ${pagesFlipped[0] ? 'flipping-forward' : ''} ${pagesHidden[0] ? 'hidden' : ''}`} id="page0"
+                className={`page ${pagesFlipped[0] ? 'flipping-forward' : ''} ${pagesHidden[0] ? 'hidden' : ''}`}
+                id="page0"
                 onClick={(e) => {
                     if (e.target.closest('form') || e.target.closest('button')) return;
                     handlePageClick(0);
@@ -117,7 +125,7 @@ function Book(){
 
                 <div className="front face">
                     <LoginPage send={handleLogin} currentUsername={username}/>
-                </div>
+                </div>currentPage
 
                 <div className="back face"></div>
 
@@ -128,4 +136,5 @@ function Book(){
     );
 
 }
+
 export default Book;
