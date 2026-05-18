@@ -2,7 +2,7 @@ function FrontSport({sport, gameDone}) {
     if(!sport) return null;
 
     return (
-        <div className="front face">
+        <div className="sport-container">
             <div className={`game-not-done ${gameDone ? 'hidden' : ''}`}>
                 Déverrouillez les informations en jouant au mini-jeu !
             </div>
@@ -37,7 +37,7 @@ function FrontSport({sport, gameDone}) {
                         {sport.infos.lienClub.length > 1 ? (
                             <ul>
                                 {sport.infos.lienClub.map((link, key) => (
-                                    <li><a href={link} target="_blank" key={key}>{link}</a></li>
+                                    <li key={key}><a href={link} target="_blank">{link}</a></li>
                                 ))}
                             </ul>
                         ) : (<a href={sport.infos.lienClub[0]} target="_blank">{sport.infos.lienClub[0]}</a>)}

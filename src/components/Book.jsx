@@ -40,7 +40,7 @@ function Book(){
                 newHidden = [...pagesHidden];
                 newHidden[0] = true;
                 setPagesHide(newHidden);
-            },350)
+            },450)
 
         }
     }
@@ -55,7 +55,7 @@ function Book(){
                 newHidden = [...pagesHidden];
                 newHidden[currentPage-1] = true;
                 setPagesHide(newHidden);
-            }, 350)
+            }, 450)
         }else{
             setLastCoverFlipped(false);
             setTimeout(()=>{
@@ -79,7 +79,6 @@ function Book(){
                 return;
             }
 
-            // TODO : Changer le style right et de cacher/montrer les pages
             const newFlips = [...pagesFlipped];
             newFlips[pageIndex] = true;
             setPagesFlipped(newFlips);
@@ -97,29 +96,28 @@ function Book(){
 
                 newHidden[pageIndex-1] = true;
                 setPagesHide(newHidden);
-            },350)
+            },450)
 
             setCurrentPage(prev => prev + 1);
         } else {
-            // TODO : Changer le style right et de cacher/montrer les pages
             const newFlips = [...pagesFlipped];
             newFlips[pageIndex] = false;
             setPagesFlipped(newFlips);
 
             setTimeout(()=>{
                 newHidden = [...pagesHidden];
-                newHidden[pageIndex-2] = false;
+                newHidden[pageIndex-1] = false;
                 setPagesHide(newHidden);
             },150)
 
             setTimeout(()=>{
                 pageLeft = [...pagesLefted]
-                pageLeft[pageIndex-1] = false;
+                pageLeft[pageIndex] = false;
                 setPagesLefted(pageLeft);
 
-                newHidden[pageIndex] = true;
+                newHidden[pageIndex+1] = true;
                 setPagesHide(newHidden);
-            },350)
+            },450)
 
             setCurrentPage(prev => prev - 1);
         }
@@ -177,18 +175,19 @@ function Book(){
 
                 return(
                     <div className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
-                         id={`page${pageIndex}`}
+                         key= {id} id={`page${pageIndex}`} style={{ right: pagesLefted[pageIndex] ? '35px' : '23px' }}
                          onClick={(e) => {
-                         if (e.target.closest('button')) return;
+                         if (e.target.closest('button') || e.target.closest('a')) return;
                          handlePageClick(pageIndex);
                     }}>
 
-
-                        <FrontSport sport={sports[id + 1]} done={gameDone}/>
+                        <div className="front face">
+                            <FrontSport sport={sports[id]} done={gameDone}/>
+                        </div>
 
 
                         <div className="back face">
-                            <BackSport sport={sports[id]}/>
+                            <BackSport sport={sports[id+1]}/>
                         </div>
 
                     </div>

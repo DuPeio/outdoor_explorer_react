@@ -358,6 +358,11 @@ button:hover{
 .club-link ul{
   list-style-position: inside;
 }
+
+.club-link a{
+  color: #DABE12;
+}
+
 .material-benefits{
   display: flex;
 }
