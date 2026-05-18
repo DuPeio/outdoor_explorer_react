@@ -1,11 +1,13 @@
 import sports from '../data/sports';
 import { useState } from 'react';
+import LoginPage from "./LoginPage.jsx";
 
 const NUMBER_OF_SPORTS = sports.length;
 
 function Book(){
     const [currentPage, setCurrentPage] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
+    const [username, setUsername] = useState('');
 
     const [coverFlipped, setCoverFlipped] = useState(false);
     const [lastCoverFlipped, setLastCoverFlipped] = useState(false);
@@ -86,7 +88,7 @@ function Book(){
 
     function handleLogin(id) {
         setIsConnected(true);
-        console.log(`Connecté en tant que : ${id}`);
+        setUsername(id);
         // TODO : modifier pour changer le texte affiché pour montrer que l'utilisateur est connecté
     }
 
@@ -99,7 +101,7 @@ function Book(){
                     <img className="img-cover" id="imgCover" src="../src/assets/illustrations/montagnes_front_page.svg"
                          alt="Mountains icons"/>
                 </div>
-                <div className="back face"/>
+                <div className="back face"></div>
             </div>
 
             <div className={`cover last-cover ${lastCoverFlipped ? 'flipping-forward' : ''}`} id="lastCover"
@@ -110,8 +112,14 @@ function Book(){
                 onClick={(e) => {
                     if (e.target.closest('form') || e.target.closest('button')) return;
                     handlePageClick(0);
-                }}
-            >
+                }}>
+
+
+                <div className="front face">
+                    <LoginPage send={handleLogin} currentUsername={username}/>
+                </div>
+
+                <div className="back face"></div>
 
             </div>
 
