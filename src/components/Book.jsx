@@ -2,6 +2,7 @@ import sports from '../data/sports';
 import { useState } from 'react';
 import LoginPage from "./LoginPage.jsx";
 import BackSport from "./BackSport.jsx";
+import FrontSport from "./FrontSport.jsx";
 
 const NUMBER_OF_SPORTS = sports.length;
 
@@ -15,6 +16,9 @@ function Book(){
     const [pagesFlipped, setPagesFlipped] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
+
+    // TODO : faire un gameDone pour chaque sport
+    const [gameDone, setGameDone] = useState(false);
 
 
     function handleCoverClick() {
@@ -67,6 +71,7 @@ function Book(){
     function handlePageClick(pageIndex) {
         const isFlipped = pagesFlipped[pageIndex]
         let pageLeft;
+        let newHidden;
 
         if (!isFlipped) {
             if (pageIndex === 0 && !isConnected) {
@@ -80,13 +85,18 @@ function Book(){
             setPagesFlipped(newFlips);
 
             setTimeout(()=>{
-
+                newHidden = [...pagesHidden];
+                newHidden[pageIndex+1] = false;
+                setPagesHide(newHidden);
             },150)
 
             setTimeout(()=>{
                 pageLeft = [...pagesLefted]
-                pageLeft[currentPage] = true;
+                pageLeft[pageIndex] = true;
                 setPagesLefted(pageLeft);
+
+                newHidden[pageIndex-1] = true;
+                setPagesHide(newHidden);
             },350)
 
             setCurrentPage(prev => prev + 1);
@@ -97,13 +107,18 @@ function Book(){
             setPagesFlipped(newFlips);
 
             setTimeout(()=>{
-
+                newHidden = [...pagesHidden];
+                newHidden[pageIndex-2] = false;
+                setPagesHide(newHidden);
             },150)
 
             setTimeout(()=>{
                 pageLeft = [...pagesLefted]
-                pageLeft[currentPage-1] = false;
+                pageLeft[pageIndex-1] = false;
                 setPagesLefted(pageLeft);
+
+                newHidden[pageIndex] = true;
+                setPagesHide(newHidden);
             },350)
 
             setCurrentPage(prev => prev - 1);
@@ -155,6 +170,31 @@ function Book(){
                 </div>
 
             </div>
+
+            {sports.map((sport, id)=>{
+                const pageIndex = id + 1;
+                let gameDone = false;
+
+                return(
+                    <div className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
+                         id={`page${pageIndex}`}
+                         onClick={(e) => {
+                         if (e.target.closest('button')) return;
+                         handlePageClick(pageIndex);
+                    }}>
+
+
+                        <FrontSport sport={sports[id + 1]} done={gameDone}/>
+
+
+                        <div className="back face">
+                            <BackSport sport={sports[id]}/>
+                        </div>
+
+                    </div>
+
+                );
+            })}
 
         </div>
 
