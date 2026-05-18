@@ -10,24 +10,52 @@ function Book(){
     const [coverFlipped, setCoverFlipped] = useState(false);
     const [lastCoverFlipped, setLastCoverFlipped] = useState(false);
     const [pagesFlipped, setPagesFlipped] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
+    const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
 
 
     function handleCoverClick() {
-        console.log(currentPage);
+        let newHidden;
         if (!coverFlipped) {
             setCoverFlipped(true);
+
+            setTimeout(()=>{
+                newHidden = [...pagesHidden];
+                newHidden[0] = false;
+                setPagesHide(newHidden);
+            }, 150)
+
         } else {
             if (currentPage !== 0) return;
             setCoverFlipped(false);
+
+            setTimeout(()=>{
+                newHidden = [...pagesHidden];
+                newHidden[0] = true;
+                setPagesHide(newHidden);
+            },350)
+
         }
     }
 
     function handleLastCoverClick() {
+        let newHidden;
         if(!lastCoverFlipped){
-            if(currentPage !== 0)return;
             setLastCoverFlipped(true);
+            if(currentPage !== NUMBER_OF_SPORTS+1)return;
+            setTimeout(()=>{
+                newHidden = [...pagesHidden];
+                newHidden[currentPage] = false;
+                setPagesHide(newHidden);
+            }, 350)
         }else{
             setLastCoverFlipped(false);
+            setTimeout(()=>{
+                newHidden = [...pagesHidden];
+                newHidden[currentPage] = false;
+                setPagesHide(newHidden);
+
+            }, 150)
+
         }
     }
 
@@ -64,6 +92,7 @@ function Book(){
 
     return (
         <div className="book" id="book">
+
             <div className={`cover ${coverFlipped ? 'flipping-forward' : ''}`} id="cover" onClick={handleCoverClick}>
                 <div className="front face">
                     <div className="cover-title">Outdoor<br/>Explorer</div>
@@ -75,7 +104,19 @@ function Book(){
 
             <div className={`cover last-cover ${lastCoverFlipped ? 'flipping-forward' : ''}`} id="lastCover"
                  onClick={handleLastCoverClick} style={{ zIndex: lastCoverFlipped ? 1 : -10 }}></div>
+
+            <div
+                className={`page ${pagesFlipped[0] ? 'flipping-forward' : ''} ${pagesHidden[0] ? 'hidden' : ''}`} id="page0"
+                onClick={(e) => {
+                    if (e.target.closest('form') || e.target.closest('button')) return;
+                    handlePageClick(0);
+                }}
+            >
+
+            </div>
+
         </div>
+
     );
 
 }
