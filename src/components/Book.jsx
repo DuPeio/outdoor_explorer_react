@@ -1,6 +1,7 @@
 import sports from '../data/sports';
 import { useState } from 'react';
 import LoginPage from "./LoginPage.jsx";
+import BackSport from "./BackSport.jsx";
 
 const NUMBER_OF_SPORTS = sports.length;
 
@@ -13,6 +14,7 @@ function Book(){
     const [lastCoverFlipped, setLastCoverFlipped] = useState(false);
     const [pagesFlipped, setPagesFlipped] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
+    const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
 
     function handleCoverClick() {
@@ -63,7 +65,8 @@ function Book(){
     }
 
     function handlePageClick(pageIndex) {
-        const isFlipped = pagesFlipped[pageIndex];
+        const isFlipped = pagesFlipped[pageIndex]
+        let pageLeft;
 
         if (!isFlipped) {
             if (pageIndex === 0 && !isConnected) {
@@ -76,12 +79,32 @@ function Book(){
             newFlips[pageIndex] = true;
             setPagesFlipped(newFlips);
 
+            setTimeout(()=>{
+
+            },150)
+
+            setTimeout(()=>{
+                pageLeft = [...pagesLefted]
+                pageLeft[currentPage] = true;
+                setPagesLefted(pageLeft);
+            },350)
+
             setCurrentPage(prev => prev + 1);
         } else {
             // TODO : Changer le style right et de cacher/montrer les pages
             const newFlips = [...pagesFlipped];
             newFlips[pageIndex] = false;
             setPagesFlipped(newFlips);
+
+            setTimeout(()=>{
+
+            },150)
+
+            setTimeout(()=>{
+                pageLeft = [...pagesLefted]
+                pageLeft[currentPage-1] = false;
+                setPagesLefted(pageLeft);
+            },350)
 
             setCurrentPage(prev => prev - 1);
         }
@@ -116,7 +139,7 @@ function Book(){
 
             <div
                 className={`page ${pagesFlipped[0] ? 'flipping-forward' : ''} ${pagesHidden[0] ? 'hidden' : ''}`}
-                id="page0"
+                id="page0" style={{right: pagesLefted[0] ? '35px':'23px'}}
                 onClick={(e) => {
                     if (e.target.closest('form') || e.target.closest('button')) return;
                     handlePageClick(0);
@@ -125,9 +148,11 @@ function Book(){
 
                 <div className="front face">
                     <LoginPage send={handleLogin} currentUsername={username}/>
-                </div>currentPage
+                </div>
 
-                <div className="back face"></div>
+                <div className="back face">
+                    <BackSport sport={sports[0]}/>
+                </div>
 
             </div>
 
