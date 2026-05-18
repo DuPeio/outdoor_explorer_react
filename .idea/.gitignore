@@ -9,6 +9,8 @@
 /dataSources/
 /dataSources.local.xml
 
+node_modules/
+
 # Logs
 logs
 *.log

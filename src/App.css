@@ -1,18 +1,10 @@
-/* APP.CSS - Ton style.css adapté pour React
-   La seule différence : en JSX on écrit className="..." au lieu de class="..."
-   Mais le CSS lui-même ne change pas du tout !
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
+body{
   background-color: #C8C4B8;
   display: flex;
   justify-content: center;
@@ -31,15 +23,14 @@ body {
   position: relative;
 }
 
-.book {
+.book{
   width: 100%;
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
 }
 
-/* ===== COUVERTURE ===== */
-.cover {
+.cover{
   position: absolute;
   background-color: #741F00;
   right: 0;
@@ -57,31 +48,31 @@ body {
   transform-origin: left;
 }
 
-.cover.last-cover {
+.cover.last-cover{
   z-index: -10;
 }
 
-.cover .front {
+.cover .front{
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.face {
+.face{
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
+  backface-visibility:hidden;
 }
 
-.front {
+.front{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.back {
+.back{
   transform: rotateY(180deg);
   position: absolute;
   width: 100%;
@@ -97,14 +88,14 @@ body {
   z-index: 1;
 }
 
-.cover-illustration {
-  font-size: 100px;
-  position: absolute;
-  bottom: 40px;
-  opacity: 0.6;
+.cover-title.hidden{
+  display: none;
 }
 
-/* ===== ANNEAUX ===== */
+.img-cover{
+  position: absolute;
+}
+
 .rings {
   position: absolute;
   left: calc(50% - 14px);
@@ -134,11 +125,10 @@ body {
   transform: translateZ(2px);
 }
 
-/* ===== BOUTONS ===== */
-button {
+button{
   background-color: #dabe12;
   border: none;
-  padding: 15px 70px;
+  padding : 15px 70px;
   border-radius: 50px;
   cursor: pointer;
   transition: 0.3s;
@@ -147,13 +137,17 @@ button {
   font-family: 'Playfair Display', serif;
 }
 
-button:hover {
+button:hover{
   background-color: #e1c616;
   box-shadow: 4px 4px 4px #000;
 }
 
-/* ===== PAGES ===== */
-.page {
+.btn-open.hidden{
+  display: none;
+}
+
+/*Pour les pages*/
+.page{
   position: absolute;
   width: 47%;
   height: 97%;
@@ -161,7 +155,7 @@ button:hover {
   background-color: #FFFCE5;
   border-radius: 15px;
   z-index: 5;
-  padding: 25px;
+  padding : 25px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -173,8 +167,15 @@ button:hover {
   cursor: pointer;
 }
 
-/* ===== CONNEXION ===== */
-.connexion-container {
+.page.flipping-forward .front{
+  pointer-events: none;
+}
+
+.page.hidden{
+  display: none;
+}
+
+.connexion-container{
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -182,7 +183,8 @@ button:hover {
   align-items: center;
 }
 
-.connexion-title {
+/*Pour la partie connexion*/
+.connexion-title{
   font-family: 'Playfair Display', serif;
   font-size: 60px;
   color: #000;
@@ -191,22 +193,21 @@ button:hover {
   z-index: 1;
 }
 
-.connexion-subtitle {
+.connexion-subtitle{
   color: #8d8d8d;
   font-size: 20px;
   padding: 20px;
 }
 
-.connexion-part {
+.connexion-part{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-content: center;
   margin-top: 30px;
-  text-align: center;
 }
 
-.connexion-form {
+.connexion-form{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -214,34 +215,32 @@ button:hover {
   align-content: center;
 }
 
-.connexion-form input {
+.connexion-form input{
   border: none;
-  padding: 7px 14px;
+  padding: 7px;
   outline: none;
   border-radius: 20px;
   margin: 10px 0;
-  font-size: 14px;
 }
 
-.connexion-form input::placeholder {
+.connexion-form input::placeholder{
   color: #D1D1D1;
 }
 
-.connexion-form button {
-  height: 36px;
-  width: 140px;
+.connexion-form img{
+  height: 40%;
+  margin-bottom: -8px;
+}
+
+.connexion-form button{
+  height:30px;
+  width: 120px;
   font-size: 14px;
-  padding: 0;
+  padding : 0;
 }
 
-.user-icon {
-  display: block;
-  font-size: 28px;
-  margin-bottom: 4px;
-}
-
-/* ===== PAGE SPORT (back) ===== */
-.sport-container {
+/*Page de gauche sport*/
+.sport-container{
   overflow: hidden;
   width: 100%;
   height: 100%;
@@ -251,9 +250,11 @@ button:hover {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
+
 }
 
 .sport-name-container {
+  container-type: inline-size;
   height: 45%;
   width: 120%;
   position: relative;
@@ -288,39 +289,33 @@ button:hover {
   transition: 0.3s;
 }
 
-.description {
-  padding: 30px;
+.description{
+  padding : 30px;
   justify-content: center;
   text-align: center;
 }
 
-.badge-placeholder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.badge{
+  width: 25%;
   transform: rotate(30deg);
-  cursor: help;
 }
 
-.badge-emoji {
-  font-size: 64px;
-  opacity: 0.5;
-  filter: grayscale(1);
+/*Page de droite*/
+.sport-page{
+  justify-content: space-evenly;
 }
 
-/* ===== PAGE SPORT (front - infos) ===== */
-.game-not-done {
+.game-not-done{
   color: #dabe12;
   font-weight: bold;
   padding: 20px;
-  text-align: center;
 }
 
-.game-not-done.hidden {
+.game-not-done.hidden{
   display: none;
 }
 
-.informations-container {
+.informations-container{
   position: relative;
   width: 90%;
   height: 85%;
@@ -330,57 +325,49 @@ button:hover {
   align-items: center;
 }
 
-.confidential {
+.confidential{
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 10;
-  background: rgba(255,252,229,0.01);
 }
 
-.confidential.hidden {
-  display: none;
+.confidential.hidden{
+  display:none;
 }
 
-.informations {
+.informations{
   display: flex;
   flex-direction: column;
   font-size: 11px;
   text-align: center;
-  width: 100%;
-}
-
-.informations.blurred {
   filter: blur(4px);
 }
 
-.informations div {
-  padding: 5px 5px 12px 5px;
+.informations div{
+  padding: 5px 5px 20px 5px;
 }
 
-.informations h4 {
+.informations h4{
   font-family: 'Playfair Display', serif;
   color: #DABE12;
-  margin-top: 8px;
 }
 
-.club-link ul {
+.club-link ul{
   list-style-position: inside;
 }
-
-.material-benefits {
+.material-benefits{
   display: flex;
-  gap: 8px;
 }
 
-.material-benefits div {
-  padding-bottom: 0;
+.material-benefits div{
+  padding-bottom : 0;
 }
 
-/* Spécifique escalade */
-.resume ul {
+/*Spécifique escalade*/
+.resume ul{
   padding-top: 10px;
   gap: 18px;
   display: flex;
@@ -388,7 +375,7 @@ button:hover {
   font-size: 11px;
 }
 
-/* ===== FLIP ANIMATION ===== */
+
 .flipping-forward {
   transform: rotateY(-180deg);
 }
