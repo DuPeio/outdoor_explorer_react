@@ -1,0 +1,394 @@
+/* APP.CSS - Ton style.css adapté pour React
+   La seule différence : en JSX on écrit className="..." au lieu de class="..."
+   Mais le CSS lui-même ne change pas du tout !
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #C8C4B8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 100px;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+.scene {
+  perspective: 1400px;
+  width: 1000px;
+  height: 750px;
+  position: relative;
+}
+
+.book {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+/* ===== COUVERTURE ===== */
+.cover {
+  position: absolute;
+  background-color: #741F00;
+  right: 0;
+  height: 100%;
+  width: 50%;
+  box-shadow: 4px 4px 24px #000;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: #4e1801 3px dashed;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+  transform-origin: left;
+}
+
+.cover.last-cover {
+  z-index: -10;
+}
+
+.cover .front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.back {
+  transform: rotateY(180deg);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 60px;
+  color: #000;
+  text-align: center;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+.cover-illustration {
+  font-size: 100px;
+  position: absolute;
+  bottom: 40px;
+  opacity: 0.6;
+}
+
+/* ===== ANNEAUX ===== */
+.rings {
+  position: absolute;
+  left: calc(50% - 14px);
+  width: 28px;
+  height: 101%;
+  background-color: #000;
+  z-index: 1;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -3px;
+  transform-style: preserve-3d;
+  transform: translateZ(0px);
+  justify-content: flex-start;
+  padding-top: 21px;
+  gap: 18px;
+}
+
+.ring {
+  width: 40px;
+  height: 30px;
+  border: 4px solid #dabe12;
+  border-radius: 0 0 12px 12px;
+  border-top: none;
+  z-index: 3;
+  transform: translateZ(2px);
+}
+
+/* ===== BOUTONS ===== */
+button {
+  background-color: #dabe12;
+  border: none;
+  padding: 15px 70px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #fff;
+  font-size: 18px;
+  font-family: 'Playfair Display', serif;
+}
+
+button:hover {
+  background-color: #e1c616;
+  box-shadow: 4px 4px 4px #000;
+}
+
+/* ===== PAGES ===== */
+.page {
+  position: absolute;
+  width: 47%;
+  height: 97%;
+  right: 23px;
+  background-color: #FFFCE5;
+  border-radius: 15px;
+  z-index: 5;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 12px;
+  transform-origin: left;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+  cursor: pointer;
+}
+
+/* ===== CONNEXION ===== */
+.connexion-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.connexion-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 60px;
+  color: #000;
+  text-align: center;
+  line-height: 1.2;
+  z-index: 1;
+}
+
+.connexion-subtitle {
+  color: #8d8d8d;
+  font-size: 20px;
+  padding: 20px;
+}
+
+.connexion-part {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.connexion-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.connexion-form input {
+  border: none;
+  padding: 7px 14px;
+  outline: none;
+  border-radius: 20px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.connexion-form input::placeholder {
+  color: #D1D1D1;
+}
+
+.connexion-form button {
+  height: 36px;
+  width: 140px;
+  font-size: 14px;
+  padding: 0;
+}
+
+.user-icon {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+/* ===== PAGE SPORT (back) ===== */
+.sport-container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.sport-name-container {
+  height: 45%;
+  width: 120%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  margin-top: -60px;
+}
+
+.sport-name {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 450%;
+  text-transform: uppercase;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 8px;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: invert(1);
+  transition: 0.3s;
+}
+
+.description {
+  padding: 30px;
+  justify-content: center;
+  text-align: center;
+}
+
+.badge-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(30deg);
+  cursor: help;
+}
+
+.badge-emoji {
+  font-size: 64px;
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+/* ===== PAGE SPORT (front - infos) ===== */
+.game-not-done {
+  color: #dabe12;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+}
+
+.game-not-done.hidden {
+  display: none;
+}
+
+.informations-container {
+  position: relative;
+  width: 90%;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.confidential {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: rgba(255,252,229,0.01);
+}
+
+.confidential.hidden {
+  display: none;
+}
+
+.informations {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  text-align: center;
+  width: 100%;
+}
+
+.informations.blurred {
+  filter: blur(4px);
+}
+
+.informations div {
+  padding: 5px 5px 12px 5px;
+}
+
+.informations h4 {
+  font-family: 'Playfair Display', serif;
+  color: #DABE12;
+  margin-top: 8px;
+}
+
+.club-link ul {
+  list-style-position: inside;
+}
+
+.material-benefits {
+  display: flex;
+  gap: 8px;
+}
+
+.material-benefits div {
+  padding-bottom: 0;
+}
+
+/* Spécifique escalade */
+.resume ul {
+  padding-top: 10px;
+  gap: 18px;
+  display: flex;
+  list-style: none;
+  font-size: 11px;
+}
+
+/* ===== FLIP ANIMATION ===== */
+.flipping-forward {
+  transform: rotateY(-180deg);
+}
