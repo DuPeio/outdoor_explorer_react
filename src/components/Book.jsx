@@ -1,15 +1,14 @@
-import sports from '../data/sports.js';
 import { useState } from 'react';
 import LoginPage from "./LoginPage.jsx";
 import BackSport from "./BackSport.jsx";
 import FrontSport from "./FrontSport.jsx";
+import { NUMBER_OF_SPORTS, SPORTS } from '../config/constants.js';
 
 import { db } from '/services/firebase.js';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-const NUMBER_OF_SPORTS = sports.length;
+function Book({setDisplayBook, setDisplayGame}){
 
-function Book(){
     const [currentPage, setCurrentPage] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
     const [username, setUsername] = useState('');
@@ -22,7 +21,7 @@ function Book(){
 
     const [gamesDone, setGamesDone] = useState(Array(NUMBER_OF_SPORTS).fill(false));
     const [gamesLaunch, setGamesLaunch] = useState(Array(NUMBER_OF_SPORTS).fill(false));
-    const [displayBook, setDisplayBook] = useState(true);
+
 
 
     function handleCoverClick() {
@@ -155,7 +154,7 @@ function Book(){
     }
 
     return (
-        <div className={`book ${displayBook ? '' : 'hidden'}`} id="book">
+        <div className="book" id="book">
             <div className="rings" id="rings">
 
                 {Array.from({length: 18}).map((_, index) => (
@@ -190,12 +189,12 @@ function Book(){
                 </div>
 
                 <div className="back face">
-                    <BackSport sport={sports[0]} gameDone={gamesDone[0]} setBook={setDisplayBook}/>
+                    <BackSport sport={SPORTS[0]} gameDone={gamesDone[0]} setBook={setDisplayBook} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={0}/>
                 </div>
 
             </div>
 
-            {sports.map((sport, id) => {
+            {SPORTS.map((sport, id) => {
                 const pageIndex = id + 1;
 
                 return (
@@ -208,12 +207,12 @@ function Book(){
                         }}>
 
                         <div className="front face">
-                            <FrontSport sport={sports[id]} gameDone={gamesDone[id]}/>
+                            <FrontSport sport={SPORTS[id]} gameDone={gamesDone[id]}/>
                         </div>
 
 
                         <div className="back face">
-                            <BackSport sport={sports[id + 1]} gameDone={gamesDone[id + 1]} setBook={{setDisplayBook}}/>
+                            <BackSport sport={SPORTS[id + 1]} gameDone={gamesDone[id + 1]} setBook={setDisplayBook} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={id+1}/>
                         </div>
 
                     </div>

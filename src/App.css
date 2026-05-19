@@ -23,6 +23,16 @@ body{
   position: relative;
 }
 
+.book-container{
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.book-container.hidden{
+  display: none;
+}
+
 .book{
   width: 100%;
   height: 100%;
@@ -387,4 +397,8 @@ button:hover{
 
 .flipping-forward {
   transform: rotateY(-180deg);
+}
+
+.game-container.hidden{
+  display: none;
 }
