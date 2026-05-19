@@ -26,16 +26,14 @@ function ski_game({ setBook, setGame }) {
         let obstacles = [];
 
         for (let i = 0; i < 20; i++) {
-            obstacles.push({ type: "tree", x: getRandomInt(-50, 250), y: getRandomInt(-50, 800) });
+            obstacles.push({ type: "tree", x: getRandomInt(-50, 150), y: getRandomInt(-50, 800) });
         }
         for (let i = 0; i < 20; i++) {
-            obstacles.push({ type: "tree", x: getRandomInt(650, 900), y: getRandomInt(-50, 800) });
+            obstacles.push({ type: "tree", x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
         }
 
         obstacles.push({ type: "blueGate", x: 260, y: 400 });
-        obstacles.push({ type: "blueGate", x: 375, y: 650 });
-        obstacles.push({ type: "redGate", x: 550, y: 500 });
-        obstacles.push({ type: "redGate", x: 650, y: 800 });
+        obstacles.push({ type: "redGate", x: 550, y: 900 });
 
         let skierX = 450;
         const skierY = 100;
@@ -70,19 +68,23 @@ function ski_game({ setBook, setGame }) {
         }
 
         function updatePositions() {
-            // CORRECTION 2 : On fait bouger le tableau principal global
             obstacles.forEach(obs => {
                 obs.y -= speed;
                 if (obs.y < -200) {
-                    obs.y = canvas.height + getRandomInt(50, 400);
                     if (obs.type === "tree") {
+                        obs.y = canvas.height + getRandomInt(50, 400);
                         if (obs.x < 500) {
-                            obs.x = getRandomInt(-50, 200);
+                            obs.x = getRandomInt(-50, 150);
                         } else {
-                            obs.x = getRandomInt(750, 950);
+                            obs.x = getRandomInt(800, 950);
                         }
                     } else {
-                        obs.x = getRandomInt(250, 650);
+                        obs.y = canvas.height
+                        if(obs.type === "blueGate") {
+                            obs.x = getRandomInt(325, 450);
+                        }else{
+                            obs.x = getRandomInt(550, 675);
+                        }
                     }
                 }
             });
@@ -91,7 +93,6 @@ function ski_game({ setBook, setGame }) {
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Fond neige
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
