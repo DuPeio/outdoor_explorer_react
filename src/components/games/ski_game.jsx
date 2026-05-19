@@ -38,6 +38,26 @@ function ski_game({ setBook, setGame }) {
         let skierX = 450;
         const skierY = 100;
 
+        const keys = {
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        const handleKeyDown = (e) => {
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                keys[e.key] = true;
+            }
+        };
+
+        const handleKeyUp = (e) => {
+            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                keys[e.key] = false;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("keyup", handleKeyUp);
+
         const sources = {
             skier: skier,
             tree: tree,
@@ -68,9 +88,28 @@ function ski_game({ setBook, setGame }) {
         }
 
         function updatePositions() {
+            const skierSpeed = 5;
+
             obstacles.forEach(obs => {
                 obs.y -= speed;
+
+                //Pour vérifier que les collisions
+                if (obs.type !== "tree" && !obs.passed) {
+                    const zone = (obs.y >= skierY && obs.y <= skierY + 80);
+
+                    if (zone) {
+                        obs.passed = true;
+                        if (skierX > obs.x && skierX < obs.x + 120) {
+                            console.log("Gate passée");
+                        } else {
+                            console.log("Gate pas passée");
+                        }
+                    }
+                }
+
+                // Pour faire une belle boucle
                 if (obs.y < -200) {
+                    obs.passed = false;
                     if (obs.type === "tree") {
                         obs.y = canvas.height + getRandomInt(50, 400);
                         if (obs.x < 500) {
@@ -81,13 +120,23 @@ function ski_game({ setBook, setGame }) {
                     } else {
                         obs.y = canvas.height
                         if(obs.type === "blueGate") {
-                            obs.x = getRandomInt(325, 450);
+                            obs.x = getRandomInt(350, 450);
                         }else{
                             obs.x = getRandomInt(550, 675);
                         }
                     }
                 }
             });
+            if (keys.ArrowLeft) {
+                if(skierX - skierSpeed > 275){
+                    skierX -= skierSpeed;
+                }
+            }
+            if (keys.ArrowRight) {
+                if(skierX + skierSpeed < 775){
+                    skierX += skierSpeed;
+                }
+            }
         }
 
         function drawGame() {
@@ -103,19 +152,19 @@ function ski_game({ setBook, setGame }) {
 
             const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
 
-            obstaclesSort.forEach(obs => {
-                if (obs.type === "tree" && imgTree) {
-                    ctx.drawImage(imgTree, obs.x, obs.y, 160, 180);
-                } else if (obs.type === "blueGate" && imgBlueGates) {
-                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 120, 100);
-                } else if (obs.type === "redGate" && imgRedGates) {
-                    ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
-                }
-            });
-
             if (imgSkier) {
                 ctx.drawImage(imgSkier, skierX, skierY, 42, 80);
             }
+
+            obstaclesSort.forEach(obs => {
+                if (obs.type === "blueGate" && imgBlueGates) {
+                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 120, 100);
+                } else if (obs.type === "redGate" && imgRedGates) {
+                    ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
+                }else if (obs.type === "tree" && imgTree) {
+                    ctx.drawImage(imgTree, obs.x, obs.y, 160, 180);
+                }
+            });
         }
 
         return () => {
