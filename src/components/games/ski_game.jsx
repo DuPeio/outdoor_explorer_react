@@ -1,4 +1,4 @@
-import {useRef, useEffect} from "react";
+import { useRef, useEffect } from "react";
 import skier from "../../assets/games_illustrations/ski/skier.svg";
 import tree from "../../assets/games_illustrations/ski/tree.svg";
 import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
@@ -8,12 +8,37 @@ function ski_game({ setBook, setGame }) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
 
+    function getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
         canvas.width = 1000;
         canvas.height = 700;
+
+        const speed = 4;
+
+        let obstacles = [];
+
+        for (let i = 0; i < 20; i++) {
+            obstacles.push({ type: "tree", x: getRandomInt(-50, 250), y: getRandomInt(-50, 800) });
+        }
+        for (let i = 0; i < 20; i++) {
+            obstacles.push({ type: "tree", x: getRandomInt(650, 900), y: getRandomInt(-50, 800) });
+        }
+
+        obstacles.push({ type: "blueGate", x: 260, y: 400 });
+        obstacles.push({ type: "blueGate", x: 375, y: 650 });
+        obstacles.push({ type: "redGate", x: 550, y: 500 });
+        obstacles.push({ type: "redGate", x: 650, y: 800 });
+
+        let skierX = 450;
+        const skierY = 100;
 
         const sources = {
             skier: skier,
@@ -24,57 +49,77 @@ function ski_game({ setBook, setGame }) {
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
+        let animationFrameId;
 
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
             img.src = src;
-
             img.onload = () => {
                 imagesRef.current[key] = img;
                 loadedCount++;
-
                 if (loadedCount === totalImages) {
-                    drawGameElement(ctx);
+                    gameLoop();
                 }
             };
         });
 
-        function drawGameElement(ctx) {
+        function gameLoop() {
+            updatePositions();
+            drawGame();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function updatePositions() {
+            // CORRECTION 2 : On fait bouger le tableau principal global
+            obstacles.forEach(obs => {
+                obs.y -= speed;
+                if (obs.y < -200) {
+                    obs.y = canvas.height + getRandomInt(50, 400);
+                    if (obs.type === "tree") {
+                        if (obs.x < 500) {
+                            obs.x = getRandomInt(-50, 200);
+                        } else {
+                            obs.x = getRandomInt(750, 950);
+                        }
+                    } else {
+                        obs.x = getRandomInt(250, 650);
+                    }
+                }
+            });
+        }
+
+        function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // BG
+            // Fond neige
             ctx.fillStyle = "#fff";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const imgSkier = imagesRef.current.skier;
             const imgTree = imagesRef.current.tree;
-            const imgBlueGates = imagesRef.current.gateBlue
-            const imgRedGates = imagesRef.current.gateRed
+            const imgBlueGates = imagesRef.current.gateBlue;
+            const imgRedGates = imagesRef.current.gateRed;
 
+            const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
+
+            obstaclesSort.forEach(obs => {
+                if (obs.type === "tree" && imgTree) {
+                    ctx.drawImage(imgTree, obs.x, obs.y, 160, 180);
+                } else if (obs.type === "blueGate" && imgBlueGates) {
+                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 120, 100);
+                } else if (obs.type === "redGate" && imgRedGates) {
+                    ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
+                }
+            });
 
             if (imgSkier) {
-                ctx.drawImage(imgSkier, 400, 100, 42, 80);
-            }
-            if (imgTree) {
-                // Dessiner les arbres aléatoirements entre x : -50 et 100 775 et 900
-                // Le y va changer dans la boucle pour les faire avancer
-                ctx.drawImage(imgTree, -50, 300, 160, 180);
-                ctx.drawImage(imgTree, 100, 150, 160, 180);
-                ctx.drawImage(imgTree, 775, 300, 160, 180);
-                ctx.drawImage(imgTree, 900, 150, 160, 180);
-            }
-            // Entre les gates un écart de 200 au moins
-            if(imgBlueGates) {
-                // de 175 à 450
-                ctx.drawImage(imgBlueGates, 260,300, 120, 100);
-                ctx.drawImage(imgBlueGates, 375,550, 120, 100);
-            }
-            if(imgRedGates) {
-                // de 550 à 650
-                ctx.drawImage(imgRedGates, 550,500, 120, 100);
-                ctx.drawImage(imgRedGates, 650,350, 120, 100);
+                ctx.drawImage(imgSkier, skierX, skierY, 42, 80);
             }
         }
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+        };
 
     }, []);
 
@@ -87,12 +132,7 @@ function ski_game({ setBook, setGame }) {
                 Revenir au livre
             </button>
 
-            {/* Ajout de bordures en CSS directement pour bien voir le Canvas */}
-            <canvas
-                className="canvas"
-                ref={canvasRef}
-                style={{ border: "2px solid #ccc", background: "#f0f4f8", display: "block", margin: "10px auto" }}
-            />
+            <canvas className="canvas" ref={canvasRef} />
 
             <div className={"instruction"}>Passer entre les piquets avec les flèches &lt; gauche et droite &gt;.</div>
         </div>
