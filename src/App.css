@@ -402,3 +402,29 @@ button:hover{
 .game-container.hidden{
   display: none;
 }
+
+.game-container{
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.game{
+  width: 100%;
+  height: 100%;
+}
+
+.back-button{
+  font-size: 12px;
+  padding:5px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+canvas{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
