@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-function BackSport ({sport}) {
+function BackSport ({sport, gameDone}) {
 
     const [hovered, setHovered] = useState(false);
 
@@ -16,7 +16,7 @@ function BackSport ({sport}) {
 
             <div className="description" dangerouslySetInnerHTML={{ __html: sport.description }} id="description"></div>
 
-            <img className="badge" id="badge" src={`../src/${sport.emplacement}`} alt="Reward of the sport"/>
+            <img className="badge" id="badge" src={gameDone ? (`../src/${sport.badge}`):(`../src/${sport.emplacement}`)} alt="Reward of the sport"/>
 
             <button className="game-btn" id="game" onClick={(e) => {
                 e.stopPropagation();

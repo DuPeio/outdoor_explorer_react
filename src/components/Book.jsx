@@ -47,7 +47,6 @@ function Book(){
         }
     }
 
-
     function handleLastCoverClick() {
 
         let newHidden;
@@ -189,7 +188,7 @@ function Book(){
                 </div>
 
                 <div className="back face">
-                    <BackSport sport={sports[0]}/>
+                    <BackSport sport={sports[0]} gameDone={gamesDone[0]}/>
                 </div>
 
             </div>
@@ -211,7 +210,7 @@ function Book(){
 
 
                         <div className="back face">
-                            <BackSport sport={sports[id+1]}/>
+                            <BackSport sport={sports[id+1]} gameDone={gamesDone[id+1]}/>
                         </div>
 
                     </div>
