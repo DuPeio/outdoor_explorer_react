@@ -42,8 +42,6 @@ function FrontSport({sport, gameDone}) {
                             </ul>
                         ) : (<a href={sport.infos.lienClub[0]} target="_blank">{sport.infos.lienClub[0]}</a>)}
                     </div>
-
-
                 </div>
             </div>
         </div>

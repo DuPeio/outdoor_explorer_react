@@ -20,8 +20,7 @@ function Book(){
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
-    // TODO : faire un gameDone pour chaque sport
-    const [gameDone, setGameDone] = useState(false);
+    const [gamesDone, setGamesDone] = useState(Array(NUMBER_OF_SPORTS).fill(false));
 
 
     function handleCoverClick() {
@@ -131,21 +130,18 @@ function Book(){
         try{
             const docRef = doc(db, "users", id)
             const userDoc = await getDoc(docRef);
-            console.log(userDoc)
 
             if(userDoc.exists()){
-                console.log("Utilisateur existant");
                 let userData = userDoc.data();
-                setGameDone(userData.userGames)
+                setGamesDone(userData.userGames)
 
             }else{
-
-                console.log("Nouvel utilisateur");
                 const userGames = Array(NUMBER_OF_SPORTS).fill(false);
                 await setDoc(docRef, {
                     username: id,
                     userGames: userGames
                 })
+                setGamesDone(userGames)
             }
 
             setIsConnected(true);
@@ -155,7 +151,6 @@ function Book(){
             console.log(`[Error] Connection with Firebase : ${err} `);
             alert("Erreur lors de la connexion, veuillez réessayer.");
         }
-
     }
 
     return (
@@ -201,7 +196,6 @@ function Book(){
 
             {sports.map((sport, id)=>{
                 const pageIndex = id + 1;
-                let gameDone = false;
 
                 return(
                     <div className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
@@ -212,7 +206,7 @@ function Book(){
                     }}>
 
                         <div className="front face">
-                            <FrontSport sport={sports[id]} done={gameDone}/>
+                            <FrontSport sport={sports[id]} gameDone={gamesDone[id]}/>
                         </div>
 
 
