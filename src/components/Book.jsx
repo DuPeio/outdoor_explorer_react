@@ -21,6 +21,8 @@ function Book(){
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
     const [gamesDone, setGamesDone] = useState(Array(NUMBER_OF_SPORTS).fill(false));
+    const [gamesLaunch, setGamesLaunch] = useState(Array(NUMBER_OF_SPORTS).fill(false));
+    const [displayBook, setDisplayBook] = useState(true);
 
 
     function handleCoverClick() {
@@ -153,11 +155,11 @@ function Book(){
     }
 
     return (
-        <div className="book" id="book">
+        <div className={`book ${displayBook ? '' : 'hidden'}`} id="book">
             <div className="rings" id="rings">
 
-                {Array.from({ length: 18 }).map((_, index) => (
-                    <div key={index} className="ring" />
+                {Array.from({length: 18}).map((_, index) => (
+                    <div key={index} className="ring"/>
                 ))}
 
             </div>
@@ -176,7 +178,7 @@ function Book(){
 
             <div
                 className={`page ${pagesFlipped[0] ? 'flipping-forward' : ''} ${pagesHidden[0] ? 'hidden' : ''}`}
-                id="page0" style={{right: pagesLefted[0] ? '35px':'23px'}}
+                id="page0" style={{right: pagesLefted[0] ? '35px' : '23px'}}
                 onClick={(e) => {
                     if (e.target.closest('form') || e.target.closest('button')) return;
                     handlePageClick(0);
@@ -188,21 +190,22 @@ function Book(){
                 </div>
 
                 <div className="back face">
-                    <BackSport sport={sports[0]} gameDone={gamesDone[0]}/>
+                    <BackSport sport={sports[0]} gameDone={gamesDone[0]} setBook={setDisplayBook}/>
                 </div>
 
             </div>
 
-            {sports.map((sport, id)=>{
+            {sports.map((sport, id) => {
                 const pageIndex = id + 1;
 
-                return(
-                    <div className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
-                         key= {id} id={`page${pageIndex}`} style={{ right: pagesLefted[pageIndex] ? '35px' : '23px' }}
-                         onClick={(e) => {
-                         if (e.target.closest('button') || e.target.closest('a')) return;
-                         handlePageClick(pageIndex);
-                    }}>
+                return (
+                    <div
+                        className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
+                        key={id} id={`page${pageIndex}`} style={{right: pagesLefted[pageIndex] ? '35px' : '23px'}}
+                        onClick={(e) => {
+                            if (e.target.closest('button') || e.target.closest('a')) return;
+                            handlePageClick(pageIndex);
+                        }}>
 
                         <div className="front face">
                             <FrontSport sport={sports[id]} gameDone={gamesDone[id]}/>
@@ -210,7 +213,7 @@ function Book(){
 
 
                         <div className="back face">
-                            <BackSport sport={sports[id+1]} gameDone={gamesDone[id+1]}/>
+                            <BackSport sport={sports[id + 1]} gameDone={gamesDone[id + 1]} setBook={{setDisplayBook}}/>
                         </div>
 
                     </div>
@@ -221,6 +224,7 @@ function Book(){
         </div>
 
     );
+
 
 }
 

@@ -1,11 +1,20 @@
 import {useState} from "react";
+import SkiGame from './games/ski_game.jsx';
 
-function BackSport ({sport, gameDone}) {
+function BackSport ({sport, gameDone, setBook}) {
 
     const [hovered, setHovered] = useState(false);
+    const [showSkiGame, setShowSkiGame] = useState(false);
 
     if (!sport) {return null;}
 
+    if (showSkiGame) {
+        return (
+            <div className="ski-game-container">
+                <SkiGame setBook={setBook} setGame={setShowSkiGame}/>
+            </div>
+        );
+    }
     return (
         <div className="sport-container">
             <div className="sport-name-container" id="container" style={{backgroundImage: `url(../src/${sport.image})`}} onMouseOver={() => setHovered(true)}
@@ -20,7 +29,11 @@ function BackSport ({sport, gameDone}) {
 
             <button className="game-btn" id="game" onClick={(e) => {
                 e.stopPropagation();
-                alert(`Mini-jeu ${sport.miniJeu}`);}}>Lancer le mini jeu</button>
+                alert(`Mini-jeu ${sport.miniJeu}`);
+                setBook(false);
+                setShowSkiGame(true);
+            }}
+            >Lancer le mini jeu</button>
         </div>
     )
 }

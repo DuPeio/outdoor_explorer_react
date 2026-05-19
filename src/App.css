@@ -30,6 +30,10 @@ body{
   transform-style: preserve-3d;
 }
 
+.book.hidden{
+  display: none;
+}
+
 .cover{
   position: absolute;
   background-color: #741F00;

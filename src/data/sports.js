@@ -16,7 +16,7 @@ const sports = [
       bienfaits: "Améliore <b>l’équilibre</b>, renforce les <b>jambes</b> et procure des supers <b>sensations de glisse</b>.",
       saisonIdeale: "Le ski se pratique principalement <b>l'hiver</b>, une fois que la neige fait son apparition."
     },
-    miniJeu: "js/games/ski.js"
+    miniJeu: "./games/ski_game.jsx"
   },
 
   {
