@@ -1,8 +1,11 @@
-import sports from '../data/sports';
+import sports from '../data/sports.js';
 import { useState } from 'react';
 import LoginPage from "./LoginPage.jsx";
 import BackSport from "./BackSport.jsx";
 import FrontSport from "./FrontSport.jsx";
+
+import { db } from '/services/firebase.js';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const NUMBER_OF_SPORTS = sports.length;
 
@@ -44,6 +47,7 @@ function Book(){
 
         }
     }
+
 
     function handleLastCoverClick() {
 
@@ -123,9 +127,35 @@ function Book(){
         }
     }
 
-    function handleLogin(id) {
-        setIsConnected(true);
-        setUsername(id);
+    async function handleLogin(id) {
+        try{
+            const docRef = doc(db, "users", id)
+            const userDoc = await getDoc(docRef);
+            console.log(userDoc)
+
+            if(userDoc.exists()){
+                console.log("Utilisateur existant");
+                let userData = userDoc.data();
+                setGameDone(userData.userGames)
+
+            }else{
+
+                console.log("Nouvel utilisateur");
+                const userGames = Array(NUMBER_OF_SPORTS).fill(false);
+                await setDoc(docRef, {
+                    username: id,
+                    userGames: userGames
+                })
+            }
+
+            setIsConnected(true);
+            setUsername(id);
+
+        }catch(err){
+            console.log(`[Error] Connection with Firebase : ${err} `);
+            alert("Erreur lors de la connexion, veuillez réessayer.");
+        }
+
     }
 
     return (
