@@ -431,3 +431,8 @@ canvas{
 .instructions{
   color: #000;
 }
+
+.launch-game-button{
+  position: absolute;
+  bottom: 100px;
+}

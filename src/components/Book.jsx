@@ -8,7 +8,7 @@ import { useGameContext } from '../context/GameContext.jsx';
 
 function Book({setDisplayBook, setDisplayGame}){
 
-    const { gamesDone, handleLogin, username, setUsername } = useGameContext();
+    const { gamesDone, handleLogin, username } = useGameContext();
 
     const [currentPage, setCurrentPage] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
@@ -18,8 +18,6 @@ function Book({setDisplayBook, setDisplayGame}){
     const [pagesFlipped, setPagesFlipped] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
-
-    const [gamesLaunch, setGamesLaunch] = useState(Array(NUMBER_OF_SPORTS).fill(false));
 
     function handleCoverClick() {
         let newHidden;

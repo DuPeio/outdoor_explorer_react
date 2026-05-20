@@ -11,9 +11,8 @@ import {useGameContext} from "../../context/GameContext.jsx";
 function ski_game({ setBook, setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
-    let pixelPasted = 0;
+    const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
-    const [gameWin, setGameWin] = useState(false);
     const { handleGameResult } = useGameContext();
 
     function getRandomInt(min, max) {
@@ -32,20 +31,9 @@ function ski_game({ setBook, setGame}) {
         canvas.width = 1000;
         canvas.height = 700;
 
-        const speed = 4;
+        let speed = 4;
 
-        let obstacles = [];
-
-        for (let i = 0; i < 20; i++) {
-            obstacles.push({ type: "tree", x: getRandomInt(-50, 150), y: getRandomInt(-50, 800) });
-        }
-        for (let i = 0; i < 20; i++) {
-            obstacles.push({ type: "tree", x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
-        }
-
-        obstacles.push({ type: "blueGate", x: 260, y: 500 , passed:false});
-        obstacles.push({ type: "redGate", x: 550, y: 1000, passed:false});
-        obstacles.push({type: "finishLine", x:250, y:900});
+        let obstacles = createObstacles();
 
         let skierX = 450;
         const skierY = 100;
@@ -96,25 +84,47 @@ function ski_game({ setBook, setGame}) {
             };
         });
 
+        function createObstacles(){
+            let obstacles = [];
+
+            for (let i = 0; i < 35; i++) {
+                obstacles.push({ type: "tree", x: getRandomInt(-50, 100), y: getRandomInt(-50, 800) });
+            }
+            for (let i = 0; i < 35; i++) {
+                obstacles.push({ type: "tree", x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
+            }
+            obstacles.push({ type: "blueGate", x: 280, y: 500, passed: false });
+            obstacles.push({ type: "redGate", x: 550, y: 1000, passed: false });
+            obstacles.push({ type: "finishLine", x: 250, y: 900 });
+
+            return obstacles;
+        }
+
         function gameLoop() {
+            if (canvas.dataset.reset === "true") {
+                gameEnd = false;
+                win = false;
+                pixelPastedRef.current = 0;
+                skierX = 450;
+                obstacles = createObstacles();
+                canvas.dataset.reset = "false";
+                speed = 4;
+            }
             updatePositions();
             drawGame();
-            if(!gameEnd){
-                animationFrameId = requestAnimationFrame(gameLoop);
-            }
+            animationFrameId = requestAnimationFrame(gameLoop);
         }
 
         function updatePositions() {
             const skierSpeed = 5;
 
-            if (canvas.dataset.started !== "true") {
+            if (canvas.dataset.started !== "true" || gameEnd) {
                 return;
             }
+            speed += 0.003;
+            pixelPastedRef.current -= speed;
 
-            pixelPasted -= speed;
-
-            if(pixelPasted <= -5000){
-                setGameWin(true);
+            if(pixelPastedRef.current <= -10000){
                 win = true;
                 gameEnd = true;
                 setGameStarted(false);
@@ -122,23 +132,26 @@ function ski_game({ setBook, setGame}) {
             }else{
                 obstacles.forEach(obs => {
 
-                    if(obs.type !== "finishLine" || pixelPasted <= -4050){
+                    if(obs.type !== "finishLine" || pixelPastedRef.current <= -9050){
                         obs.y -= speed;
                     }
 
                     //Pour vérifier que les collisions
                     if ((obs.type === "blueGate" || obs.type === "redGate") && !obs.passed) {
-                        const zone = (obs.y >= skierY && obs.y <= skierY + 2);
+                        const zone = (obs.y >= skierY && obs.y <= skierY + 10);
                         if (zone) {
                             obs.passed = true;
                             if (skierX > obs.x+2 && skierX+42 < obs.x+118) {
                                 console.log("Gate passée");
                             } else {
-                                console.log("Gate pas passée");
-                                win = false;
-                                gameEnd = true;
-                                setGameStarted(false);
-                                handleGameResult(0, false);
+                                setTimeout(()=>{
+                                    console.log("Gate pas passée");
+                                    win = false;
+                                    gameEnd = true;
+                                    setGameStarted(false);
+                                    handleGameResult(0, false);
+                                },150)
+
                             }
                         }
                     }
@@ -154,7 +167,7 @@ function ski_game({ setBook, setGame}) {
                                 obs.x = getRandomInt(800, 950);
                             }
                         } else if (obs.type === "blueGate" || obs.type === "redGate") {
-                            if(pixelPasted >= -4200){
+                            if(pixelPastedRef.current >= -9200){
                                 obs.y = canvas.height
                                 if(obs.type === "blueGate") {
                                     obs.x = getRandomInt(350, 450);
@@ -210,9 +223,9 @@ function ski_game({ setBook, setGame}) {
 
             if(gameEnd){
                 if(win){
-                    ctx.drawImage(imagesRef.current.victoryText, 50, 200, 950, 850);
+                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 50, 200, 950, 450);
+                    ctx.drawImage(imagesRef.current.defeatText, 25, 200, 950, 450);
                 }
             }
         }
@@ -236,7 +249,10 @@ function ski_game({ setBook, setGame}) {
             </button>
 
             {!gameStarted && (
-                <button className={"launch-game-button"} onClick={() => {setGameStarted(true); pixelPasted = 0}}>
+                <button className={"launch-game-button"} onClick={() => {
+                    canvasRef.current.dataset.reset = "true";
+                    setGameStarted(true);
+                }}>
                     Lancer le jeu !
                 </button>
             )}
