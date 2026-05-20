@@ -148,7 +148,7 @@ function ski_game({ setBook, setGame}) {
                         const zone = (obs.y >= skierY && obs.y <= skierY + 10);
                         if (zone) {
                             obs.passed = true;
-                            if (skierX-20 > obs.x+2 && skierX+50 < obs.x+118) {
+                            if (skierX> obs.x-50 && skierX+50 < obs.x+100) {
                                 console.log("Gate passée");
                             } else {
                                 setTimeout(()=>{
@@ -189,13 +189,13 @@ function ski_game({ setBook, setGame}) {
                 directionSkier = 0;
 
                 if (keys.ArrowLeft) {
-                    if(skierX - skierSpeed > 275){
+                    if(skierX - skierSpeed > 200){
                         skierX -= skierSpeed;
                         directionSkier = 1;
                     }
                 }
                 if (keys.ArrowRight) {
-                    if(skierX + skierSpeed < 775){
+                    if(skierX + skierSpeed < 800){
                         skierX += skierSpeed;
                         directionSkier = 2;
                     }
