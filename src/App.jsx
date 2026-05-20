@@ -5,7 +5,6 @@ import Ski_game from "./components/games/ski_game.jsx";
 import {useState} from "react";
 
 
-
 function App() {
     const [displayBook, setDisplayBook] = useState(true);
     const [gamesDisplayed, setGamesDisplayed] = useState(Array(NUMBER_OF_SPORTS).fill(false));
@@ -20,9 +19,7 @@ function App() {
                 <Ski_game setGame={setGamesDisplayed} setBook={setDisplayBook} />
             </div>
 
-
         </div>
-
     );
 }
 

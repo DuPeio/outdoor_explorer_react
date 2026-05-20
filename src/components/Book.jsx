@@ -4,14 +4,14 @@ import BackSport from "./BackSport.jsx";
 import FrontSport from "./FrontSport.jsx";
 import { NUMBER_OF_SPORTS, SPORTS } from '../config/constants.js';
 
-import { db } from '/services/firebase.js';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useGameContext } from '../context/GameContext.jsx';
 
 function Book({setDisplayBook, setDisplayGame}){
 
+    const { gamesDone, handleLogin, username, setUsername } = useGameContext();
+
     const [currentPage, setCurrentPage] = useState(0);
     const [isConnected, setIsConnected] = useState(false);
-    const [username, setUsername] = useState('');
 
     const [coverFlipped, setCoverFlipped] = useState(false);
     const [lastCoverFlipped, setLastCoverFlipped] = useState(false);
@@ -19,10 +19,7 @@ function Book({setDisplayBook, setDisplayGame}){
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
-    const [gamesDone, setGamesDone] = useState(Array(NUMBER_OF_SPORTS).fill(false));
     const [gamesLaunch, setGamesLaunch] = useState(Array(NUMBER_OF_SPORTS).fill(false));
-
-
 
     function handleCoverClick() {
         let newHidden;
@@ -126,31 +123,9 @@ function Book({setDisplayBook, setDisplayGame}){
         }
     }
 
-    async function handleLogin(id) {
-        try{
-            const docRef = doc(db, "users", id)
-            const userDoc = await getDoc(docRef);
-
-            if(userDoc.exists()){
-                let userData = userDoc.data();
-                setGamesDone(userData.userGames)
-
-            }else{
-                const userGames = Array(NUMBER_OF_SPORTS).fill(false);
-                await setDoc(docRef, {
-                    username: id,
-                    userGames: userGames
-                })
-                setGamesDone(userGames)
-            }
-
-            setIsConnected(true);
-            setUsername(id);
-
-        }catch(err){
-            console.log(`[Error] Connection with Firebase : ${err} `);
-            alert("Erreur lors de la connexion, veuillez réessayer.");
-        }
+    async function handleLoginLocal(id) {
+        await handleLogin(id);
+        setIsConnected(true);
     }
 
     return (
@@ -185,7 +160,7 @@ function Book({setDisplayBook, setDisplayGame}){
 
 
                 <div className="front face">
-                    <LoginPage send={handleLogin} currentUsername={username}/>
+                    <LoginPage send={handleLoginLocal} currentUsername={username}/>
                 </div>
 
                 <div className="back face">

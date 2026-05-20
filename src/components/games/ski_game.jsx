@@ -6,13 +6,15 @@ import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
 import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
 import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
 import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
+import {useGameContext} from "../../context/GameContext.jsx";
 
-function ski_game({ setBook, setGame }) {
+function ski_game({ setBook, setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     let pixelPasted = 0;
     const [gameStarted, setGameStarted] = useState(false);
     const [gameWin, setGameWin] = useState(false);
+    const { handleGameResult } = useGameContext();
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -100,7 +102,6 @@ function ski_game({ setBook, setGame }) {
             if(!gameEnd){
                 animationFrameId = requestAnimationFrame(gameLoop);
             }
-
         }
 
         function updatePositions() {
@@ -111,13 +112,13 @@ function ski_game({ setBook, setGame }) {
             }
 
             pixelPasted -= speed;
-            console.log(pixelPasted);
 
             if(pixelPasted <= -5000){
                 setGameWin(true);
                 win = true;
                 gameEnd = true;
                 setGameStarted(false);
+                handleGameResult(0, true);
             }else{
                 obstacles.forEach(obs => {
 
@@ -137,6 +138,7 @@ function ski_game({ setBook, setGame }) {
                                 win = false;
                                 gameEnd = true;
                                 setGameStarted(false);
+                                handleGameResult(0, false);
                             }
                         }
                     }
