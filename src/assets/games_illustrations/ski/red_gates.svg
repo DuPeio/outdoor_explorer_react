@@ -1,4 +1,15 @@
-<svg width="193" height="161" viewBox="0 0 193 161" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="11" height="157" fill="#FF0000"/>
-<rect x="182" y="4" width="11" height="157" fill="#FF0000"/>
+<svg width="158" height="161" viewBox="0 0 158 161" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="152.216" y="1.00195" width="4.39803" height="157" transform="rotate(3 152.216 1.00195)" fill="#FF0000"/>
+<rect x="144.623" y="127" width="6" height="31" transform="rotate(3 144.623 127)" fill="black"/>
+<rect x="151.256" width="6" height="24" transform="rotate(3 151.256 0)" fill="#D9FF00"/>
+<line x1="152.25" y1="23.0146" x2="146.24" y2="126.015" stroke="white" stroke-width="0.5"/>
+<circle cx="144" cy="158" r="2" fill="white"/>
+<circle cx="146.5" cy="156.5" r="1.5" fill="white"/>
+<ellipse cx="147.5" cy="157.5" rx="2.5" ry="1.5" fill="white"/>
+<rect x="1" y="1.23047" width="4.39803" height="157" transform="rotate(-3 1 1.23047)" fill="#FF0000"/>
+<rect x="7.19824" y="127.439" width="6" height="31" transform="rotate(-3 7.19824 127.439)" fill="black"/>
+<rect y="1.3125" width="6" height="24" transform="rotate(-3 0 1.3125)" fill="#D9FF00"/>
+<line x1="3.24969" y1="25.9876" x2="8.24969" y2="126.988" stroke="white" stroke-width="0.5"/>
+<circle cx="11.5" cy="158.5" r="2.5" fill="white"/>
+<circle cx="14.5" cy="157.5" r="1.5" fill="white"/>
 </svg>

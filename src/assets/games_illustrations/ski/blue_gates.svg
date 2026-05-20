@@ -1,4 +1,15 @@
-<svg width="171" height="157" viewBox="0 0 171 157" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="160" width="11" height="157" fill="#0062FF"/>
-<rect width="11" height="157" fill="#0062FF"/>
+<svg width="141" height="161" viewBox="0 0 141 161" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="133.022" y="1.00781" width="4.39803" height="157" transform="rotate(-0.640086 133.022 1.00781)" fill="#0062FF"/>
+<rect x="133.443" y="127.234" width="6" height="31" transform="rotate(-0.640086 133.443 127.234)" fill="black"/>
+<rect x="132" y="0.0683594" width="6" height="24" transform="rotate(-0.640086 132 0.0683594)" fill="#D9FF00"/>
+<line x1="134.453" y1="22.9733" x2="134.994" y2="126.147" stroke="white" stroke-width="0.5"/>
+<circle cx="135" cy="158.002" r="2" fill="white"/>
+<circle cx="137.5" cy="156.502" r="1.5" fill="white"/>
+<ellipse cx="138.5" cy="157.502" rx="2.5" ry="1.5" fill="white"/>
+<rect x="2.45947" y="1.00195" width="4.39803" height="157" transform="rotate(0.744361 2.45947 1.00195)" fill="#0062FF"/>
+<rect x="0.402832" y="127.344" width="6" height="31" transform="rotate(0.744361 0.402832 127.344)" fill="black"/>
+<rect x="1.45654" y="1.01758" width="6" height="24" transform="rotate(0.744361 1.45654 1.01758)" fill="#D9FF00"/>
+<line x1="3.08786" y1="25.8516" x2="1.48139" y2="126.963" stroke="white" stroke-width="0.5"/>
+<circle cx="2.5" cy="158.502" r="2.5" fill="white"/>
+<circle cx="5.5" cy="157.502" r="1.5" fill="white"/>
 </svg>

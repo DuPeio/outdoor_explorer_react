@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import skier from "../../assets/games_illustrations/ski/skier.svg";
+import skierG from "../../assets/games_illustrations/ski/skierG.svg";
+import skierD from "../../assets/games_illustrations/ski/skierD.svg";
 import tree from "../../assets/games_illustrations/ski/tree.svg";
 import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
 import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
@@ -33,6 +35,8 @@ function ski_game({ setBook, setGame}) {
 
         let speed = 4;
 
+        let directionSkier = 0;
+
         let obstacles = createObstacles();
 
         let skierX = 450;
@@ -60,6 +64,8 @@ function ski_game({ setBook, setGame}) {
 
         const sources = {
             skier: skier,
+            skierD: skierD,
+            skierG: skierG,
             tree: tree,
             gateRed: redGates,
             gateBlue: blueGates,
@@ -109,6 +115,7 @@ function ski_game({ setBook, setGame}) {
                 obstacles = createObstacles();
                 canvas.dataset.reset = "false";
                 speed = 4;
+                directionSkier = 0;
             }
             updatePositions();
             drawGame();
@@ -141,7 +148,7 @@ function ski_game({ setBook, setGame}) {
                         const zone = (obs.y >= skierY && obs.y <= skierY + 10);
                         if (zone) {
                             obs.passed = true;
-                            if (skierX > obs.x+2 && skierX+42 < obs.x+118) {
+                            if (skierX-20 > obs.x+2 && skierX+50 < obs.x+118) {
                                 console.log("Gate passée");
                             } else {
                                 setTimeout(()=>{
@@ -170,24 +177,30 @@ function ski_game({ setBook, setGame}) {
                             if(pixelPastedRef.current >= -9200){
                                 obs.y = canvas.height
                                 if(obs.type === "blueGate") {
-                                    obs.x = getRandomInt(350, 450);
+                                    obs.x = getRandomInt(350, 500);
                                 }else{
-                                    obs.x = getRandomInt(550, 675);
+                                    obs.x = getRandomInt(500, 675);
                                 }
                             }
                         }
                     }
                 });
+
+                directionSkier = 0;
+
                 if (keys.ArrowLeft) {
                     if(skierX - skierSpeed > 275){
                         skierX -= skierSpeed;
+                        directionSkier = 1;
                     }
                 }
                 if (keys.ArrowRight) {
                     if(skierX + skierSpeed < 775){
                         skierX += skierSpeed;
+                        directionSkier = 2;
                     }
                 }
+
             }
         }
 
@@ -198,6 +211,8 @@ function ski_game({ setBook, setGame}) {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const imgSkier = imagesRef.current.skier;
+            const imgSkierD = imagesRef.current.skierD;
+            const imgSkierG = imagesRef.current.skierG;
             const imgTree = imagesRef.current.tree;
             const imgBlueGates = imagesRef.current.gateBlue;
             const imgRedGates = imagesRef.current.gateRed;
@@ -206,7 +221,14 @@ function ski_game({ setBook, setGame}) {
             const obstaclesSort = obstacles.sort((a, b) => a.y - b.y);
 
             if (imgSkier) {
-                ctx.drawImage(imgSkier, skierX, skierY, 42, 80);
+                let currentSkierImg = imagesRef.current.skier;
+
+                if (directionSkier === 1 && imagesRef.current.skierG) {
+                    currentSkierImg = imagesRef.current.skierG;
+                } else if (directionSkier === 2 && imagesRef.current.skierD) {
+                    currentSkierImg = imagesRef.current.skierD;
+                }
+                ctx.drawImage(currentSkierImg, skierX, skierY, 100, 120);
             }
 
             obstaclesSort.forEach(obs => {
