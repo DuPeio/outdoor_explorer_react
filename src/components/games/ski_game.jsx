@@ -3,12 +3,16 @@ import skier from "../../assets/games_illustrations/ski/skier.svg";
 import tree from "../../assets/games_illustrations/ski/tree.svg";
 import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
 import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
+import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
+import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
+import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
 
 function ski_game({ setBook, setGame }) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     let pixelPasted = 0;
     const [gameStarted, setGameStarted] = useState(false);
+    const [gameWin, setGameWin] = useState(false);
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -19,6 +23,9 @@ function ski_game({ setBook, setGame }) {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
+
+        let win = false;
+        let gameEnd = false;
 
         canvas.width = 1000;
         canvas.height = 700;
@@ -34,8 +41,9 @@ function ski_game({ setBook, setGame }) {
             obstacles.push({ type: "tree", x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
         }
 
-        obstacles.push({ type: "blueGate", x: 260, y: 400 });
-        obstacles.push({ type: "redGate", x: 550, y: 900 });
+        obstacles.push({ type: "blueGate", x: 260, y: 500 , passed:false});
+        obstacles.push({ type: "redGate", x: 550, y: 1000, passed:false});
+        obstacles.push({type: "finishLine", x:250, y:900});
 
         let skierX = 450;
         const skierY = 100;
@@ -64,7 +72,10 @@ function ski_game({ setBook, setGame }) {
             skier: skier,
             tree: tree,
             gateRed: redGates,
-            gateBlue: blueGates
+            gateBlue: blueGates,
+            finishLine: finishLine,
+            victoryText : victoryText,
+            defeatText: defeatText
         };
 
         let loadedCount = 0;
@@ -86,7 +97,10 @@ function ski_game({ setBook, setGame }) {
         function gameLoop() {
             updatePositions();
             drawGame();
-            animationFrameId = requestAnimationFrame(gameLoop);
+            if(!gameEnd){
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+
         }
 
         function updatePositions() {
@@ -97,24 +111,32 @@ function ski_game({ setBook, setGame }) {
             }
 
             pixelPasted -= speed;
+            console.log(pixelPasted);
 
-            if(pixelPasted <= -10000){
-                console.log("Ligne d'arrivée");
+            if(pixelPasted <= -5000){
+                setGameWin(true);
+                win = true;
+                gameEnd = true;
                 setGameStarted(false);
             }else{
                 obstacles.forEach(obs => {
-                    obs.y -= speed;
+
+                    if(obs.type !== "finishLine" || pixelPasted <= -4050){
+                        obs.y -= speed;
+                    }
 
                     //Pour vérifier que les collisions
-                    if (obs.type !== "tree" && !obs.passed) {
-                        const zone = (obs.y >= skierY && obs.y <= skierY + 80);
-
+                    if ((obs.type === "blueGate" || obs.type === "redGate") && !obs.passed) {
+                        const zone = (obs.y >= skierY && obs.y <= skierY + 2);
                         if (zone) {
                             obs.passed = true;
-                            if (skierX > obs.x && skierX < obs.x + 120) {
+                            if (skierX > obs.x+2 && skierX+42 < obs.x+118) {
                                 console.log("Gate passée");
                             } else {
                                 console.log("Gate pas passée");
+                                win = false;
+                                gameEnd = true;
+                                setGameStarted(false);
                             }
                         }
                     }
@@ -129,12 +151,14 @@ function ski_game({ setBook, setGame }) {
                             } else {
                                 obs.x = getRandomInt(800, 950);
                             }
-                        } else {
-                            obs.y = canvas.height
-                            if(obs.type === "blueGate") {
-                                obs.x = getRandomInt(350, 450);
-                            }else{
-                                obs.x = getRandomInt(550, 675);
+                        } else if (obs.type === "blueGate" || obs.type === "redGate") {
+                            if(pixelPasted >= -4200){
+                                obs.y = canvas.height
+                                if(obs.type === "blueGate") {
+                                    obs.x = getRandomInt(350, 450);
+                                }else{
+                                    obs.x = getRandomInt(550, 675);
+                                }
                             }
                         }
                     }
@@ -162,8 +186,9 @@ function ski_game({ setBook, setGame }) {
             const imgTree = imagesRef.current.tree;
             const imgBlueGates = imagesRef.current.gateBlue;
             const imgRedGates = imagesRef.current.gateRed;
+            const imgFinishLine = imagesRef.current.finishLine
 
-            const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
+            const obstaclesSort = obstacles.sort((a, b) => a.y - b.y);
 
             if (imgSkier) {
                 ctx.drawImage(imgSkier, skierX, skierY, 42, 80);
@@ -174,10 +199,20 @@ function ski_game({ setBook, setGame }) {
                     ctx.drawImage(imgBlueGates, obs.x, obs.y, 120, 100);
                 } else if (obs.type === "redGate" && imgRedGates) {
                     ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
+                }else if (obs.type === "finishLine" && imgFinishLine) {
+                    ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
                 }else if (obs.type === "tree" && imgTree) {
                     ctx.drawImage(imgTree, obs.x, obs.y, 160, 180);
                 }
             });
+
+            if(gameEnd){
+                if(win){
+                    ctx.drawImage(imagesRef.current.victoryText, 50, 200, 950, 850);
+                }else{
+                    ctx.drawImage(imagesRef.current.defeatText, 50, 200, 950, 450);
+                }
+            }
         }
 
         return () => {
@@ -199,7 +234,7 @@ function ski_game({ setBook, setGame }) {
             </button>
 
             {!gameStarted && (
-                <button className={"launch-game-button"} onClick={() => {setGameStarted(true);}}>
+                <button className={"launch-game-button"} onClick={() => {setGameStarted(true); pixelPasted = 0}}>
                     Lancer le jeu !
                 </button>
             )}
