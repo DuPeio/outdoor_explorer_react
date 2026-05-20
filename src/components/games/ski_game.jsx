@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import skier from "../../assets/games_illustrations/ski/skier.svg";
 import tree from "../../assets/games_illustrations/ski/tree.svg";
 import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
@@ -7,6 +7,8 @@ import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
 function ski_game({ setBook, setGame }) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
+    let pixelPasted = 0;
+    const [gameStarted, setGameStarted] = useState(false);
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -90,51 +92,62 @@ function ski_game({ setBook, setGame }) {
         function updatePositions() {
             const skierSpeed = 5;
 
-            obstacles.forEach(obs => {
-                obs.y -= speed;
-
-                //Pour vérifier que les collisions
-                if (obs.type !== "tree" && !obs.passed) {
-                    const zone = (obs.y >= skierY && obs.y <= skierY + 80);
-
-                    if (zone) {
-                        obs.passed = true;
-                        if (skierX > obs.x && skierX < obs.x + 120) {
-                            console.log("Gate passée");
-                        } else {
-                            console.log("Gate pas passée");
-                        }
-                    }
-                }
-
-                // Pour faire une belle boucle
-                if (obs.y < -200) {
-                    obs.passed = false;
-                    if (obs.type === "tree") {
-                        obs.y = canvas.height + getRandomInt(50, 400);
-                        if (obs.x < 500) {
-                            obs.x = getRandomInt(-50, 150);
-                        } else {
-                            obs.x = getRandomInt(800, 950);
-                        }
-                    } else {
-                        obs.y = canvas.height
-                        if(obs.type === "blueGate") {
-                            obs.x = getRandomInt(350, 450);
-                        }else{
-                            obs.x = getRandomInt(550, 675);
-                        }
-                    }
-                }
-            });
-            if (keys.ArrowLeft) {
-                if(skierX - skierSpeed > 275){
-                    skierX -= skierSpeed;
-                }
+            if (canvas.dataset.started !== "true") {
+                return;
             }
-            if (keys.ArrowRight) {
-                if(skierX + skierSpeed < 775){
-                    skierX += skierSpeed;
+
+            pixelPasted -= speed;
+
+            if(pixelPasted <= -10000){
+                console.log("Ligne d'arrivée");
+                setGameStarted(false);
+            }else{
+                obstacles.forEach(obs => {
+                    obs.y -= speed;
+
+                    //Pour vérifier que les collisions
+                    if (obs.type !== "tree" && !obs.passed) {
+                        const zone = (obs.y >= skierY && obs.y <= skierY + 80);
+
+                        if (zone) {
+                            obs.passed = true;
+                            if (skierX > obs.x && skierX < obs.x + 120) {
+                                console.log("Gate passée");
+                            } else {
+                                console.log("Gate pas passée");
+                            }
+                        }
+                    }
+
+                    // Pour faire une belle boucle
+                    if (obs.y < -200) {
+                        obs.passed = false;
+                        if (obs.type === "tree") {
+                            obs.y = canvas.height + getRandomInt(50, 400);
+                            if (obs.x < 500) {
+                                obs.x = getRandomInt(-50, 150);
+                            } else {
+                                obs.x = getRandomInt(800, 950);
+                            }
+                        } else {
+                            obs.y = canvas.height
+                            if(obs.type === "blueGate") {
+                                obs.x = getRandomInt(350, 450);
+                            }else{
+                                obs.x = getRandomInt(550, 675);
+                            }
+                        }
+                    }
+                });
+                if (keys.ArrowLeft) {
+                    if(skierX - skierSpeed > 275){
+                        skierX -= skierSpeed;
+                    }
+                }
+                if (keys.ArrowRight) {
+                    if(skierX + skierSpeed < 775){
+                        skierX += skierSpeed;
+                    }
                 }
             }
         }
@@ -169,6 +182,8 @@ function ski_game({ setBook, setGame }) {
 
         return () => {
             cancelAnimationFrame(animationFrameId);
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
         };
 
     }, []);
@@ -178,11 +193,19 @@ function ski_game({ setBook, setGame }) {
             <button className={"back-button"} onClick={() => {
                 setGame(false);
                 setBook(true);
+                setGameStarted(false);
             }}>
                 Revenir au livre
             </button>
 
-            <canvas className="canvas" ref={canvasRef} />
+            {!gameStarted && (
+                <button className={"launch-game-button"} onClick={() => {setGameStarted(true);}}>
+                    Lancer le jeu !
+                </button>
+            )}
+
+
+            <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
 
             <div className={"instruction"}>Passer entre les piquets avec les flèches &lt; gauche et droite &gt;.</div>
         </div>
