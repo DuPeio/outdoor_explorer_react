@@ -1,11 +1,26 @@
 import { useRef, useEffect, useState } from "react";
-import trailer from "../../assets/games_illustrations/ski/skier.svg";
+import trailer0 from "../../assets/games_illustrations/trail/trailer0.svg";
+import trailer1 from "../../assets/games_illustrations/trail/trailer1.svg";
+import trailer2 from "../../assets/games_illustrations/trail/trailer2.svg";
 
-import tree0 from "../../assets/games_illustrations/ski/tree.svg";
+import trailerG1 from "../../assets/games_illustrations/trail/trailerG1.svg";
+import trailerG2 from "../../assets/games_illustrations/trail/trailerG2.svg";
+import trailerD1 from "../../assets/games_illustrations/trail/trailerD1.svg";
+import trailerD2 from "../../assets/games_illustrations/trail/trailerD2.svg";
 
-import rock from "../../assets/games_illustrations/trail/rock.svg";
+import tree0 from "../../assets/games_illustrations/trail/tree0.svg";
+import tree1 from "../../assets/games_illustrations/trail/tree1.svg";
+import tree2 from "../../assets/games_illustrations/trail/tree2.svg";
 
-import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
+import rock0 from "../../assets/games_illustrations/trail/rock0.svg";
+import rock1 from "../../assets/games_illustrations/trail/rock1.svg";
+import rock2 from "../../assets/games_illustrations/trail/rock2.svg";
+
+import grass0 from "../../assets/games_illustrations/trail/grass0.svg";
+import grass1 from "../../assets/games_illustrations/trail/grass1.svg";
+import grass2 from "../../assets/games_illustrations/trail/grass2.svg";
+
+import finishLine from "../../assets/games_illustrations/trail/finish_line.svg"
 
 // TODO : Bien ranger les assets pour les trucs share et pas share
 import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
@@ -34,12 +49,12 @@ function trail_game({setGame}) {
 
         let speed = 4;
 
-        let directionTrailer = 0;
+        let directionPlayer = 0;
 
         let obstacles = createObstacles();
 
         let playerX = 450;
-        const skierY = 100;
+        const playerY = 100;
 
         const keys = {
             ArrowLeft: false,
@@ -61,12 +76,31 @@ function trail_game({setGame}) {
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
 
-        // Partie différente
         const sources = {
-            trailer: trailer,
+            trailer0: trailer0,
+            trailer1: trailer1,
+            trailer2: trailer2,
+            trailerG1: trailerG1,
+            trailerG2: trailerG2,
+            trailerD1: trailerD1,
+            trailerD2: trailerD2,
+
             tree0: tree0,
-            treeDecor: tree0,
-            rock:rock,
+            tree1: tree1,
+            tree2: tree2,
+
+            rock0:rock0,
+            rock1:rock1,
+            rock2:rock2,
+
+            grass0:grass0,
+            grass1:grass1,
+            grass2:grass2,
+
+            treeDecor0: tree0,
+            treeDecor1: tree1,
+            treeDecor2: tree2,
+
             finishLine: finishLine,
             victoryText : victoryText,
             defeatText: defeatText
@@ -93,18 +127,22 @@ function trail_game({setGame}) {
             let obstacles = [];
 
             for (let i = 0; i < 5; i++) {
-                obstacles.push({ type: `tree0`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 800) });
             }
 
-            for (let i = 0; i < 30; i++) {
-                obstacles.push({ type: `treeDecor`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 800) });
+            for (let i = 0; i < 15; i++) {
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 800) });
             }
-            for (let i = 0; i < 30; i++) {
-                obstacles.push({ type: `treeDecor`, x: getRandomInt(850, 950), y: getRandomInt(-50, 800) });
+            for (let i = 0; i < 15; i++) {
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(850, 950), y: getRandomInt(-50, 800) });
             }
 
             for (let i = 0; i < 5; i++) {
-                obstacles.push({ type: `rock`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `rock${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 800) });
+            }
+
+            for (let i = 0; i < 5; i++) {
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 800) });
             }
 
             obstacles.push({ type: "finishLine", x: 250, y: 900 });
@@ -122,7 +160,7 @@ function trail_game({setGame}) {
                 obstacles = createObstacles();
                 canvas.dataset.reset = "false";
                 speed = 4;
-                // directionSkier = 0;
+                directionPlayer = 0;
             }
             updatePositions();
             drawGame();
@@ -151,28 +189,77 @@ function trail_game({setGame}) {
                     }
 
                     //Pour vérifier que les collisions
-                    if ((obs.type === "tree0" || obs.type === "rock")) {
-                        const zone = (obs.y >= skierY && obs.y <= skierY + 50);
-                        if (zone) {
-                            if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
-                                console.log("Aie l'obstacle");
-                                win = false;
-                                gameEnd = true;
-                                setGameStarted(false);
-                                handleGameResult(0, false);
-                            } else {
-                                console.log("Obstacle passé");
+                    if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2" || obs.type === "rock0" ||
+                        obs.type === "rock1" || obs.type === "rock2") {
+                        const zone = (obs.y >= playerY && obs.y <= playerY + 40);
+                        let collision = false;
+                        if(zone){
+                            if(obs.type === "tree0"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
+
+                            }else if(obs.type === "tree1"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
+
+                            }else if(obs.type === "tree2"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
+
+                            }else if(obs.type === "rock0"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
+
+                            }else if(obs.type === "rock1"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
+
+                            }else if(obs.type === "rock2"){
+                                if (playerX> obs.x-50 && playerX+50 < obs.x+100) {
+                                    console.log("Aie l'obstacle");
+                                    collision = true;
+                                } else {
+                                    console.log("Obstacle passé");
+                                }
                             }
                         }
+                        if(collision){
+                            win = false;
+                            gameEnd = true;
+                            setGameStarted(false);
+                            handleGameResult(0, false);
+                        }
                     }
+
                     // Pour faire une belle boucle
                     if (obs.y < -200) {
-                        if (obs.type === "tree0" || obs.type === "rock") {
+                        if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2" || obs.type === "rock0" ||
+                            obs.type === "rock1" || obs.type === "rock2") {
                             obs.y = canvas.height + getRandomInt(50, 400);
-                            obs.x = getRandomInt(-50, 950);
+                            obs.x = getRandomInt(200, 800);
                         }
 
-                        if (obs.type === "treeDecor") {
+                        if (obs.type === "treeDecor0" ||obs.type === "treeDecor1" || obs.type === "treeDecor2") {
                             obs.y = canvas.height + getRandomInt(50, 400);
                             if (obs.x < 500) {
                                 obs.x = getRandomInt(-50, 150);
@@ -180,17 +267,26 @@ function trail_game({setGame}) {
                                 obs.x = getRandomInt(850, 950);
                             }
                         }
+
+                        if(obs.type === "grass1" || obs.type === "grass2" || obs.type === "grass3" ){
+                            obs.y = canvas.height + getRandomInt(50, 400);
+                            obs.x = getRandomInt(0, 950);
+                        }
                     }
                 });
+
+                directionPlayer = 0;
 
                 if (keys.ArrowLeft) {
                     if(playerX - skierSpeed > 200){
                         playerX -= skierSpeed;
+                        directionPlayer = 1;
                     }
                 }
                 if (keys.ArrowRight) {
                     if(playerX + skierSpeed < 750){
                         playerX += skierSpeed;
+                        directionPlayer = 2;
                     }
                 }
 
@@ -200,29 +296,85 @@ function trail_game({setGame}) {
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = "#0f0";
+            ctx.fillStyle = "#309E1A";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const imgTrailer = imagesRef.current.trailer;
+            const imgTrailer0 = imagesRef.current.trailer0;
+            const imgTrailer1 = imagesRef.current.trailer1;
+            const imgTrailer2 = imagesRef.current.trailer2;
+            const imgTrailerG1 = imagesRef.current.trailerG1;
+            const imgTrailerG2 = imagesRef.current.trailerG2;
+            const imgTrailerD1 = imagesRef.current.trailerD1;
+            const imgTrailerD2 = imagesRef.current.trailerD2;
+
             const imgTree0 = imagesRef.current.tree0;
-            const imgTreeDecor = imagesRef.current.treeDecor;
-            const imgRock = imagesRef.current.rock;
+            const imgTree1 = imagesRef.current.tree1;
+            const imgTree2 = imagesRef.current.tree2;
+
+            const imgTreeDecor0 = imagesRef.current.treeDecor0;
+            const imgTreeDecor1 = imagesRef.current.treeDecor1;
+            const imgTreeDecor2 = imagesRef.current.treeDecor2;
+
+            const imgRock0 = imagesRef.current.rock0;
+            const imgRock1 = imagesRef.current.rock1;
+            const imgRock2 = imagesRef.current.rock2
+
+            const imgGrass0 = imagesRef.current.grass0;
+            const imgGrass1 = imagesRef.current.grass1;
+            const imgGrass2 = imagesRef.current.grass2;
+
             const imgFinishLine = imagesRef.current.finishLine
 
             const obstaclesSort = obstacles.sort((a, b) => a.y - b.y);
 
-            ctx.drawImage(imgTrailer, playerX, skierY, 100, 120);
+            if (imgTrailer0) {
+                let currentPlayerImg = imagesRef.current.trailer0;
+
+                if (directionPlayer === 1 && imagesRef.current.trailerG1) {
+                    currentPlayerImg = imagesRef.current.trailerG1;
+                } else if (directionPlayer === 2 && imagesRef.current.trailerD1) {
+                    currentPlayerImg = imagesRef.current.trailerD1;
+                }
+                ctx.drawImage(currentPlayerImg, playerX, playerY, 100, 120);
+            }
 
             obstaclesSort.forEach(obs => {
                 if (obs.type === "finishLine" && imgFinishLine) {
                     ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
-                }else if (obs.type === "tree0" && imgTree0) {
-                    ctx.drawImage(imgTree0, obs.x, obs.y, 130, 180);
-                }else if(obs.type === "rock" && imgRock){
-                    ctx.drawImage(imgRock, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "treeDecor" && imgTreeDecor) {
-                    ctx.drawImage(imgTreeDecor, obs.x, obs.y, 130, 180);
                 }
+
+                else if (obs.type === "tree0" && imgTree0) {
+                    ctx.drawImage(imgTree0, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "tree1" && imgTree1) {
+                    ctx.drawImage(imgTree1, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "tree2" && imgTree2) {
+                    ctx.drawImage(imgTree2, obs.x, obs.y, 130, 180);
+                }
+
+                else if(obs.type === "rock0" && imgRock0){
+                    ctx.drawImage(imgRock0, obs.x, obs.y, 40, 40);
+                }else if(obs.type === "rock1" && imgRock1){
+                    ctx.drawImage(imgRock1, obs.x, obs.y, 40, 40);
+                }else if(obs.type === "rock2" && imgRock2){
+                    ctx.drawImage(imgRock2, obs.x, obs.y, 40, 40);
+                }
+
+                else if (obs.type === "treeDecor0" && imgTreeDecor0) {
+                    ctx.drawImage(imgTreeDecor0, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "treeDecor1" && imgTreeDecor1) {
+                    ctx.drawImage(imgTreeDecor1, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
+                    ctx.drawImage(imgTreeDecor2, obs.x, obs.y, 130, 180);
+                }
+
+                else if(obs.type === "grass0" && imgRock0){
+                    ctx.drawImage(imgRock0, obs.x, obs.y, 40, 40);
+                }else if(obs.type === "grass1" && imgGrass1){
+                    ctx.drawImage(imgGrass1, obs.x, obs.y, 40, 40);
+                }else if(obs.type === "grass2" && imgGrass2){
+                    ctx.drawImage(imgGrass2, obs.x, obs.y, 40, 40);
+                }
+
             });
 
             if(gameEnd){
