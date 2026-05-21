@@ -2,12 +2,23 @@ import { useRef, useEffect, useState } from "react";
 import skier from "../../assets/games_illustrations/ski/skier.svg";
 import skierG from "../../assets/games_illustrations/ski/skierG.svg";
 import skierD from "../../assets/games_illustrations/ski/skierD.svg";
-import tree from "../../assets/games_illustrations/ski/tree.svg";
+
+import tree0 from "../../assets/games_illustrations/ski/tree.svg";
+import tree1 from "../../assets/games_illustrations/ski/tree1.svg";
+import tree2 from "../../assets/games_illustrations/ski/tree2.svg";
+
+import fan0 from "../../assets/games_illustrations/ski/fan0.svg";
+import fan1 from "../../assets/games_illustrations/ski/fan1.svg";
+import fan2 from "../../assets/games_illustrations/ski/fan2.svg";
+
 import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
 import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
+
 import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
+
 import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
 import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
+
 import {useGameContext} from "../../context/GameContext.jsx";
 
 function ski_game({ setBook, setGame}) {
@@ -66,7 +77,12 @@ function ski_game({ setBook, setGame}) {
             skier: skier,
             skierD: skierD,
             skierG: skierG,
-            tree: tree,
+            tree0: tree0,
+            tree1: tree1,
+            tree2: tree2,
+            fan0: fan0,
+            fan1: fan1,
+            fan2: fan2,
             gateRed: redGates,
             gateBlue: blueGates,
             finishLine: finishLine,
@@ -94,11 +110,20 @@ function ski_game({ setBook, setGame}) {
             let obstacles = [];
 
             for (let i = 0; i < 35; i++) {
-                obstacles.push({ type: "tree", x: getRandomInt(-50, 100), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, 800) });
             }
             for (let i = 0; i < 35; i++) {
-                obstacles.push({ type: "tree", x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
             }
+
+            for (let i = 0; i < 5; i++) {
+                obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(140, 160), y: getRandomInt(-50, 800) });
+            }
+            for (let i = 0; i < 5; i++) {
+                obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(750, 780), y: getRandomInt(-50, 800) });
+            }
+
+
             obstacles.push({ type: "blueGate", x: 280, y: 500, passed: false });
             obstacles.push({ type: "redGate", x: 550, y: 1000, passed: false });
             obstacles.push({ type: "finishLine", x: 250, y: 900 });
@@ -166,14 +191,26 @@ function ski_game({ setBook, setGame}) {
                     // Pour faire une belle boucle
                     if (obs.y < -200) {
                         obs.passed = false;
-                        if (obs.type === "tree") {
+                        if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2") {
                             obs.y = canvas.height + getRandomInt(50, 400);
                             if (obs.x < 500) {
                                 obs.x = getRandomInt(-50, 150);
                             } else {
                                 obs.x = getRandomInt(800, 950);
                             }
-                        } else if (obs.type === "blueGate" || obs.type === "redGate") {
+                        }if(obs.type === "fan0" || obs.type === "fan1" || obs.type === "fan2"){
+                            obs.y = canvas.height + getRandomInt(50, 400);
+                            if(pixelPastedRef.current <= -9250){
+                                    obs.x = getRandomInt(140, 780);
+                            }
+                            else{
+                                if (obs.x < 500) {
+                                    obs.x = getRandomInt(140, 160);
+                                } else {
+                                    obs.x = getRandomInt(750, 780);
+                                }
+                            }
+                        }else if (obs.type === "blueGate" || obs.type === "redGate") {
                             if(pixelPastedRef.current >= -9200){
                                 obs.y = canvas.height
                                 if(obs.type === "blueGate") {
@@ -185,7 +222,6 @@ function ski_game({ setBook, setGame}) {
                         }
                     }
                 });
-
                 directionSkier = 0;
 
                 if (keys.ArrowLeft) {
@@ -195,7 +231,7 @@ function ski_game({ setBook, setGame}) {
                     }
                 }
                 if (keys.ArrowRight) {
-                    if(skierX + skierSpeed < 800){
+                    if(skierX + skierSpeed < 750){
                         skierX += skierSpeed;
                         directionSkier = 2;
                     }
@@ -213,7 +249,12 @@ function ski_game({ setBook, setGame}) {
             const imgSkier = imagesRef.current.skier;
             const imgSkierD = imagesRef.current.skierD;
             const imgSkierG = imagesRef.current.skierG;
-            const imgTree = imagesRef.current.tree;
+            const imgTree0 = imagesRef.current.tree0;
+            const imgTree1 = imagesRef.current.tree1;
+            const imgTree2 = imagesRef.current.tree2;
+            const imgFan0 = imagesRef.current.fan0;
+            const imgFan1 = imagesRef.current.fan1;
+            const imgFan2 = imagesRef.current.fan2;
             const imgBlueGates = imagesRef.current.gateBlue;
             const imgRedGates = imagesRef.current.gateRed;
             const imgFinishLine = imagesRef.current.finishLine
@@ -238,8 +279,18 @@ function ski_game({ setBook, setGame}) {
                     ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
                 }else if (obs.type === "finishLine" && imgFinishLine) {
                     ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
-                }else if (obs.type === "tree" && imgTree) {
-                    ctx.drawImage(imgTree, obs.x, obs.y, 160, 180);
+                }else if (obs.type === "tree0" && imgTree0) {
+                    ctx.drawImage(imgTree0, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "tree1" && imgTree1) {
+                    ctx.drawImage(imgTree1, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "tree2" && imgTree2) {
+                    ctx.drawImage(imgTree2, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "fan0" && imgFan0) {
+                    ctx.drawImage(imgFan0, obs.x, obs.y, 100, 120);
+                }else if (obs.type === "fan1" && imgFan1) {
+                    ctx.drawImage(imgFan1, obs.x, obs.y, 100, 120);
+                }else if (obs.type === "fan2" && imgFan2) {
+                    ctx.drawImage(imgFan2, obs.x, obs.y, 100, 120);
                 }
             });
 
@@ -251,7 +302,6 @@ function ski_game({ setBook, setGame}) {
                 }
             }
         }
-
         return () => {
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener("keydown", handleKeyDown);
