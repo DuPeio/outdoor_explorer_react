@@ -27,13 +27,7 @@ function ski_game({setGame}) {
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
 
-    const { handleGameResult, setDisplayBook } = useGameContext();
-
-    function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
     useEffect(() => {
         const canvas = canvasRef.current;

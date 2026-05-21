@@ -2,6 +2,7 @@ import { NUMBER_OF_SPORTS, SPORTS } from './config/constants.js';
 import Book from './components/Book';
 import './App.css';
 import Ski_game from "./components/games/ski_game.jsx";
+import Trail_game from "./components/games/trail_game.jsx";
 import {useState} from "react";
 
 import { useGameContext } from './context/GameContext.jsx';
@@ -19,6 +20,10 @@ function App() {
 
             <div className={`game-container ${gamesDisplayed[0] ? "" : "hidden"}`}>
                 <Ski_game setGame={setGamesDisplayed} />
+            </div>
+
+            <div className={`game-container ${gamesDisplayed[1] ? "" : "hidden"}`}>
+                <Trail_game setGame={setGamesDisplayed} />
             </div>
 
         </div>
