@@ -10,6 +10,7 @@ export function GameContextProvider({ children }) {
     const [username, setUsername] = useState('');
     const usernameRef = useRef('');
     const gamesDoneRef = useRef(Array(NUMBER_OF_SPORTS).fill(false));
+    const [displayBook, setDisplayBook] = useState(true);
 
     async function handleLogin(id) {
         try{
@@ -60,7 +61,7 @@ export function GameContextProvider({ children }) {
     }
 
     return (
-        <GameContext.Provider value={{ gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult }}>
+        <GameContext.Provider value={{ gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook }}>
             {children}
         </GameContext.Provider>
     );

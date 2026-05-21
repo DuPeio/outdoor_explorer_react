@@ -1,9 +1,12 @@
 import {useState} from "react";
 import { NUMBER_OF_SPORTS } from '../config/constants.js';
+import { useGameContext } from '../context/GameContext.jsx';
 
 function BackSport ({sportId, sport, gameDone, setBook, setGame}) {
 
     const [hovered, setHovered] = useState(false);
+
+    const { setDisplayBook } = useGameContext();
 
     if (!sport) {return null;}
 
@@ -21,7 +24,7 @@ function BackSport ({sportId, sport, gameDone, setBook, setGame}) {
 
             <button className="game-btn" id="game" onClick={(e) => {
                 e.stopPropagation();
-                setBook(false);
+                setDisplayBook(false);
 
                 const newGamesDisplayed = Array(NUMBER_OF_SPORTS).fill(false);
                 newGamesDisplayed[sportId] = true;

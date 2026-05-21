@@ -21,12 +21,13 @@ import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
 
 import {useGameContext} from "../../context/GameContext.jsx";
 
-function ski_game({ setBook, setGame}) {
+function ski_game({setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
-    const { handleGameResult } = useGameContext();
+
+    const { handleGameResult, setDisplayBook } = useGameContext();
 
     function getRandomInt(min, max) {
         min = Math.ceil(min);
@@ -314,7 +315,7 @@ function ski_game({ setBook, setGame}) {
         <div className={"game"}>
             <button className={"back-button"} onClick={() => {
                 setGame(false);
-                setBook(true);
+                setDisplayBook(true);
                 setGameStarted(false);
             }}>
                 Revenir au livre

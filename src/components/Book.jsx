@@ -6,7 +6,7 @@ import { NUMBER_OF_SPORTS, SPORTS } from '../config/constants.js';
 
 import { useGameContext } from '../context/GameContext.jsx';
 
-function Book({setDisplayBook, setDisplayGame}){
+function Book({setDisplayGame}){
 
     const { gamesDone, handleLogin, username } = useGameContext();
 
@@ -162,7 +162,7 @@ function Book({setDisplayBook, setDisplayGame}){
                 </div>
 
                 <div className="back face">
-                    <BackSport sport={SPORTS[0]} gameDone={gamesDone[0]} setBook={setDisplayBook} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={0}/>
+                    <BackSport sport={SPORTS[0]} gameDone={gamesDone[0]} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={0}/>
                 </div>
 
             </div>
@@ -185,7 +185,7 @@ function Book({setDisplayBook, setDisplayGame}){
 
 
                         <div className="back face">
-                            <BackSport sport={SPORTS[id + 1]} gameDone={gamesDone[id + 1]} setBook={setDisplayBook} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={id+1}/>
+                            <BackSport sport={SPORTS[id + 1]} gameDone={gamesDone[id + 1]} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={id+1}/>
                         </div>
 
                     </div>
