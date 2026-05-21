@@ -18,13 +18,20 @@ function App() {
                 <Book sports={SPORTS} setDisplayGame={setGamesDisplayed} />
             </div>
 
-            <div className={`game-container ${gamesDisplayed[0] ? "" : "hidden"}`}>
-                <Ski_game setGame={setGamesDisplayed} />
-            </div>
+            {gamesDisplayed[0] &&
+                <div className={`game-container`}>
+                    <Ski_game setGame={setGamesDisplayed} />
+                </div>
+            }
 
-            <div className={`game-container ${gamesDisplayed[1] ? "" : "hidden"}`}>
-                <Trail_game setGame={setGamesDisplayed} />
-            </div>
+            {gamesDisplayed[1] &&
+                <div className={`game-container`}>
+                    <Trail_game setGame={setGamesDisplayed} />
+                </div>
+            }
+
+
+
 
         </div>
     );
