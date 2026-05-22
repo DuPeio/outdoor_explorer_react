@@ -159,7 +159,8 @@ function roadBike_game({setGame}) {
                 gameEnd = false;
                 win = false;
                 pixelPastedRef.current = 0;
-                playerX = 450;
+                initRoad();
+                playerX = roadSegments[roadSegments.length - 20].x;
                 canvas.dataset.reset = "false";
                 speed = 4;
             }
@@ -201,8 +202,8 @@ function roadBike_game({setGame}) {
 
                 changeTimer--;
                 if (changeTimer <= 0) {
-                    targetDirection = getRandomInt(-2, 2);
-                    changeTimer = getRandomInt(30, 80);
+                    targetDirection = getRandomInt(-3, 3);
+                    changeTimer = getRandomInt(20, 50);
                 }
 
                 if (roadDirection < targetDirection) roadDirection += 0.1;
@@ -210,11 +211,9 @@ function roadBike_game({setGame}) {
 
                 let newX = roadSegments[0].x + roadDirection;
                 if (newX < 350) {
-                    newX = 350;
                     targetDirection = 2;
                 }
                 if (newX > 700) {
-                    newX = 700;
                     targetDirection = -2;
                 }
 
@@ -251,7 +250,6 @@ function roadBike_game({setGame}) {
                     }
                 });
 
-
                 if (keys.ArrowLeft) {
                     if(playerX - playerSpeed > 150){
                         playerX -= playerSpeed;
@@ -262,7 +260,6 @@ function roadBike_game({setGame}) {
                         playerX += playerSpeed;
                     }
                 }
-
             }
         }
 
@@ -271,6 +268,10 @@ function roadBike_game({setGame}) {
 
             ctx.fillStyle = "#309E1A";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // ctx.fillStyle = "#791212";
+            // console.log(roadSegments.length)
+            // ctx.fillRect(roadSegments[roadSegments.length-1].x - (roadWidth / 2), roadSegments[roadSegments.length-30].y, roadWidth, segmentHeight);
 
             ctx.fillStyle = "#4A4A4A";
             roadSegments.forEach(seg => {
