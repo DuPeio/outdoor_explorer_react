@@ -221,7 +221,7 @@ function trail_game({setGame}) {
             if (canvas.dataset.started !== "true" || gameEnd) {
                 return;
             }
-            // speed += 0.003;
+            speed += 0.003;
             pixelPastedRef.current -= speed;
 
             if(pixelPastedRef.current <= -10000){
@@ -309,11 +309,11 @@ function trail_game({setGame}) {
 
             function betterSort(obstacles) {
                 let obstaclesSorted = obstacles.sort((a, b) =>{
-                    if(a.type.includes("tree") && (b.type.includes("grass")||b.type.includes("rock"))){
+                    if((a.type.includes("tree")||a.type === "finish_line") && (b.type.includes("grass")||b.type.includes("rock"))){
                         if(b.y > a.y && b.y < a.y + 180){
                             return 10;
                         }
-                    }else if(b.type.includes("tree") && (a.type.includes("grass")||a.type.includes("rock"))) {
+                    }else if((b.type.includes("tree")||b.type === "finish_line") && (a.type.includes("grass")||a.type.includes("rock"))) {
                         if(a.y > b.y && a.y < b.y+ 180){
                             return -10;
                         }
