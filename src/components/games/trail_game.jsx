@@ -238,8 +238,7 @@ function trail_game({setGame}) {
 
                     //Pour vérifier que les collisions
                     if (obs_types.includes(obs.type)) {
-                        let colision = checkCollision(playerX, playerY, obs);
-                        if (colision) {
+                        if (checkCollision(playerX, playerY, obs)) {
                             win = false;
                             gameEnd = true;
                             setGameStarted(false);
@@ -307,21 +306,21 @@ function trail_game({setGame}) {
             }
         }
 
-            function betterSort(obstacles) {
-                let obstaclesSorted = obstacles.sort((a, b) =>{
-                    if((a.type.includes("tree")||a.type === "finish_line") && (b.type.includes("grass")||b.type.includes("rock"))){
-                        if(b.y > a.y && b.y < a.y + 180){
-                            return 10;
-                        }
-                    }else if((b.type.includes("tree")||b.type === "finish_line") && (a.type.includes("grass")||a.type.includes("rock"))) {
-                        if(a.y > b.y && a.y < b.y+ 180){
-                            return -10;
-                        }
+        function betterSort(obstacles) {
+            let obstaclesSorted = obstacles.sort((a, b) =>{
+                if((a.type.includes("tree")||a.type === "finish_line") && (b.type.includes("grass")||b.type.includes("rock"))){
+                    if(b.y > a.y && b.y < a.y + 180){
+                        return 10;
                     }
-                    return a.y - b.y;
-                });
-                return obstaclesSorted;
-            }
+                }else if((b.type.includes("tree")||b.type === "finish_line") && (a.type.includes("grass")||a.type.includes("rock"))) {
+                    if(a.y > b.y && a.y < b.y+ 180){
+                        return -10;
+                    }
+                }
+                return a.y - b.y;
+            });
+            return obstaclesSorted;
+        }
 
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
