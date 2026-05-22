@@ -231,7 +231,7 @@ function roadBike_game({setGame}) {
                 win = true;
                 gameEnd = true;
                 setGameStarted(false);
-                handleGameResult(1, true);
+                handleGameResult(3, true);
             }else{
                 obstacles.forEach(obs => {
 
