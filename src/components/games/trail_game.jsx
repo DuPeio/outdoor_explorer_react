@@ -283,6 +283,22 @@ function trail_game({setGame}) {
             }
         }
 
+            function betterSort(obstacles) {
+                let obstaclesSorted = obstacles.sort((a, b) =>{
+                    if(a.type.includes("tree") && (b.type.includes("grass")||b.type.includes("rock"))){
+                        if(b.y > a.y && b.y < a.y + 180){
+                            return 10;
+                        }
+                    }else if(b.type.includes("tree") && (a.type.includes("grass")||a.type.includes("rock"))) {
+                        if(a.y > b.y && a.y < b.y+ 180){
+                            return -10;
+                        }
+                    }
+                    return a.y - b.y;
+                });
+                return obstaclesSorted;
+            }
+
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -317,7 +333,7 @@ function trail_game({setGame}) {
 
             const imgFinishLine = imagesRef.current.finishLine
 
-            const obstaclesSort = obstacles.sort((a, b) => a.y - b.y);
+            const obstaclesSort = betterSort(obstacles);
 
             if (imgTrailer0) {
                 let currentPlayerImg = imagesRef.current.trailer0;
