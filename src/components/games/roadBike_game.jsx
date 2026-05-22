@@ -42,8 +42,6 @@ function roadBike_game({setGame}) {
         const segmentHeight = 5;
         const roadWidth = 200;
 
-        let pixelsPasted = 0;
-
         function initRoad() {
             roadSegments = [];
             let currentX = 500;
@@ -84,10 +82,12 @@ function roadBike_game({setGame}) {
             let obstacles = [];
 
             for (let i = 0; i < 15; i++) {
-                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, 900) });
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
             }
             for (let i = 0; i < 15; i++) {
-                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(860, 950), y: getRandomInt(-50, 900) });
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
             }
 
             obstacles.push({ type: "finishLine", x: 200, y: 900 });
@@ -240,7 +240,7 @@ function roadBike_game({setGame}) {
                     }
 
                     if (obs.y < -200) {
-                        if (obs.type.includes("treeDecor")) {
+                        if (obs.type.includes("treeDecor") || obs.type.includes("grass")) {
                             obs.y = canvas.height + getRandomInt(50, 400);
                             if (obs.x < 500) {
                                 obs.x = getRandomInt(-50, 150);
@@ -283,6 +283,10 @@ function roadBike_game({setGame}) {
             const imgTreeDecor1 = imagesRef.current.treeDecor1;
             const imgTreeDecor2 = imagesRef.current.treeDecor2;
 
+            const imgGrass0 = imagesRef.current.grass0;
+            const imgGrass1 = imagesRef.current.grass1;
+            const imgGrass2 = imagesRef.current.grass2;
+
             const imgFinishLine = imagesRef.current.finishLine
 
             const obstaclesSort = betterSort(obstacles);
@@ -300,6 +304,12 @@ function roadBike_game({setGame}) {
                     ctx.drawImage(imgTreeDecor1, obs.x, obs.y, 100, 180);
                 }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
                     ctx.drawImage(imgTreeDecor2, obs.x, obs.y, 100, 180);
+                }else if (obs.type === "grass0" && imgGrass0) {
+                    ctx.drawImage(imgGrass0, obs.x, obs.y, 40, 40);
+                }else if (obs.type === "grass1" && imgGrass1) {
+                    ctx.drawImage(imgGrass1, obs.x, obs.y, 40, 40);
+                }else if (obs.type === "grass2" && imgGrass2) {
+                    ctx.drawImage(imgGrass2, obs.x, obs.y, 40, 40);
                 }
 
             });
