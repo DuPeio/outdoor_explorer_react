@@ -49,12 +49,18 @@ function trail_game({setGame}) {
 
         let speed = 4;
 
-        let directionPlayer = 0;
-
         let obstacles = createObstacles();
 
         let playerX = 450;
         const playerY = 100;
+
+        let playerDirection = 0;
+
+        // For the player animation
+        let playerFrame = 0;
+        let lastFrame = 1;
+        let animationFrame = 0;
+        const animationSpeed = 12
 
         const keys = {
             ArrowLeft: false,
@@ -172,7 +178,7 @@ function trail_game({setGame}) {
                 obstacles = createObstacles();
                 canvas.dataset.reset = "false";
                 speed = 4;
-                directionPlayer = 0;
+                playerDirection = 0;
             }
             updatePositions();
             drawGame();
@@ -265,21 +271,39 @@ function trail_game({setGame}) {
                     }
                 });
 
-                directionPlayer = 0;
+                playerDirection = 0
 
                 if (keys.ArrowLeft) {
                     if(playerX - playerSpeed > 150){
                         playerX -= playerSpeed;
-                        directionPlayer = 1;
+                        playerDirection = 1;
                     }
                 }
                 if (keys.ArrowRight) {
                     if(playerX + playerSpeed < 810){
                         playerX += playerSpeed;
-                        directionPlayer = 2;
+                        playerDirection = 2;
                     }
                 }
 
+                animationFrame++;
+                if (animationFrame >= animationSpeed) {
+                    animationFrame = 0;
+
+                    if(playerDirection === 0){
+                        if (playerFrame === 0) {
+                            playerFrame = lastFrame === 1 ? 2 : 1;
+                            lastFrame = playerFrame;
+                        } else {
+                            playerFrame = 0;
+                        }
+
+                    } else if (playerDirection === 1){
+                        playerFrame = playerFrame === 3 ? 4 : 3;
+                    } else {
+                        playerFrame = playerFrame === 5 ? 6 : 5;
+                    }
+                }
             }
         }
 
@@ -338,10 +362,27 @@ function trail_game({setGame}) {
             if (imgTrailer0) {
                 let currentPlayerImg = imagesRef.current.trailer0;
 
-                if (directionPlayer === 1 && imagesRef.current.trailerG1) {
+                // Gauche
+                if (playerFrame === 3 && imagesRef.current.trailerG1) {
                     currentPlayerImg = imagesRef.current.trailerG1;
-                } else if (directionPlayer === 2 && imagesRef.current.trailerD1) {
-                    currentPlayerImg = imagesRef.current.trailerD1;
+                } else if (playerFrame === 4 && imagesRef.current.trailerG2) {
+                    currentPlayerImg = imagesRef.current.trailerG2;
+                }
+
+                // Droite
+                else  if (playerFrame === 5 && imagesRef.current.trailerD1) {
+                        currentPlayerImg = imagesRef.current.trailerD1;
+                } else if (playerFrame === 6 && imagesRef.current.trailerD2) {
+                    currentPlayerImg = imagesRef.current.trailerD2;
+                }
+
+                // Tout droit
+                else {
+                    if (playerFrame === 1 && imagesRef.current.trailer1) {
+                        currentPlayerImg = imagesRef.current.trailer1;
+                    } else if (playerFrame === 2 && imagesRef.current.trailer2) {
+                        currentPlayerImg = imagesRef.current.trailer2;
+                    }
                 }
                 ctx.drawImage(currentPlayerImg, playerX, playerY, 40, 90);
             }
