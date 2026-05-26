@@ -233,6 +233,18 @@ function roadBike_game({setGame}) {
                 roadSegments.unshift(seg);
             }
 
+            let currentSeg = roadSegments.find(seg => playerY+120 >= seg.y && playerY+120 < seg.y + segmentHeight);
+
+            if(!gameEnd && currentSeg){
+                if(playerX+25 < currentSeg.x-roadWidth/2 || playerX+25 > currentSeg.x+roadWidth/2){
+                    console.log("-");
+                    win = false;
+                    gameEnd = true;
+                    setGameStarted(false);
+                    handleGameResult(3, false);
+                }
+            }
+
             speed += 0.003;
             pixelPastedRef.current -= speed;
 
