@@ -4,6 +4,7 @@ import './App.css';
 import Ski_game from "./components/games/ski_game.jsx";
 import Trail_game from "./components/games/trail_game.jsx";
 import RoadBike_game from "./components/games/roadBike_game.jsx";
+import Climb_game from "./components/games/climb_game.jsx";
 import {useState} from "react";
 
 import { useGameContext } from './context/GameContext.jsx';
@@ -31,11 +32,19 @@ function App() {
                 </div>
             }
 
+            {gamesDisplayed[2] &&
+                <div className={`game-container`}>
+                    <Climb_game setGame={setGamesDisplayed} />
+                </div>
+            }
+
             {gamesDisplayed[3] &&
                 <div className={`game-container`}>
                     <RoadBike_game setGame={setGamesDisplayed} />
                 </div>
             }
+
+
 
         </div>
     );
