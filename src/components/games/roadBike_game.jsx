@@ -3,6 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import biker0 from "../../assets/games_illustrations/road_bike/biker0.svg"
 import biker1 from "../../assets/games_illustrations/road_bike/biker1.svg"
 import biker2 from "../../assets/games_illustrations/road_bike/biker2.svg"
+import roadPainting from "../../assets/games_illustrations/road_bike/road.svg"
 import tree0 from "../../assets/games_illustrations/trail/tree0.svg";
 import tree1 from "../../assets/games_illustrations/trail/tree1.svg";
 import tree2 from "../../assets/games_illustrations/trail/tree2.svg";
@@ -98,6 +99,10 @@ function roadBike_game({setGame}) {
                 obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
             }
 
+            for(let i = 0; i<roadSegments.length; i+= 10){
+                obstacles.push({ type: `roadPainting`, x: roadSegments[i].x, y: roadSegments[i].y })
+            }
+
             obstacles.push({ type: "finishLine", x: 200, y: 900 });
 
             return obstacles;
@@ -141,7 +146,9 @@ function roadBike_game({setGame}) {
 
             finishLine: finishLine,
             victoryText : victoryText,
-            defeatText: defeatText
+            defeatText: defeatText,
+
+            roadPainting : roadPainting
         };
 
         let loadedCount = 0;
@@ -165,11 +172,11 @@ function roadBike_game({setGame}) {
                 roadDirection = 0;
                 targetDirection = 0;
                 changeTimer = 0;
+                initRoad();
                 obstacles = createObstacles();
                 gameEnd = false;
                 win = false;
                 pixelPastedRef.current = 0;
-                initRoad();
                 playerX = roadSegments[roadSegments.length - 20].x;
                 canvas.dataset.reset = "false";
                 speed = 4;
@@ -180,19 +187,13 @@ function roadBike_game({setGame}) {
         }
 
         function betterSort(obstacles) {
-            let obstaclesSorted = obstacles.sort((a, b) =>{
-                if((a.type.includes("tree")||a.type === "finish_line") && (b.type.includes("grass")||b.type.includes("rock"))){
-                    if(b.y > a.y && b.y < a.y + 180){
-                        return 10;
-                    }
-                }else if((b.type.includes("tree")||b.type === "finish_line") && (a.type.includes("grass")||a.type.includes("rock"))) {
-                    if(a.y > b.y && a.y < b.y+ 180){
-                        return -10;
-                    }
-                }
-                return a.y - b.y;
-            });
-            return obstaclesSorted;
+            const getBottomY = (obs) => {
+                if (obs.type.includes("treeDecor")) return obs.y + 180;
+                if (obs.type.includes("grass")) return obs.y + 40;
+                if (obs.type === "finishLine") return obs.y + 200;
+                return obs.y;
+            };
+            return [...obstacles].sort((a, b) => getBottomY(a) - getBottomY(b));
         }
 
         function updatePositions() {
@@ -228,7 +229,7 @@ function roadBike_game({setGame}) {
                 }
 
                 seg.x = newX;
-                seg.y = roadSegments[0].y + segmentHeight;
+                seg.y = roadSegments[0].y + segmentHeight-0.5;
 
                 roadSegments.unshift(seg);
             }
@@ -237,7 +238,6 @@ function roadBike_game({setGame}) {
 
             if(!gameEnd && currentSeg){
                 if(playerX+25 < currentSeg.x-roadWidth/2 || playerX+25 > currentSeg.x+roadWidth/2){
-                    console.log("-");
                     win = false;
                     gameEnd = true;
                     setGameStarted(false);
@@ -248,7 +248,7 @@ function roadBike_game({setGame}) {
             speed += 0.003;
             pixelPastedRef.current -= speed;
 
-            if(pixelPastedRef.current <= -10000){
+            if(pixelPastedRef.current <= -20000){
                 win = true;
                 gameEnd = true;
                 setGameStarted(false);
@@ -256,8 +256,13 @@ function roadBike_game({setGame}) {
             }else{
                 obstacles.forEach(obs => {
 
-                    if(obs.type !== "finishLine" || pixelPastedRef.current <= -9050){
+                    if(obs.type !== "finishLine" || pixelPastedRef.current <= -19050){
                         obs.y -= speed;
+                    }
+
+                    if(obs.y < -5 && obs.type === "roadPainting"){
+                        obs.y =roadSegments[0].y ;
+                        obs.x = roadSegments[0].x;
                     }
 
                     if (obs.y < -200) {
@@ -331,9 +336,36 @@ function roadBike_game({setGame}) {
             const imgGrass1 = imagesRef.current.grass1;
             const imgGrass2 = imagesRef.current.grass2;
 
-            const imgFinishLine = imagesRef.current.finishLine
+            const imgFinishLine = imagesRef.current.finishLine;
+
+            const imgRoadPainting = imagesRef.current.roadPainting;
 
             const obstaclesSort = betterSort(obstacles);
+
+
+
+
+            obstaclesSort.forEach(obs => {
+                if (obs.type === "finishLine" && imgFinishLine) {
+                    ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
+                }
+
+                else if (obs.type === "treeDecor0" && imgTreeDecor0) {
+                    ctx.drawImage(imgTreeDecor0, obs.x, obs.y, 130, 180);
+                }else if (obs.type === "treeDecor1" && imgTreeDecor1) {
+                    ctx.drawImage(imgTreeDecor1, obs.x, obs.y, 100, 180);
+                }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
+                    ctx.drawImage(imgTreeDecor2, obs.x, obs.y, 100, 180);
+                }else if (obs.type === "grass0" && imgGrass0) {
+                    ctx.drawImage(imgGrass0, obs.x, obs.y, 40, 40);
+                }else if (obs.type === "grass1" && imgGrass1) {
+                    ctx.drawImage(imgGrass1, obs.x, obs.y, 40, 40);
+                }else if (obs.type === "grass2" && imgGrass2) {
+                    ctx.drawImage(imgGrass2, obs.x, obs.y, 40, 40);
+                }else if (obs.type === "roadPainting" && imgRoadPainting) {
+                    ctx.drawImage(imgRoadPainting, obs.x, obs.y, 5, 15);
+                }
+            });
 
             if (imgBiker0) {
                 let currentPlayerImg = imgBiker0;
@@ -356,28 +388,6 @@ function roadBike_game({setGame}) {
                 }
                 ctx.drawImage(currentPlayerImg, playerX, playerY, 50, 120);
             }
-
-
-            obstaclesSort.forEach(obs => {
-                if (obs.type === "finishLine" && imgFinishLine) {
-                    ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
-                }
-
-                else if (obs.type === "treeDecor0" && imgTreeDecor0) {
-                    ctx.drawImage(imgTreeDecor0, obs.x, obs.y, 130, 180);
-                }else if (obs.type === "treeDecor1" && imgTreeDecor1) {
-                    ctx.drawImage(imgTreeDecor1, obs.x, obs.y, 100, 180);
-                }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
-                    ctx.drawImage(imgTreeDecor2, obs.x, obs.y, 100, 180);
-                }else if (obs.type === "grass0" && imgGrass0) {
-                    ctx.drawImage(imgGrass0, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "grass1" && imgGrass1) {
-                    ctx.drawImage(imgGrass1, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "grass2" && imgGrass2) {
-                    ctx.drawImage(imgGrass2, obs.x, obs.y, 40, 40);
-                }
-
-            });
 
             if(gameEnd){
                 if(win){
