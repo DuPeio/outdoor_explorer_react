@@ -420,8 +420,8 @@ button:hover{
   font-size: 12px;
   padding:5px;
   position: absolute;
-  top:-35px;
-  left: 50px;
+  top:50%;
+  left: -150px;
 }
 
 canvas{
