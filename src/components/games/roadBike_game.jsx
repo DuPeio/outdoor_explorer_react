@@ -4,15 +4,15 @@ import biker0 from "../../assets/games_illustrations/road_bike/biker0.svg"
 import biker1 from "../../assets/games_illustrations/road_bike/biker1.svg"
 import biker2 from "../../assets/games_illustrations/road_bike/biker2.svg"
 import roadPainting from "../../assets/games_illustrations/road_bike/road.svg"
-import tree0 from "../../assets/games_illustrations/trail/tree0.svg";
-import tree1 from "../../assets/games_illustrations/trail/tree1.svg";
-import tree2 from "../../assets/games_illustrations/trail/tree2.svg";
-import grass0 from "../../assets/games_illustrations/trail/grass0.svg";
-import grass1 from "../../assets/games_illustrations/trail/grass1.svg";
-import grass2 from "../../assets/games_illustrations/trail/grass2.svg";
-import finishLine from "../../assets/games_illustrations/trail/finish_line.svg";
-import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg";
-import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg";
+import tree0 from "../../assets/games_illustrations/share/tree0.svg";
+import tree1 from "../../assets/games_illustrations/share/tree1.svg";
+import tree2 from "../../assets/games_illustrations/share/tree2.svg";
+import grass0 from "../../assets/games_illustrations/share/grass0.svg";
+import grass1 from "../../assets/games_illustrations/share/grass1.svg";
+import grass2 from "../../assets/games_illustrations/share/grass2.svg";
+import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
+import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
+import defeatText from "../../assets/games_illustrations/road_bike/texte_defaite.svg";
 
 
 function roadBike_game({setGame}) {
@@ -393,7 +393,7 @@ function roadBike_game({setGame}) {
                 if(win){
                     ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 25, 200, 950, 450);
+                    ctx.drawImage(imagesRef.current.defeatText, 200, 200, 750, 650);
                 }
             }
         }

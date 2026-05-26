@@ -8,23 +8,22 @@ import trailerG2 from "../../assets/games_illustrations/trail/trailerG2.svg";
 import trailerD1 from "../../assets/games_illustrations/trail/trailerD1.svg";
 import trailerD2 from "../../assets/games_illustrations/trail/trailerD2.svg";
 
-import tree0 from "../../assets/games_illustrations/trail/tree0.svg";
-import tree1 from "../../assets/games_illustrations/trail/tree1.svg";
-import tree2 from "../../assets/games_illustrations/trail/tree2.svg";
+import tree0 from "../../assets/games_illustrations/share/tree0.svg";
+import tree1 from "../../assets/games_illustrations/share/tree1.svg";
+import tree2 from "../../assets/games_illustrations/share/tree2.svg";
 
 import rock0 from "../../assets/games_illustrations/trail/rock0.svg";
 import rock1 from "../../assets/games_illustrations/trail/rock1.svg";
 import rock2 from "../../assets/games_illustrations/trail/rock2.svg";
 
-import grass0 from "../../assets/games_illustrations/trail/grass0.svg";
-import grass1 from "../../assets/games_illustrations/trail/grass1.svg";
-import grass2 from "../../assets/games_illustrations/trail/grass2.svg";
+import grass0 from "../../assets/games_illustrations/share/grass0.svg";
+import grass1 from "../../assets/games_illustrations/share/grass1.svg";
+import grass2 from "../../assets/games_illustrations/share/grass2.svg";
 
-import finishLine from "../../assets/games_illustrations/trail/finish_line.svg"
+import finishLine from "../../assets/games_illustrations/share/finish_line.svg"
 
-// TODO : Bien ranger les assets pour les trucs share et pas share
-import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
-import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
+import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg"
+import defeatText from "../../assets/games_illustrations/trail/texte_defaite.svg"
 
 import {useGameContext} from "../../context/GameContext.jsx";
 
@@ -429,7 +428,7 @@ function trail_game({setGame}) {
                 if(win){
                     ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 25, 200, 950, 450);
+                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 675);
                 }
             }
         }

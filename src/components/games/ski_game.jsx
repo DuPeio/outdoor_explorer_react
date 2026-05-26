@@ -16,7 +16,7 @@ import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
 
 import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
 
-import victoryText from "../../assets/games_illustrations/ski/texte_victoire.svg"
+import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg"
 import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
 
 import {useGameContext} from "../../context/GameContext.jsx";
