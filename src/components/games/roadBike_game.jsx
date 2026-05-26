@@ -1,6 +1,8 @@
 import {useGameContext} from "../../context/GameContext.jsx";
 import {useEffect, useRef, useState} from "react";
-import biker from "../../assets/games_illustrations/trail/trailer0.svg"
+import biker0 from "../../assets/games_illustrations/road_bike/biker0.svg"
+import biker1 from "../../assets/games_illustrations/road_bike/biker1.svg"
+import biker2 from "../../assets/games_illustrations/road_bike/biker2.svg"
 import tree0 from "../../assets/games_illustrations/trail/tree0.svg";
 import tree1 from "../../assets/games_illustrations/trail/tree1.svg";
 import tree2 from "../../assets/games_illustrations/trail/tree2.svg";
@@ -35,8 +37,14 @@ function roadBike_game({setGame}) {
         let targetDirection = 0;
         let changeTimer = 0;
 
+        let playerDirection = 0;
         let playerX = 450;
         const playerY = 100;
+
+        let playerFrame = 0;
+        let lastFrame = 1;
+        let animationFrame = 0;
+        const animationSpeed = 12
 
         let roadSegments = [];
         const segmentHeight = 5;
@@ -119,7 +127,9 @@ function roadBike_game({setGame}) {
         window.addEventListener("keyup", handleKeyUp);
 
         const sources = {
-            biker:biker,
+            biker0:biker0,
+            biker1:biker1,
+            biker2:biker2,
 
             grass0:grass0,
             grass1:grass1,
@@ -250,14 +260,37 @@ function roadBike_game({setGame}) {
                     }
                 });
 
+                playerDirection = 0;
+
                 if (keys.ArrowLeft) {
                     if(playerX - playerSpeed > 150){
                         playerX -= playerSpeed;
+                        playerDirection = 1;
                     }
                 }
                 if (keys.ArrowRight) {
                     if(playerX + playerSpeed < 810){
                         playerX += playerSpeed;
+                        playerDirection = 2;
+                    }
+                }
+
+                animationFrame++;
+                if (animationFrame >= animationSpeed) {
+                    animationFrame = 0;
+
+                    if(playerDirection === 0){
+                        if (playerFrame === 0) {
+                            playerFrame = lastFrame === 1 ? 2 : 1;
+                            lastFrame = playerFrame;
+                        } else {
+                            playerFrame = 0;
+                        }
+
+                    } else if (playerDirection === 1){
+                        playerFrame = playerFrame === 3 ? 4 : 3;
+                    } else {
+                        playerFrame = playerFrame === 5 ? 6 : 5;
                     }
                 }
             }
@@ -269,16 +302,14 @@ function roadBike_game({setGame}) {
             ctx.fillStyle = "#309E1A";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // ctx.fillStyle = "#791212";
-            // console.log(roadSegments.length)
-            // ctx.fillRect(roadSegments[roadSegments.length-1].x - (roadWidth / 2), roadSegments[roadSegments.length-30].y, roadWidth, segmentHeight);
-
             ctx.fillStyle = "#4A4A4A";
             roadSegments.forEach(seg => {
                 ctx.fillRect(seg.x - (roadWidth / 2), seg.y, roadWidth, segmentHeight);
             });
 
-            const currentPlayerImg = imagesRef.current.biker;
+            const imgBiker0 = imagesRef.current.biker0;
+            const imgBiker1 = imagesRef.current.biker1;
+            const imgBiker2 = imagesRef.current.biker2;
 
             const imgTreeDecor0 = imagesRef.current.treeDecor0;
             const imgTreeDecor1 = imagesRef.current.treeDecor1;
@@ -292,7 +323,28 @@ function roadBike_game({setGame}) {
 
             const obstaclesSort = betterSort(obstacles);
 
-            ctx.drawImage(currentPlayerImg, playerX, playerY, 40, 90);
+            if (imgBiker0) {
+                let currentPlayerImg = imgBiker0;
+
+                // Gauche
+                if (playerDirection === 1 && imgBiker1) {
+                    currentPlayerImg = imgBiker1;
+                }
+                // Droite
+                else  if (playerDirection === 2 && imgBiker2) {
+                    currentPlayerImg = imgBiker2;
+                }
+                // Tout droit
+                else {
+                    if (playerFrame === 1 && imgBiker1) {
+                        currentPlayerImg = imgBiker1;
+                    } else if (playerFrame === 2 && imgBiker2) {
+                        currentPlayerImg = imgBiker2;
+                    }
+                }
+                ctx.drawImage(currentPlayerImg, playerX, playerY, 50, 120);
+            }
+
 
             obstaclesSort.forEach(obs => {
                 if (obs.type === "finishLine" && imgFinishLine) {

@@ -362,25 +362,25 @@ function trail_game({setGame}) {
                 let currentPlayerImg = imagesRef.current.trailer0;
 
                 // Gauche
-                if (playerFrame === 3 && imagesRef.current.trailerG1) {
-                    currentPlayerImg = imagesRef.current.trailerG1;
-                } else if (playerFrame === 4 && imagesRef.current.trailerG2) {
-                    currentPlayerImg = imagesRef.current.trailerG2;
+                if (playerFrame === 3 && imgTrailerG1) {
+                    currentPlayerImg = imgTrailerG1;
+                } else if (playerFrame === 4 && imgTrailerG2) {
+                    currentPlayerImg = imgTrailerG2;
                 }
 
                 // Droite
-                else  if (playerFrame === 5 && imagesRef.current.trailerD1) {
-                        currentPlayerImg = imagesRef.current.trailerD1;
-                } else if (playerFrame === 6 && imagesRef.current.trailerD2) {
-                    currentPlayerImg = imagesRef.current.trailerD2;
+                else  if (playerFrame === 5 && imgTrailerD1) {
+                        currentPlayerImg = imgTrailerD1;
+                } else if (playerFrame === 6 && imgTrailerD2) {
+                    currentPlayerImg = imgTrailerD2;
                 }
 
                 // Tout droit
                 else {
-                    if (playerFrame === 1 && imagesRef.current.trailer1) {
-                        currentPlayerImg = imagesRef.current.trailer1;
-                    } else if (playerFrame === 2 && imagesRef.current.trailer2) {
-                        currentPlayerImg = imagesRef.current.trailer2;
+                    if (playerFrame === 1 && imgTrailer1) {
+                        currentPlayerImg = imgTrailer1;
+                    } else if (playerFrame === 2 && imgTrailer2) {
+                        currentPlayerImg = imgTrailer2;
                     }
                 }
                 ctx.drawImage(currentPlayerImg, playerX, playerY, 40, 90);
