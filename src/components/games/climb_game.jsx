@@ -208,6 +208,7 @@ function climb_game({setGame}){
                 canvas.dataset.reset = "false";
                 current_hold_id = 0;
                 playerFrame = 0;
+                score = 0
             }
 
             if (canvas.dataset.started === "true" && !gameEnd) {
@@ -342,10 +343,6 @@ function climb_game({setGame}){
                     ctx.drawImage(imgHold, h.x, h.y, elmtSize[h.hold].w,elmtSize[h.hold].h );
                 }
             })
-            let h_last = -1;
-            if(current_hold_id > 0){
-                h_last = holds[current_hold_id-1];
-            }
 
             if(!win){
                 let h = holds[current_hold_id]
@@ -361,6 +358,10 @@ function climb_game({setGame}){
 
             if (currentClimber) {
                 ctx.drawImage(currentClimber, canvas.width/2 - 100, 375, 200, 300);
+            }
+
+            if(!gameEnd){
+                ctx.fillText(`Score : ${score}`, 100, 100);
             }
 
 
