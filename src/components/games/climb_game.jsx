@@ -346,7 +346,14 @@ function climb_game({setGame}){
 
             if(!win){
                 let h = holds[current_hold_id]
-                ctx.fillText(h.letter, h.x, h.y);
+                ctx.fillText(h.letter, h.x+elmtSize[current_hold_id].w/2, h.y+elmtSize[current_hold_id].h*1.5);
+
+                ctx.beginPath();
+                ctx.arc(h.x+elmtSize[current_hold_id].w/2, h.y+elmtSize[current_hold_id].h/2, elmtSize[current_hold_id].w, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgb(218 190 18 / 0.12)";
+                ctx.lineWidth = 5;
+                ctx.stroke();
+                ctx.closePath();
             }
 
 
