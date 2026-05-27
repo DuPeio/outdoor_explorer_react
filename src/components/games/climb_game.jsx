@@ -123,7 +123,7 @@ function climb_game({setGame}){
         function createHolds(){
             let newHolds = [];
 
-            for (let i = 350; i > -400; i -= 100) {
+            for (let i = 285; i > -400; i -= 100) {
                 const isEven = newHolds.length%2 === 0;
 
                 let newLetter = String.fromCharCode(getRandomInt(97, 122));
@@ -136,7 +136,7 @@ function climb_game({setGame}){
                 let newHold = getRandomInt(0,6);
 
                 newHolds.push({
-                    x: isEven ?  playerX - 30 - elmtSize[newHold].w/2 : playerX + 90 - elmtSize[newHold].w/2,
+                    x: isEven ?  playerX - 75 - elmtSize[newHold].w/2 : playerX + 80 - elmtSize[newHold].w/2,
                     y: i,
                     letter: newLetter,
                     hold : newHold
@@ -259,7 +259,7 @@ function climb_game({setGame}){
                     let newHold = getRandomInt(0,6);
 
                     let newH = {
-                        x: (highest_h.x > 500 ? playerX - 30 - elmtSize[newHold].w/2 : playerX + 90 - elmtSize[newHold].w/2),
+                        x: (highest_h.x > 500 ? playerX - 75 - elmtSize[newHold].w/2 : playerX + 85 - elmtSize[newHold].w/2),
                         y: highest_h.y - 100,
                         letter: newLetter,
                         hold : newHold
@@ -316,7 +316,7 @@ function climb_game({setGame}){
             }
 
             if (currentClimber) {
-                ctx.drawImage(currentClimber, 455, 450, 150, 240);
+                ctx.drawImage(currentClimber, canvas.width/2 - 100, 375, 200, 300);
             }
 
 
