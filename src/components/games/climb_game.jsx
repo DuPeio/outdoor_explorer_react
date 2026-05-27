@@ -117,14 +117,20 @@ function climb_game({setGame}){
 
             for (let i = 500; i > -400; i -= 100) {
                 const isEven = Math.abs(i) % 200 === 0;
+
+                let newLetter = String.fromCharCode(getRandomInt(97, 122));
+                if(newHolds.length > 0){
+                    while(newLetter === newHolds[newHolds.length - 1].letter){
+                        newLetter = String.fromCharCode(getRandomInt(97, 122));
+                    }
+                }
                 newHolds.push({
                     x: isEven ? getRandomInt(250, 450) : getRandomInt(550, 750),
                     y: i,
-                    letter: String.fromCharCode(getRandomInt(97, 122)),
+                    letter: newLetter,
                     hold : getRandomInt(0,6)
                 });
             }
-
             return newHolds;
         }
 
@@ -207,10 +213,15 @@ function climb_game({setGame}){
                     holds.shift();
                     let highest_h = holds[holds.length - 1]
 
+                    let newLetter = String.fromCharCode(getRandomInt(97, 122));
+                    while(newLetter === highest_h.letter){
+                        newLetter = String.fromCharCode(getRandomInt(97, 122));
+                    }
+
                     let newH = {
                         x: (highest_h.x > 500 ?getRandomInt(250,450) : getRandomInt(550, 750)),
                         y: highest_h.y - 100,
-                        letter: String.fromCharCode(getRandomInt(97, 122)),
+                        letter: newLetter,
                         hold : getRandomInt(0,6)
                     };
 
@@ -258,6 +269,10 @@ function climb_game({setGame}){
 
             let h = holds[current_hold_id]
             ctx.fillText(h.letter, h.x, h.y);
+
+            if(imgClimber0){
+                ctx.drawImage(imgClimber0, 450, 500, 90, 120);
+            }
 
             if(gameEnd){
                 if(win){
