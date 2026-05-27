@@ -53,11 +53,20 @@ function climb_game({setGame}){
             keys[String.fromCharCode(i)] = false;
         }
 
+        const playerX = canvas.width / 2;
+        const playerY = 550;
+
+        let playerFrame = 0;
+        let animationTimer = 0;
+        let isAnimating = false;
+        let animationStep = 1;
+        let targetFrameAfterReset = 0
+
         let lastTime = performance.now();
         let holdTimer = 0;
         const TIME_LIMIT = 1500;
 
-        let playerFrame = 0;
+
 
         const sources = {
             climber0: climber0,
@@ -189,6 +198,25 @@ function climb_game({setGame}){
                 }
             }
 
+            if (isAnimating) {
+                animationTimer += deltaTime;
+
+                if (animationStep === 1) {
+                    playerFrame = 0;
+
+                    if (animationTimer >= 100) {
+                        animationStep = 2;
+                        animationTimer = 0;
+                    }
+                } else if (animationStep === 2) {
+                    playerFrame = targetFrameAfterReset;
+
+                    if (animationTimer >= 250) {
+                        isAnimating = false;
+                    }
+                }
+            }
+
             updatePositions();
             drawGame();
             animationFrameId = requestAnimationFrame(gameLoop);
@@ -204,10 +232,17 @@ function climb_game({setGame}){
             let current_hold =  holds[current_hold_id];
 
             if(keys[current_hold.letter]){
+
                 holdTimer = 0;
-                holds.forEach((h) => {
-                    h.y+=100;
-                });
+
+                isAnimating = true;
+                animationTimer = 0;
+                animationStep = 1;
+                playerFrame = 0;
+
+                targetFrameAfterReset = current_hold.x > 500 ? 1 : 2;
+
+                holds.forEach((h) => {h.y+=100;});
 
                 if(holds[0].y > 750){
                     holds.shift();
@@ -270,9 +305,16 @@ function climb_game({setGame}){
             let h = holds[current_hold_id]
             ctx.fillText(h.letter, h.x, h.y);
 
-            if(imgClimber0){
-                ctx.drawImage(imgClimber0, 450, 500, 90, 120);
+            let currentClimber = imagesRef.current[`climber${playerFrame}`];
+
+            if (!currentClimber) {
+                currentClimber = imagesRef.current.climber0;
             }
+
+            if (currentClimber) {
+                ctx.drawImage(currentClimber, 455, 500, 90, 120);
+            }
+
 
             if(gameEnd){
                 if(win){
