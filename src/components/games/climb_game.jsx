@@ -42,17 +42,22 @@ function climb_game({setGame}){
         canvas.height = 700;
 
         const playerX = canvas.width / 2;
-        const playerY = 550;
+
+        let score = 0;
+
+        let fakeHolds = [];
 
         const elmtSize = [
-            {w:50, h:50},
-            {w:50, h:50},
-            {w:50, h:50},
-            {w:50, h:50},
-            {w:50, h:50},
-            {w:50, h:50},
-            {w:50, h:50}
+            {w:45, h:68.5},
+            {w:41, h:49},
+            {w:35.5, h:63.5},
+            {w:47, h:49},
+            {w:38.5, h:58},
+            {w:84.5, h:41},
+            {w:75, h:59}
         ];
+
+
 
         let win = false;
         let gameEnd = false;
@@ -122,6 +127,7 @@ function climb_game({setGame}){
 
         function createHolds(){
             let newHolds = [];
+            fakeHolds = [];
 
             for (let i = 285; i > -400; i -= 100) {
                 const isEven = newHolds.length%2 === 0;
@@ -141,6 +147,18 @@ function climb_game({setGame}){
                     letter: newLetter,
                     hold : newHold
                 });
+
+                fakeHolds.push({
+                    x: getRandomInt(0, 250),
+                    y: i+getRandomInt(-45,45),
+                    hold : getRandomInt(0,6)
+                })
+
+                fakeHolds.push({
+                    x: getRandomInt(650, canvas.width-80),
+                    y: i+getRandomInt(-45,45),
+                    hold : getRandomInt(0,6)
+                })
             }
             return newHolds;
         }
@@ -153,6 +171,7 @@ function climb_game({setGame}){
 
                 if (pressedKey === current_hold.letter) {
                     keys[pressedKey] = true;
+                    score ++;
                 }
                 else {
                     win = false;
@@ -185,6 +204,7 @@ function climb_game({setGame}){
                 win = false;
                 pixelPastedRef.current = 0;
                 holds = createHolds();
+                let fakeHolds = [];
                 canvas.dataset.reset = "false";
                 current_hold_id = 0;
                 playerFrame = 0;
@@ -247,6 +267,21 @@ function climb_game({setGame}){
 
                 holds.forEach((h) => {h.y+=100;});
 
+                fakeHolds.forEach((h) => {h.y+=100;});
+
+                if(fakeHolds[0].y > 750){
+                    fakeHolds.shift();
+                    let highest_h = fakeHolds[fakeHolds.length - 1]
+
+                    fakeHolds.push({
+                        x: (highest_h.x > 500 ? getRandomInt(0, 250) : getRandomInt(650, canvas.width)),
+                        y: highest_h.y - 100,
+                        hold : getRandomInt(0,6)
+                    });
+
+                }
+
+
                 if(holds[0].y > 750){
                     holds.shift();
                     let highest_h = holds[holds.length - 1]
@@ -273,6 +308,13 @@ function climb_game({setGame}){
                 if(current_hold_id >= holds.length-1){
                     current_hold_id = holds.length-1;
                 }
+
+                if(score === 20){
+                    win = true;
+                    gameEnd = true;
+                    setGameStarted(false);
+                    handleGameResult(2, true);
+                }
             }
         }
 
@@ -284,16 +326,14 @@ function climb_game({setGame}){
             ctx.font = "bold 40px Arial";
             ctx.fillStyle = "#FFFFFF";
 
-            // const imgRock0 = imagesRef.current.rock0;
-            // const imgRock1 = imagesRef.current.rock1;
-            // const imgRock2 = imagesRef.current.rock2
-            //
-            // const imgGrass0 = imagesRef.current.grass0;
-            // const imgGrass1 = imagesRef.current.grass1;
-            // const imgGrass2 = imagesRef.current.grass2;
-            //
-            // const imgFinishLine = imagesRef.current.finishLine
 
+            fakeHolds.forEach((h) => {
+                const imgHold = imagesRef.current[`hold${h.hold}`];
+
+                if(imgHold){
+                    ctx.drawImage(imgHold, h.x, h.y, elmtSize[h.hold].w,elmtSize[h.hold].h );
+                }
+            })
 
             holds.forEach((h) => {
                 const imgHold = imagesRef.current[`hold${h.hold}`];
@@ -306,8 +346,12 @@ function climb_game({setGame}){
             if(current_hold_id > 0){
                 h_last = holds[current_hold_id-1];
             }
-            let h = holds[current_hold_id]
-            ctx.fillText(h.letter, h.x, h.y);
+
+            if(!win){
+                let h = holds[current_hold_id]
+                ctx.fillText(h.letter, h.x, h.y);
+            }
+
 
             let currentClimber = imagesRef.current[`climber${playerFrame}`];
 
@@ -331,9 +375,6 @@ function climb_game({setGame}){
         }
     }, []);
 
-    // playerX - 38, playerY - 65
-    // playerX + 100, playerY - 70
-
     return (
         <div className={"game"}>
             <button className={"back-button"} onClick={() => {
@@ -356,7 +397,7 @@ function climb_game({setGame}){
 
             <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
 
-            <div className={"instruction"}>Appuyer sur les touches indiquées le plus rapidement possible.</div>
+            <div className={"instruction"}>Appuyer sur les touches indiquées le plus rapidement possible. Il faut un score de 20 pour gagner !</div>
         </div>
     );
 }
