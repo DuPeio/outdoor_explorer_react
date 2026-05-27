@@ -13,18 +13,10 @@ import hold4 from "../../assets/games_illustrations/climb/hold4.svg";
 import hold5 from "../../assets/games_illustrations/climb/hold5.svg";
 import hold6 from "../../assets/games_illustrations/climb/hold6.svg";
 
-import rock0 from "../../assets/games_illustrations/trail/rock0.svg";
-import rock1 from "../../assets/games_illustrations/trail/rock1.svg";
-import rock2 from "../../assets/games_illustrations/trail/rock2.svg";
-
-import grass0 from "../../assets/games_illustrations/share/grass0.svg";
-import grass1 from "../../assets/games_illustrations/share/grass1.svg";
-import grass2 from "../../assets/games_illustrations/share/grass2.svg";
-
 import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
 
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
-import defeatText from "../../assets/games_illustrations/trail/texte_defaite.svg";
+import defeatText from "../../assets/games_illustrations/climb/texte_defaite.svg";
 
 function climb_game({setGame}){
 
@@ -57,6 +49,8 @@ function climb_game({setGame}){
             {w:75, h:59}
         ];
 
+        let currentScrollY = 0;
+        let targetScrollY = 0;
 
 
         let win = false;
@@ -80,8 +74,6 @@ function climb_game({setGame}){
         let holdTimer = 0;
         const TIME_LIMIT = 1500;
 
-
-
         const sources = {
             climber0: climber0,
             climber1: climber1,
@@ -94,14 +86,6 @@ function climb_game({setGame}){
             hold4: hold4,
             hold5: hold5,
             hold6: hold6,
-
-            rock0:rock0,
-            rock1:rock1,
-            rock2:rock2,
-
-            grass0:grass0,
-            grass1:grass1,
-            grass2:grass2,
 
             finishLine: finishLine,
             victoryText : victoryText,
@@ -128,6 +112,8 @@ function climb_game({setGame}){
         function createHolds(){
             let newHolds = [];
             fakeHolds = [];
+            currentScrollY = 0;
+            targetScrollY = 0;
 
             for (let i = 285; i > -400; i -= 100) {
                 const isEven = newHolds.length%2 === 0;
@@ -204,7 +190,6 @@ function climb_game({setGame}){
                 win = false;
                 pixelPastedRef.current = 0;
                 holds = createHolds();
-                let fakeHolds = [];
                 canvas.dataset.reset = "false";
                 current_hold_id = 0;
                 playerFrame = 0;
@@ -219,6 +204,14 @@ function climb_game({setGame}){
                     gameEnd = true;
                     setGameStarted(false);
                     handleGameResult(0, false);
+                }
+            }
+
+            if (currentScrollY < targetScrollY) {
+                currentScrollY += (targetScrollY - currentScrollY) * 0.15;
+
+                if (targetScrollY - currentScrollY < 0.5) {
+                    currentScrollY = targetScrollY;
                 }
             }
 
@@ -253,10 +246,9 @@ function climb_game({setGame}){
                 return;
             }
 
-            let current_hold =  holds[current_hold_id];
+            let current_hold = holds[current_hold_id];
 
             if(keys[current_hold.letter]){
-
                 holdTimer = 0;
 
                 isAnimating = true;
@@ -266,49 +258,40 @@ function climb_game({setGame}){
 
                 targetFrameAfterReset = current_hold.x > 500 ? 1 : 2;
 
-                holds.forEach((h) => {h.y+=100;});
+                targetScrollY += 100;
 
-                fakeHolds.forEach((h) => {h.y+=100;});
-
-                if(fakeHolds[0].y > 750){
-                    fakeHolds.shift();
-                    let highest_h = fakeHolds[fakeHolds.length - 1]
-
+                let highest_fake = fakeHolds[fakeHolds.length - 1];
+                if (highest_fake.y + currentScrollY > -200) {
                     fakeHolds.push({
-                        x: (highest_h.x > 500 ? getRandomInt(0, 250) : getRandomInt(650, canvas.width)),
-                        y: highest_h.y - 100,
-                        hold : getRandomInt(0,6)
+                        x: getRandomInt(0, 250),
+                        y: highest_fake.y - 100,
+                        hold: getRandomInt(0, 6)
                     });
-
+                    fakeHolds.push({
+                        x: getRandomInt(650, canvas.width - 80),
+                        y: highest_fake.y - 100,
+                        hold: getRandomInt(0, 6)
+                    });
                 }
 
-
-                if(holds[0].y > 750){
-                    holds.shift();
-                    let highest_h = holds[holds.length - 1]
-
+                let highest_h = holds[holds.length - 1];
+                if (highest_h.y + currentScrollY > -200) {
                     let newLetter = String.fromCharCode(getRandomInt(97, 122));
                     while(newLetter === highest_h.letter){
                         newLetter = String.fromCharCode(getRandomInt(97, 122));
                     }
 
                     let newHold = getRandomInt(0,6);
-
                     let newH = {
                         x: (highest_h.x > 500 ? playerX - 75 - elmtSize[newHold].w/2 : playerX + 85 - elmtSize[newHold].w/2),
                         y: highest_h.y - 100,
                         letter: newLetter,
                         hold : newHold
                     };
-
                     holds.push(newH);
-                }else{
-                    current_hold_id++;
                 }
 
-                if(current_hold_id >= holds.length-1){
-                    current_hold_id = holds.length-1;
-                }
+                current_hold_id++;
 
                 if(score === 20){
                     win = true;
@@ -324,32 +307,32 @@ function climb_game({setGame}){
             ctx.fillStyle = "#585858";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = "bold 40px Arial";
-            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "bold 24px Arial";
+            ctx.fillStyle = "#DABE12FF";
 
 
             fakeHolds.forEach((h) => {
                 const imgHold = imagesRef.current[`hold${h.hold}`];
 
                 if(imgHold){
-                    ctx.drawImage(imgHold, h.x, h.y, elmtSize[h.hold].w,elmtSize[h.hold].h );
+                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, elmtSize[h.hold].w, elmtSize[h.hold].h);
                 }
-            })
+            });
 
             holds.forEach((h) => {
                 const imgHold = imagesRef.current[`hold${h.hold}`];
 
                 if(imgHold){
-                    ctx.drawImage(imgHold, h.x, h.y, elmtSize[h.hold].w,elmtSize[h.hold].h );
+                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, elmtSize[h.hold].w, elmtSize[h.hold].h);
                 }
-            })
+            });
 
             if(!win){
                 let h = holds[current_hold_id]
-                ctx.fillText(h.letter, h.x+elmtSize[current_hold_id].w/2, h.y+elmtSize[current_hold_id].h*1.5);
+                ctx.fillText(h.letter.toUpperCase(), h.x+elmtSize[holds[current_hold_id].hold].w/2, h.y+elmtSize[holds[current_hold_id].hold].h*1.5+currentScrollY);
 
                 ctx.beginPath();
-                ctx.arc(h.x+elmtSize[current_hold_id].w/2, h.y+elmtSize[current_hold_id].h/2, elmtSize[current_hold_id].w, 0, Math.PI * 2);
+                ctx.arc(h.x+elmtSize[holds[current_hold_id].hold].w/2, h.y+elmtSize[holds[current_hold_id].hold].h/2+currentScrollY, elmtSize[holds[current_hold_id].hold].w, 0, Math.PI * 2);
                 ctx.strokeStyle = "rgb(218 190 18 / 0.12)";
                 ctx.lineWidth = 5;
                 ctx.stroke();
@@ -368,7 +351,7 @@ function climb_game({setGame}){
             }
 
             if(!gameEnd){
-                ctx.fillText(`Score : ${score}`, 100, 100);
+                ctx.fillText(`Score : ${score}`, canvas.width/2-45, canvas.height-15);
             }
 
 
@@ -376,11 +359,16 @@ function climb_game({setGame}){
                 if(win){
                     ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 675);
+                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 400);
                 }
             }
-
         }
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("keyup", handleKeyUp);
+        };
     }, []);
 
     return (
