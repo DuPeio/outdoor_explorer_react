@@ -1,17 +1,28 @@
 import {useState, useRef, useEffect} from "react";
 
 import {useGameContext} from "../../context/GameContext.jsx";
-import trailer0 from "../../assets/games_illustrations/trail/trailer0.svg";
-import tree0 from "../../assets/games_illustrations/share/tree0.svg";
-import tree1 from "../../assets/games_illustrations/share/tree1.svg";
-import tree2 from "../../assets/games_illustrations/share/tree2.svg";
+import climber0 from "../../assets/games_illustrations/climb/climber0.svg";
+import climber1 from "../../assets/games_illustrations/climb/climber1.svg";
+import climber2 from "../../assets/games_illustrations/climb/climber2.svg";
+
+import hold0 from "../../assets/games_illustrations/climb/hold0.svg";
+import hold1 from "../../assets/games_illustrations/climb/hold1.svg";
+import hold2 from "../../assets/games_illustrations/climb/hold2.svg";
+import hold3 from "../../assets/games_illustrations/climb/hold3.svg";
+import hold4 from "../../assets/games_illustrations/climb/hold4.svg";
+import hold5 from "../../assets/games_illustrations/climb/hold5.svg";
+import hold6 from "../../assets/games_illustrations/climb/hold6.svg";
+
 import rock0 from "../../assets/games_illustrations/trail/rock0.svg";
 import rock1 from "../../assets/games_illustrations/trail/rock1.svg";
 import rock2 from "../../assets/games_illustrations/trail/rock2.svg";
+
 import grass0 from "../../assets/games_illustrations/share/grass0.svg";
 import grass1 from "../../assets/games_illustrations/share/grass1.svg";
 import grass2 from "../../assets/games_illustrations/share/grass2.svg";
+
 import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
+
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
 import defeatText from "../../assets/games_illustrations/trail/texte_defaite.svg";
 
@@ -46,12 +57,20 @@ function climb_game({setGame}){
         let holdTimer = 0;
         const TIME_LIMIT = 1500;
 
-        const sources = {
-            trailer0: trailer0,
+        let playerFrame = 0;
 
-            tree0: tree0,
-            tree1: tree1,
-            tree2: tree2,
+        const sources = {
+            climber0: climber0,
+            climber1: climber1,
+            climber2: climber2,
+
+            hold0: hold0,
+            hold1: hold1,
+            hold2: hold2,
+            hold3: hold3,
+            hold4: hold4,
+            hold5: hold5,
+            hold6: hold6,
 
             rock0:rock0,
             rock1:rock1,
@@ -65,6 +84,16 @@ function climb_game({setGame}){
             victoryText : victoryText,
             defeatText: defeatText
         };
+
+        const elmtSize = [
+            {w:50, h:50},
+            {w:50, h:50},
+            {w:50, h:50},
+            {w:50, h:50},
+            {w:50, h:50},
+            {w:50, h:50},
+            {w:50, h:50}
+    ];
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
@@ -91,14 +120,13 @@ function climb_game({setGame}){
                 newHolds.push({
                     x: isEven ? getRandomInt(250, 450) : getRandomInt(550, 750),
                     y: i,
-                    letter: String.fromCharCode(getRandomInt(97, 122))
+                    letter: String.fromCharCode(getRandomInt(97, 122)),
+                    hold : getRandomInt(0,6)
                 });
             }
 
             return newHolds;
         }
-
-
 
         const handleKeyDown = (e) => {
             if (canvas.dataset.started !== "true" || gameEnd) return;
@@ -179,11 +207,14 @@ function climb_game({setGame}){
                     holds.shift();
                     let highest_h = holds[holds.length - 1]
 
-                    holds.push({
+                    let newH = {
                         x: (highest_h.x > 500 ?getRandomInt(250,450) : getRandomInt(550, 750)),
                         y: highest_h.y - 100,
-                        letter: String.fromCharCode(getRandomInt(97, 122))
-                    })
+                        letter: String.fromCharCode(getRandomInt(97, 122)),
+                        hold : getRandomInt(0,6)
+                    };
+
+                    holds.push(newH);
                 }else{
                     current_hold_id++;
                 }
@@ -201,8 +232,41 @@ function climb_game({setGame}){
 
             ctx.font = "bold 40px Arial";
             ctx.fillStyle = "#FFFFFF";
+
+            const imgClimber0 = imagesRef.current.climber0;
+            const imgClimber1 = imagesRef.current.climber1;
+            const imgClimber2 = imagesRef.current.climber2;
+
+            // const imgRock0 = imagesRef.current.rock0;
+            // const imgRock1 = imagesRef.current.rock1;
+            // const imgRock2 = imagesRef.current.rock2
+            //
+            // const imgGrass0 = imagesRef.current.grass0;
+            // const imgGrass1 = imagesRef.current.grass1;
+            // const imgGrass2 = imagesRef.current.grass2;
+            //
+            // const imgFinishLine = imagesRef.current.finishLine
+
+
+            holds.forEach((h) => {
+                const imgHold = imagesRef.current[`hold${h.hold}`];
+
+                if(imgHold){
+                    ctx.drawImage(imgHold, h.x, h.y, elmtSize[h.hold].w,elmtSize[h.hold].h );
+                }
+            })
+
             let h = holds[current_hold_id]
             ctx.fillText(h.letter, h.x, h.y);
+
+            if(gameEnd){
+                if(win){
+                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
+                }else{
+                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 675);
+                }
+            }
+
         }
     }, []);
 
