@@ -26,7 +26,7 @@ function LoginPage({send, currentUsername}) {
 
                 <form className="connexion-form" onSubmit={handleSubmit}>
                     <p>
-                        <img src="../src/assets/icons/user.svg" alt="user icon"/>
+                        <img src="./assets/icons/user.svg" alt="user icon"/>
                         <input className="connexion-input" type="text" placeholder="Nom d'utilisateur"
                                onChange={(e) => setUsername(e.target.value)}
                                required
