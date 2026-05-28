@@ -259,12 +259,12 @@ function trailGame({setGame}) {
                             obs.x = obs.x > 500 ? getRandomInt(-50, 150) : getRandomInt(850, 950);
                         }
 
-                        if (obs.type.includes("tree") || obs.type.includes("rock")){
+                        else if (obs.type.includes("tree") || obs.type.includes("rock")){
                             obs.y = canvas.height + getRandomInt(50, 400);
                             obs.x = getRandomInt(200, 800);
                         }
 
-                        if(obs.type.includes("grass")){
+                        else if(obs.type.includes("grass")){
                             obs.y = canvas.height + getRandomInt(50, 400);
                             obs.x = getRandomInt(0, 950);
                         }
@@ -363,41 +363,42 @@ function trailGame({setGame}) {
             const obstaclesSort = betterSort(obstacles);
 
             obstaclesSort.forEach(obs => {
+
+                if(obs.type === "player" && imgTrailer0){
+
+                    let currentPlayerImg = imgTrailer0;
+
+                    if (playerFrame === 3 && imgTrailerG1) {
+                        currentPlayerImg = imgTrailerG1;
+                    } else if (playerFrame === 4 && imgTrailerG2) {
+                        currentPlayerImg = imgTrailerG2;
+                    }else if (playerFrame === 5 && imgTrailerG3) {
+                        currentPlayerImg = imgTrailerG3;
+                    }
+
+                    else  if (playerFrame === 6 && imgTrailerD1) {
+                        currentPlayerImg = imgTrailerD1;
+                    } else if (playerFrame === 7 && imgTrailerD2) {
+                        currentPlayerImg = imgTrailerD2;
+                    }else if (playerFrame === 8 && imgTrailerD3) {
+                        currentPlayerImg = imgTrailerD3;
+                    }
+
+                    else {
+                        if (playerFrame === 1 && imgTrailer1) {
+                            currentPlayerImg = imgTrailer1;
+                        } else if (playerFrame === 2 && imgTrailer2) {
+                            currentPlayerImg = imgTrailer2;
+                        }
+
+                    }
+                    ctx.drawImage(currentPlayerImg, playerX, playerY, hitboxes["player"].w, hitboxes["player"].h);
+                }
+
                 let img = imagesRef.current[obs.type];
 
-                if(img){
-                    if(obs.type === "player" && imgTrailer0){
+                if(img){ctx.drawImage(img, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);}
 
-                        let currentPlayerImg = imgTrailer0;
-
-                        if (playerFrame === 3 && imgTrailerG1) {
-                            currentPlayerImg = imgTrailerG1;
-                        } else if (playerFrame === 4 && imgTrailerG2) {
-                            currentPlayerImg = imgTrailerG2;
-                        }else if (playerFrame === 5 && imgTrailerG3) {
-                            currentPlayerImg = imgTrailerG3;
-                        }
-
-                        else  if (playerFrame === 6 && imgTrailerD1) {
-                            currentPlayerImg = imgTrailerD1;
-                        } else if (playerFrame === 7 && imgTrailerD2) {
-                            currentPlayerImg = imgTrailerD2;
-                        }else if (playerFrame === 8 && imgTrailerD3) {
-                            currentPlayerImg = imgTrailerD3;
-                        }
-
-                        else {
-                            if (playerFrame === 1 && imgTrailer1) {
-                                currentPlayerImg = imgTrailer1;
-                            } else if (playerFrame === 2 && imgTrailer2) {
-                                currentPlayerImg = imgTrailer2;
-                            }
-
-                        }
-                        ctx.drawImage(currentPlayerImg, playerX, playerY, hitboxes["player"].w, hitboxes["player"].h);
-                    }
-                    else{ctx.drawImage(img, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);}
-                }
             });
 
             if(gameEnd){
