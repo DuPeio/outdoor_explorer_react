@@ -54,7 +54,7 @@ function trailGame({setGame}) {
         let speed = 4;
 
         let playerX = 450;
-        const playerY = 100;
+        let playerY = 100;
 
         let obstacles = createObstacles();
 
@@ -67,17 +67,19 @@ function trailGame({setGame}) {
 
         const keys = {
             ArrowLeft: false,
-            ArrowRight: false
+            ArrowRight: false,
+            ArrowUp: false,
+            ArrowDown: false
         };
 
         const handleKeyDown = (e) => {
-            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+            if (e.key.includes("Arrow")) {
                 keys[e.key] = true;
             }
         };
 
         const handleKeyUp = (e) => {
-            if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+            if (e.key.includes("Arrow")){
                 keys[e.key] = false;
             }
         };
@@ -183,6 +185,7 @@ function trailGame({setGame}) {
                 win = false;
                 pixelPastedRef.current = 0;
                 playerX = 450;
+                playerY = 100;
                 obstacles = createObstacles();
                 canvas.dataset.reset = "false";
                 speed = 4;
@@ -224,7 +227,9 @@ function trailGame({setGame}) {
         }
 
         function updatePositions() {
-            const playerSpeed = 5;
+            const hPlayerSpeed = 5;
+            const frontPlayerSpeed = 2;
+            const backPlayerSpeed = 5;
 
             if (canvas.dataset.started !== "true" || gameEnd) {
                 return;
@@ -274,15 +279,25 @@ function trailGame({setGame}) {
                 playerDirection = 0
 
                 if (keys.ArrowLeft) {
-                    if(playerX - playerSpeed > 150){
-                        playerX -= playerSpeed;
+                    if(playerX - hPlayerSpeed > 150){
+                        playerX -= hPlayerSpeed;
                         playerDirection = 1;
                     }
                 }
                 if (keys.ArrowRight) {
-                    if(playerX + playerSpeed < 810){
-                        playerX += playerSpeed;
+                    if(playerX + hPlayerSpeed < 810){
+                        playerX += hPlayerSpeed;
                         playerDirection = 2;
+                    }
+                }
+                if (keys.ArrowUp) {
+                    if(playerY - backPlayerSpeed > 10){
+                        playerY -= backPlayerSpeed;
+                    }
+                }
+                if (keys.ArrowDown) {
+                    if(playerY + frontPlayerSpeed < 640){
+                        playerY += frontPlayerSpeed;
                     }
                 }
 
