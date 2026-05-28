@@ -44,6 +44,13 @@ function ski_game({setGame}) {
 
         let directionSkier = 0;
 
+        let eltSize = {
+            Gate : {w : 140, h : 120},
+            tree : {w : 130, h : 180},
+            fan : {w : 100, h : 120},
+            finishLine : {w : 600, h :200 }
+        }
+
         let obstacles = createObstacles();
 
         let playerX = 450;
@@ -145,7 +152,6 @@ function ski_game({setGame}) {
         function checkCollisions(obs) {
 
             if(playerY+120 > obs.y+120 && playerY+60 < obs.y+120 ){
-                console.log(playerX+30 , obs.x, playerX+80, obs.x+140)
                 if (playerX+30 >= obs.x && playerX+80 <= obs.x+140) {
                 } else {
                     win = false;
@@ -233,6 +239,24 @@ function ski_game({setGame}) {
             }
         }
 
+        function betterSort(obstacles) {
+            return (obstacles.sort((a, b) =>{
+                let eltA;
+                let eltB;
+
+                if(a.type.includes("tree")){eltA = "tree"}
+                else if(a.type.includes("finishLine")){eltA = "finishLine"}
+                else if(a.type.includes("Gate")){eltA = "Gate"}
+                else if(a.type.includes("fan")){eltA = "fan"}
+
+                if(b.type.includes("tree")){eltB = "tree"}
+                else if(b.type.includes("finishLine")){eltB = "finishLine"}
+                else if(b.type.includes("Gate")){eltB = "Gate"}
+                else if(b.type.includes("fan")){eltB = "fan"}
+
+                return (eltSize[eltA].h + a.y) - (eltSize[eltB].h + b.y);
+            }))
+        }
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -252,7 +276,7 @@ function ski_game({setGame}) {
             const imgRedGates = imagesRef.current.gateRed;
             const imgFinishLine = imagesRef.current.finishLine
 
-            const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
+            const obstaclesSort = betterSort(obstacles)
 
             if (imgSkier) {
                 let currentSkierImg = imgSkier;
@@ -267,23 +291,23 @@ function ski_game({setGame}) {
 
             obstaclesSort.forEach(obs => {
                 if (obs.type === "blueGate" && imgBlueGates) {
-                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 140, 120);
+                    ctx.drawImage(imgBlueGates, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
                 } else if (obs.type === "redGate" && imgRedGates) {
-                    ctx.drawImage(imgRedGates, obs.x, obs.y, 140, 120);
+                    ctx.drawImage(imgRedGates, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
                 }else if (obs.type === "finishLine" && imgFinishLine) {
-                    ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
+                    ctx.drawImage(imgFinishLine, obs.x, obs.y, eltSize["finishLine"].w, eltSize["finishLine"].h);
                 }else if (obs.type === "tree0" && imgTree0) {
-                    ctx.drawImage(imgTree0, obs.x, obs.y, 130, 180);
+                    ctx.drawImage(imgTree0, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
                 }else if (obs.type === "tree1" && imgTree1) {
-                    ctx.drawImage(imgTree1, obs.x, obs.y, 130, 180);
+                    ctx.drawImage(imgTree1, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
                 }else if (obs.type === "tree2" && imgTree2) {
-                    ctx.drawImage(imgTree2, obs.x, obs.y, 130, 180);
+                    ctx.drawImage(imgTree2, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
                 }else if (obs.type === "fan0" && imgFan0) {
-                    ctx.drawImage(imgFan0, obs.x, obs.y, 100, 120);
+                    ctx.drawImage(imgFan0, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
                 }else if (obs.type === "fan1" && imgFan1) {
-                    ctx.drawImage(imgFan1, obs.x, obs.y, 100, 120);
+                    ctx.drawImage(imgFan1, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
                 }else if (obs.type === "fan2" && imgFan2) {
-                    ctx.drawImage(imgFan2, obs.x, obs.y, 100, 120);
+                    ctx.drawImage(imgFan2, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
                 }
             });
 
