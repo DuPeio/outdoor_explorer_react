@@ -455,7 +455,7 @@ function trailGame({setGame}) {
 
             <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
 
-            <div className={"instruction"}>Eviter les obstacles avec les flèches &lt; gauche et droite &gt;.</div>
+            <div className={"instruction"}>Eviter les obstacles avec les flèches du clavier;.</div>
         </div>
     );
 }
