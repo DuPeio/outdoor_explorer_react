@@ -194,10 +194,7 @@ function Book({setDisplayGame}){
             })}
 
         </div>
-
     );
-
-
 }
 
 export default Book;
