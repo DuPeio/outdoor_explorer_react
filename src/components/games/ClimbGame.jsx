@@ -18,7 +18,7 @@ import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
 import defeatText from "../../assets/games_illustrations/climb/texte_defaite.svg";
 
-function climb_game({setGame}){
+function ClimbGame({setGame}){
 
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
@@ -73,7 +73,7 @@ function climb_game({setGame}){
 
         let lastTime = performance.now();
         let holdTimer = 0;
-        const TIME_LIMIT = 1500;
+        const timeLimit = 1500;
 
         const sources = {
             climber0: climber0,
@@ -95,8 +95,7 @@ function climb_game({setGame}){
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-
-
+        
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
             img.src = src;
@@ -153,9 +152,9 @@ function climb_game({setGame}){
             if (canvas.dataset.started !== "true" || gameEnd) return;
             let pressedKey = e.key;
             if (pressedKey in keys) {
-                let current_hold = holds[current_hold_id];
+                let currentHold = holds[currentHoldId];
 
-                if (pressedKey === current_hold.letter) {
+                if (pressedKey === currentHold.letter) {
                     keys[pressedKey] = true;
                     score ++;
                 }
@@ -177,7 +176,7 @@ function climb_game({setGame}){
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
 
-        let current_hold_id = 0;
+        let currentHoldId = 0;
 
         function gameLoop() {
             const now = performance.now();
@@ -191,7 +190,7 @@ function climb_game({setGame}){
                 pixelPastedRef.current = 0;
                 holds = createHolds();
                 canvas.dataset.reset = "false";
-                current_hold_id = 0;
+                currentHoldId = 0;
                 playerFrame = 0;
                 score = 0
             }
@@ -199,7 +198,7 @@ function climb_game({setGame}){
             if (canvas.dataset.started === "true" && !gameEnd) {
                 holdTimer += deltaTime;
 
-                if (holdTimer >= TIME_LIMIT) {
+                if (holdTimer >= timeLimit) {
                     win = false;
                     gameEnd = true;
                     setGameStarted(false);
@@ -246,9 +245,9 @@ function climb_game({setGame}){
                 return;
             }
 
-            let current_hold = holds[current_hold_id];
+            let currentHold = holds[currentHoldId];
 
-            if(keys[current_hold.letter]){
+            if(keys[currentHold.letter]){
                 holdTimer = 0;
 
                 isAnimating = true;
@@ -256,42 +255,42 @@ function climb_game({setGame}){
                 animationStep = 1;
                 playerFrame = 0;
 
-                targetFrameAfterReset = current_hold.x > 500 ? 1 : 2;
+                targetFrameAfterReset = currentHold.x > 500 ? 1 : 2;
 
                 targetScrollY += 100;
 
-                let highest_fake = fakeHolds[fakeHolds.length - 1];
-                if (highest_fake.y + currentScrollY > -200) {
+                let highestFake = fakeHolds[fakeHolds.length - 1];
+                if (highestFake.y + currentScrollY > -200) {
                     fakeHolds.push({
                         x: getRandomInt(0, 250),
-                        y: highest_fake.y - 100,
+                        y: highestFake.y - 100,
                         hold: getRandomInt(0, 6)
                     });
                     fakeHolds.push({
                         x: getRandomInt(650, canvas.width - 80),
-                        y: highest_fake.y - 100,
+                        y: highestFake.y - 100,
                         hold: getRandomInt(0, 6)
                     });
                 }
 
-                let highest_h = holds[holds.length - 1];
-                if (highest_h.y + currentScrollY > -200) {
+                let highestH = holds[holds.length - 1];
+                if (highestH.y + currentScrollY > -200) {
                     let newLetter = String.fromCharCode(getRandomInt(97, 122));
-                    while(newLetter === highest_h.letter){
+                    while(newLetter === highestH.letter){
                         newLetter = String.fromCharCode(getRandomInt(97, 122));
                     }
 
                     let newHold = getRandomInt(0,6);
                     let newH = {
-                        x: (highest_h.x > 500 ? playerX - 75 - elmtSize[newHold].w/2 : playerX + 85 - elmtSize[newHold].w/2),
-                        y: highest_h.y - 100,
+                        x: (highestH.x > 500 ? playerX - 75 - elmtSize[newHold].w/2 : playerX + 85 - elmtSize[newHold].w/2),
+                        y: highestH.y - 100,
                         letter: newLetter,
                         hold : newHold
                     };
                     holds.push(newH);
                 }
 
-                current_hold_id++;
+                currentHoldId++;
 
                 if(score === 20){
                     win = true;
@@ -328,11 +327,11 @@ function climb_game({setGame}){
             });
 
             if(!win){
-                let h = holds[current_hold_id]
-                ctx.fillText(h.letter.toUpperCase(), h.x+elmtSize[holds[current_hold_id].hold].w/2, h.y+elmtSize[holds[current_hold_id].hold].h*1.5+currentScrollY);
+                let h = holds[currentHoldId]
+                ctx.fillText(h.letter.toUpperCase(), h.x+elmtSize[holds[currentHoldId].hold].w/2, h.y+elmtSize[holds[currentHoldId].hold].h*1.5+currentScrollY);
 
                 ctx.beginPath();
-                ctx.arc(h.x+elmtSize[holds[current_hold_id].hold].w/2, h.y+elmtSize[holds[current_hold_id].hold].h/2+currentScrollY, elmtSize[holds[current_hold_id].hold].w, 0, Math.PI * 2);
+                ctx.arc(h.x+elmtSize[holds[currentHoldId].hold].w/2, h.y+elmtSize[holds[currentHoldId].hold].h/2+currentScrollY, elmtSize[holds[currentHoldId].hold].w, 0, Math.PI * 2);
                 ctx.strokeStyle = "rgb(218 190 18 / 0.12)";
                 ctx.lineWidth = 5;
                 ctx.stroke();
@@ -403,4 +402,4 @@ function climb_game({setGame}){
 
 
 
-export default climb_game;
+export default ClimbGame;
