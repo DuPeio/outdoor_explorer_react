@@ -139,7 +139,7 @@ function Book({setDisplayGame}){
             <div className={`cover ${coverFlipped ? 'flipping-forward' : ''}`} id="cover" onClick={handleCoverClick}>
                 <div className="front face">
                     <div className="cover-title">Outdoor<br/>Explorer</div>
-                    <img className="img-cover" id="imgCover" src="../src/assets/illustrations/montagnes_front_page.svg"
+                    <img className="img-cover" id="imgCover" src="/assets/illustrations/montagnes_front_page.svg"
                          alt="Mountains icons"/>
                 </div>
                 <div className="back face"></div>
@@ -162,7 +162,7 @@ function Book({setDisplayGame}){
                 </div>
 
                 <div className="back face">
-                    <BackSport sport={SPORTS[0]} gameDone={gamesDone[0]} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={0}/>
+                    <BackSport sport={SPORTS[0]} gameDone={gamesDone[0]} setGame={setDisplayGame} sportId={0}/>
                 </div>
 
             </div>
@@ -185,7 +185,7 @@ function Book({setDisplayGame}){
 
 
                         <div className="back face">
-                            <BackSport sport={SPORTS[id + 1]} gameDone={gamesDone[id + 1]} setGame={setDisplayGame} nbOfSports={NUMBER_OF_SPORTS} sportId={id+1}/>
+                            <BackSport sport={SPORTS[id + 1]} gameDone={gamesDone[id + 1]} setGame={setDisplayGame} sportId={id+1}/>
                         </div>
 
                     </div>
