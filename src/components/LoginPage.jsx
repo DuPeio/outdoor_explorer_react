@@ -18,7 +18,7 @@ function LoginPage({send, currentUsername}) {
 
                 {currentUsername ? (
                     <div>
-                        Connecté en tant que : {currentUsername}
+                        Connecté en tant que : <b>{currentUsername}</b>
                     </div>
                 ) : (
                     <div>Connectez-vous pour continuer !</div>
@@ -35,6 +35,11 @@ function LoginPage({send, currentUsername}) {
                     <button className="connexion-submit" id="connexionSubmit" type="submit">Connexion</button>
                 </form>
             </div>
+            {currentUsername &&
+                <div className="informations-login">
+                    Cliquez sur la page pour la <b>tourner</b>.
+                </div>
+            }
         </div>
     );
 

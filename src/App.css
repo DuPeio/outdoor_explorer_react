@@ -222,6 +222,10 @@ button:hover{
   margin-top: 30px;
 }
 
+.connexion-part b{
+  color: #dabe12;
+}
+
 .connexion-form{
   display: flex;
   flex-direction: column;
@@ -252,6 +256,17 @@ button:hover{
   width: 120px;
   font-size: 14px;
   padding : 0;
+}
+
+.informations-login{
+  position: absolute;
+  bottom: -20%;
+  width: 100%;
+  text-align: center;
+}
+
+.informations-login b{
+  color: #dabe12;
 }
 
 /*Page de gauche sport*/
