@@ -11,8 +11,8 @@ import fan0 from "../../assets/games_illustrations/ski/fan0.svg";
 import fan1 from "../../assets/games_illustrations/ski/fan1.svg";
 import fan2 from "../../assets/games_illustrations/ski/fan2.svg";
 
-import blueGates from "../../assets/games_illustrations/ski/blue_gates.svg";
-import redGates from "../../assets/games_illustrations/ski/red_gates.svg";
+import blueGate from "../../assets/games_illustrations/ski/blue_gates.svg";
+import redGate from "../../assets/games_illustrations/ski/red_gates.svg";
 
 import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
 
@@ -90,8 +90,8 @@ function SkiGame({setGame}) {
             fan1: fan1,
             fan2: fan2,
 
-            redGates: redGates,
-            blueGates: blueGates,
+            redGate: redGate,
+            blueGate: blueGate,
 
             finishLine: finishLine,
 
@@ -255,7 +255,7 @@ function SkiGame({setGame}) {
                     else if(a.type.includes("Gate")){eltA = "Gate"}
                     else if(a.type.includes("fan")){eltA = "fan"}
 
-                    const aBottom = b.y + eltSize[eltA].h;
+                    const aBottom = a.y + eltSize[eltA].h;
                     return aBottom > playerBottom ? 1 : -1;
                 }
 
@@ -289,25 +289,28 @@ function SkiGame({setGame}) {
             const obstaclesSort = betterSort(obstacles)
 
             obstaclesSort.forEach(obs => {
-                let img = imagesRef.current[obs.type]
-                if(img){
-                    if(obs.type.includes("tree")){
-                        ctx.drawImage(img, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
-                    }else if(obs.type.includes("finishLine")){
-                        ctx.drawImage(img, obs.x, obs.y, eltSize["finishLine"].w, eltSize["finishLine"].h);
-                    }else if(obs.type.includes("Gates")){
-                        ctx.drawImage(img, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
-                    }else if(obs.type.includes("fan")){
-                        ctx.drawImage(img, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
-                    }else if(obs.type.includes("player")){
-                        let currentSkierImg = imgSkier;
 
-                        if (directionSkier === 1 && imgSkierG) {
-                            currentSkierImg = imgSkierG;
-                        } else if (directionSkier === 2 && imgSkierD) {
-                            currentSkierImg = imgSkierD;
+                if(obs.type.includes("player")){
+                    let currentSkierImg = imgSkier;
+
+                    if (directionSkier === 1 && imgSkierG) {
+                        currentSkierImg = imgSkierG;
+                    } else if (directionSkier === 2 && imgSkierD) {
+                        currentSkierImg = imgSkierD;
+                    }
+                    ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
+                }else{
+                    let img = imagesRef.current[obs.type]
+                    if(img){
+                        if(obs.type.includes("tree")){
+                            ctx.drawImage(img, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
+                        }else if(obs.type.includes("finishLine")){
+                            ctx.drawImage(img, obs.x, obs.y, eltSize["finishLine"].w, eltSize["finishLine"].h);
+                        }else if(obs.type.includes("Gate")){
+                            ctx.drawImage(img, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
+                        }else if(obs.type.includes("fan")){
+                            ctx.drawImage(img, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
                         }
-                        ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
                     }
                 }
             });
