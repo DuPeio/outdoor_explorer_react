@@ -84,6 +84,7 @@ body{
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  transform: translateZ(0.1px);
 }
 
 .back{
