@@ -46,8 +46,8 @@ function ski_game({setGame}) {
 
         let obstacles = createObstacles();
 
-        let skierX = 450;
-        const skierY = 100;
+        let playerX = 450;
+        const playerY = 100;
 
         const keys = {
             ArrowLeft: false,
@@ -119,8 +119,8 @@ function ski_game({setGame}) {
             }
 
 
-            obstacles.push({ type: "blueGate", x: 280, y: 500, passed: false });
-            obstacles.push({ type: "redGate", x: 550, y: 1000, passed: false });
+            obstacles.push({ type: "blueGate", x: 280, y: 500 });
+            obstacles.push({ type: "redGate", x: 550, y: 1000 });
             obstacles.push({ type: "finishLine", x: 250, y: 900 });
 
             return obstacles;
@@ -131,7 +131,7 @@ function ski_game({setGame}) {
                 gameEnd = false;
                 win = false;
                 pixelPastedRef.current = 0;
-                skierX = 450;
+                playerX = 450;
                 obstacles = createObstacles();
                 canvas.dataset.reset = "false";
                 speed = 4;
@@ -140,6 +140,20 @@ function ski_game({setGame}) {
             updatePositions();
             drawGame();
             animationFrameIdRef.current = requestAnimationFrame(gameLoop);
+        }
+
+        function checkCollisions(obs) {
+
+            if(playerY+120 > obs.y+120 && playerY+60 < obs.y+120 ){
+                console.log(playerX+30 , obs.x, playerX+80, obs.x+140)
+                if (playerX+30 >= obs.x && playerX+80 <= obs.x+140) {
+                } else {
+                    win = false;
+                    gameEnd = true;
+                    setGameStarted(false);
+                    handleGameResult(0, false);
+                }
+            }
         }
 
         function updatePositions() {
@@ -164,28 +178,12 @@ function ski_game({setGame}) {
                     }
 
                     //Pour vérifier que les collisions
-                    if ((obs.type === "blueGate" || obs.type === "redGate") && !obs.passed) {
-                        const zone = (obs.y >= skierY && obs.y <= skierY + 10);
-                        if (zone) {
-                            obs.passed = true;
-                            if (skierX> obs.x-50 && skierX+50 < obs.x+100) {
-                                console.log("Gate passée");
-                            } else {
-                                setTimeout(()=>{
-                                    console.log("Gate pas passée");
-                                    win = false;
-                                    gameEnd = true;
-                                    setGameStarted(false);
-                                    handleGameResult(0, false);
-                                },150)
-
-                            }
-                        }
+                    if ((obs.type === "blueGate" || obs.type === "redGate")) {
+                        checkCollisions(obs);
                     }
 
                     // Pour faire une belle boucle
                     if (obs.y < -200) {
-                        obs.passed = false;
                         if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2") {
                             obs.y = canvas.height + getRandomInt(50, 400);
                             if (obs.x < 500) {
@@ -220,14 +218,14 @@ function ski_game({setGame}) {
                 directionSkier = 0;
 
                 if (keys.ArrowLeft) {
-                    if(skierX - skierSpeed > 200){
-                        skierX -= skierSpeed;
+                    if(playerX - skierSpeed > 200){
+                        playerX -= skierSpeed;
                         directionSkier = 1;
                     }
                 }
                 if (keys.ArrowRight) {
-                    if(skierX + skierSpeed < 750){
-                        skierX += skierSpeed;
+                    if(playerX + skierSpeed < 750){
+                        playerX += skierSpeed;
                         directionSkier = 2;
                     }
                 }
@@ -264,14 +262,14 @@ function ski_game({setGame}) {
                 } else if (directionSkier === 2 && imgSkierD) {
                     currentSkierImg = imgSkierD;
                 }
-                ctx.drawImage(currentSkierImg, skierX, skierY, 100, 120);
+                ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
             }
 
             obstaclesSort.forEach(obs => {
                 if (obs.type === "blueGate" && imgBlueGates) {
-                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 120, 100);
+                    ctx.drawImage(imgBlueGates, obs.x, obs.y, 140, 120);
                 } else if (obs.type === "redGate" && imgRedGates) {
-                    ctx.drawImage(imgRedGates, obs.x, obs.y, 120, 100);
+                    ctx.drawImage(imgRedGates, obs.x, obs.y, 140, 120);
                 }else if (obs.type === "finishLine" && imgFinishLine) {
                     ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
                 }else if (obs.type === "tree0" && imgTree0) {
