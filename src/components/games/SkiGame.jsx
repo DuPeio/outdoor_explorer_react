@@ -21,7 +21,7 @@ import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
 
 import {useGameContext} from "../../context/GameContext.jsx";
 
-function ski_game({setGame}) {
+function SkiGame({setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
@@ -81,15 +81,20 @@ function ski_game({setGame}) {
             skier: skier,
             skierD: skierD,
             skierG: skierG,
+
             tree0: tree0,
             tree1: tree1,
             tree2: tree2,
+
             fan0: fan0,
             fan1: fan1,
             fan2: fan2,
-            gateRed: redGates,
-            gateBlue: blueGates,
+
+            redGates: redGates,
+            blueGates: blueGates,
+
             finishLine: finishLine,
+
             victoryText : victoryText,
             defeatText: defeatText
         };
@@ -114,21 +119,17 @@ function ski_game({setGame}) {
 
             for (let i = 0; i < 35; i++) {
                 obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, 800) });
-            }
-            for (let i = 0; i < 35; i++) {
-                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 800) })
             }
 
             for (let i = 0; i < 5; i++) {
                 obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(140, 160), y: getRandomInt(-50, 800) });
-            }
-            for (let i = 0; i < 5; i++) {
                 obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(750, 780), y: getRandomInt(-50, 800) });
             }
 
-
             obstacles.push({ type: "blueGate", x: 280, y: 500 });
             obstacles.push({ type: "redGate", x: 550, y: 1000 });
+
             obstacles.push({ type: "finishLine", x: 250, y: 900 });
 
             obstacles.push({ type: "player", x: playerX, y: playerY });
@@ -186,12 +187,10 @@ function ski_game({setGame}) {
                         obs.y -= speed;
                     }
 
-                    //Pour vérifier que les collisions
                     if ((obs.type === "blueGate" || obs.type === "redGate")) {
                         checkCollisions(obs);
                     }
 
-                    // Pour faire une belle boucle
                     if (obs.y < -200) {
                         if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2") {
                             obs.y = canvas.height + getRandomInt(50, 400);
@@ -238,7 +237,6 @@ function ski_game({setGame}) {
                         directionSkier = 2;
                     }
                 }
-
             }
         }
 
@@ -287,46 +285,30 @@ function ski_game({setGame}) {
             const imgSkier = imagesRef.current.skier;
             const imgSkierD = imagesRef.current.skierD;
             const imgSkierG = imagesRef.current.skierG;
-            const imgTree0 = imagesRef.current.tree0;
-            const imgTree1 = imagesRef.current.tree1;
-            const imgTree2 = imagesRef.current.tree2;
-            const imgFan0 = imagesRef.current.fan0;
-            const imgFan1 = imagesRef.current.fan1;
-            const imgFan2 = imagesRef.current.fan2;
-            const imgBlueGates = imagesRef.current.gateBlue;
-            const imgRedGates = imagesRef.current.gateRed;
-            const imgFinishLine = imagesRef.current.finishLine
 
             const obstaclesSort = betterSort(obstacles)
 
             obstaclesSort.forEach(obs => {
-                if (obs.type === "blueGate" && imgBlueGates) {
-                    ctx.drawImage(imgBlueGates, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
-                } else if (obs.type === "redGate" && imgRedGates) {
-                    ctx.drawImage(imgRedGates, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
-                }else if (obs.type === "finishLine" && imgFinishLine) {
-                    ctx.drawImage(imgFinishLine, obs.x, obs.y, eltSize["finishLine"].w, eltSize["finishLine"].h);
-                }else if (obs.type === "tree0" && imgTree0) {
-                    ctx.drawImage(imgTree0, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
-                }else if (obs.type === "tree1" && imgTree1) {
-                    ctx.drawImage(imgTree1, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
-                }else if (obs.type === "tree2" && imgTree2) {
-                    ctx.drawImage(imgTree2, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
-                }else if (obs.type === "fan0" && imgFan0) {
-                    ctx.drawImage(imgFan0, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
-                }else if (obs.type === "fan1" && imgFan1) {
-                    ctx.drawImage(imgFan1, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
-                }else if (obs.type === "fan2" && imgFan2) {
-                    ctx.drawImage(imgFan2, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
-                }else if(obs.type === "player" && imgSkier){
-                    let currentSkierImg = imgSkier;
+                let img = imagesRef.current[obs.type]
+                if(img){
+                    if(obs.type.includes("tree")){
+                        ctx.drawImage(img, obs.x, obs.y, eltSize["tree"].w, eltSize["tree"].h);
+                    }else if(obs.type.includes("finishLine")){
+                        ctx.drawImage(img, obs.x, obs.y, eltSize["finishLine"].w, eltSize["finishLine"].h);
+                    }else if(obs.type.includes("Gates")){
+                        ctx.drawImage(img, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
+                    }else if(obs.type.includes("fan")){
+                        ctx.drawImage(img, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
+                    }else if(obs.type.includes("player")){
+                        let currentSkierImg = imgSkier;
 
-                    if (directionSkier === 1 && imgSkierG) {
-                        currentSkierImg = imgSkierG;
-                    } else if (directionSkier === 2 && imgSkierD) {
-                        currentSkierImg = imgSkierD;
+                        if (directionSkier === 1 && imgSkierG) {
+                            currentSkierImg = imgSkierG;
+                        } else if (directionSkier === 2 && imgSkierD) {
+                            currentSkierImg = imgSkierD;
+                        }
+                        ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
                     }
-                    ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
                 }
             });
 
@@ -375,4 +357,4 @@ function ski_game({setGame}) {
     );
 }
 
-export default ski_game;
+export default SkiGame;

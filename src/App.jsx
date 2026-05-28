@@ -1,10 +1,10 @@
 import { NUMBER_OF_SPORTS, SPORTS } from './config/constants.js';
 import Book from './components/Book';
 import './App.css';
-import Ski_game from "./components/games/ski_game.jsx";
-import Trail_game from "./components/games/trail_game.jsx";
-import RoadBike_game from "./components/games/roadBike_game.jsx";
-import Climb_game from "./components/games/climb_game.jsx";
+import SkiGame from "./components/games/SkiGame.jsx";
+import TrailGame from "./components/games/TrailGame.jsx";
+import RoadBikeGame from "./components/games/RoadBikeGame.jsx";
+import ClimbGame from "./components/games/ClimbGame.jsx";
 import {useState} from "react";
 
 import { useGameContext } from './context/GameContext.jsx';
@@ -22,30 +22,27 @@ function App() {
 
             {gamesDisplayed[0] &&
                 <div className={`game-container`}>
-                    <Ski_game setGame={setGamesDisplayed} />
+                    <SkiGame setGame={setGamesDisplayed} />
                 </div>
             }
 
             {gamesDisplayed[1] &&
                 <div className={`game-container`}>
-                    <Trail_game setGame={setGamesDisplayed} />
+                    <TrailGame setGame={setGamesDisplayed} />
                 </div>
             }
 
             {gamesDisplayed[2] &&
                 <div className={`game-container`}>
-                    <Climb_game setGame={setGamesDisplayed} />
+                    <ClimbGame setGame={setGamesDisplayed} />
                 </div>
             }
 
             {gamesDisplayed[3] &&
                 <div className={`game-container`}>
-                    <RoadBike_game setGame={setGamesDisplayed} />
+                    <RoadBikeGame setGame={setGamesDisplayed} />
                 </div>
             }
-
-
-
         </div>
     );
 }
