@@ -21,6 +21,7 @@ function roadBike_game({setGame}) {
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
     const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const animationFrameIdRef = useRef(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -153,7 +154,6 @@ function roadBike_game({setGame}) {
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-        let animationFrameId;
 
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
@@ -183,7 +183,7 @@ function roadBike_game({setGame}) {
             }
             updatePositions();
             drawGame();
-            animationFrameId = requestAnimationFrame(gameLoop);
+            animationFrameIdRef.current = requestAnimationFrame(gameLoop);
         }
 
         function betterSort(obstacles) {
@@ -398,7 +398,7 @@ function roadBike_game({setGame}) {
             }
         }
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
@@ -417,7 +417,9 @@ function roadBike_game({setGame}) {
 
             {!gameStarted && (
                 <button className={"launch-game-button"} onClick={() => {
-                    canvasRef.current.dataset.reset = "true";
+                    if (canvasRef.current) {
+                        canvasRef.current.dataset.reset = "true";
+                    }
                     setGameStarted(true);
                 }}>
                     Lancer le jeu !

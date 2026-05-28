@@ -33,6 +33,8 @@ function trail_game({setGame}) {
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
+    const animationFrameIdRef = useRef(null);
+
 
     const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
@@ -113,7 +115,6 @@ function trail_game({setGame}) {
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-        let animationFrameId;
 
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
@@ -181,7 +182,7 @@ function trail_game({setGame}) {
             }
             updatePositions();
             drawGame();
-            animationFrameId = requestAnimationFrame(gameLoop);
+            animationFrameIdRef.current = requestAnimationFrame(gameLoop);
         }
 
         function checkCollision(playerX, playerY, obs) {
@@ -306,7 +307,7 @@ function trail_game({setGame}) {
         }
 
         function betterSort(obstacles) {
-            let obstaclesSorted = obstacles.sort((a, b) =>{
+           return (obstacles.sort((a, b) =>{
                 if((a.type.includes("tree")||a.type === "finish_line") && (b.type.includes("grass")||b.type.includes("rock"))){
                     if(b.y > a.y && b.y < a.y + 180){
                         return 10;
@@ -317,8 +318,7 @@ function trail_game({setGame}) {
                     }
                 }
                 return a.y - b.y;
-            });
-            return obstaclesSorted;
+            }))
         }
 
         function drawGame() {
@@ -433,7 +433,7 @@ function trail_game({setGame}) {
             }
         }
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
@@ -452,7 +452,9 @@ function trail_game({setGame}) {
 
             {!gameStarted && (
                 <button className={"launch-game-button"} onClick={() => {
-                    canvasRef.current.dataset.reset = "true";
+                    if (canvasRef.current) {
+                        canvasRef.current.dataset.reset = "true";
+                    }
                     setGameStarted(true);
                 }}>
                     Lancer le jeu !

@@ -24,6 +24,7 @@ function climb_game({setGame}){
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
+    const animationFrameIdRef = useRef(null);
 
     const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
@@ -94,7 +95,6 @@ function climb_game({setGame}){
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-        let animationFrameId;
 
 
         Object.entries(sources).forEach(([key, src]) => {
@@ -236,7 +236,7 @@ function climb_game({setGame}){
 
             updatePositions();
             drawGame();
-            animationFrameId = requestAnimationFrame(gameLoop);
+            animationFrameIdRef.current = requestAnimationFrame(gameLoop);
         }
 
 
@@ -365,7 +365,7 @@ function climb_game({setGame}){
         }
 
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
@@ -383,7 +383,9 @@ function climb_game({setGame}){
 
             {!gameStarted && (
                 <button className={"launch-game-button"} onClick={() => {
-                    canvasRef.current.dataset.reset = "true";
+                    if (canvasRef.current) {
+                        canvasRef.current.dataset.reset = "true";
+                    }
                     setGameStarted(true);
                 }}>
                     Lancer le jeu !

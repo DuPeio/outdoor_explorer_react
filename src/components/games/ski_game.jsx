@@ -26,6 +26,7 @@ function ski_game({setGame}) {
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
+    const animationFrameIdRef = useRef(null);
 
     const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
@@ -87,7 +88,6 @@ function ski_game({setGame}) {
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-        let animationFrameId;
 
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
@@ -139,7 +139,7 @@ function ski_game({setGame}) {
             }
             updatePositions();
             drawGame();
-            animationFrameId = requestAnimationFrame(gameLoop);
+            animationFrameIdRef.current = requestAnimationFrame(gameLoop);
         }
 
         function updatePositions() {
@@ -254,7 +254,7 @@ function ski_game({setGame}) {
             const imgRedGates = imagesRef.current.gateRed;
             const imgFinishLine = imagesRef.current.finishLine
 
-            const obstaclesSort = obstacles.sort((a, b) => a.y - b.y);
+            const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
 
             if (imgSkier) {
                 let currentSkierImg = imagesRef.current.skier;
@@ -298,7 +298,7 @@ function ski_game({setGame}) {
             }
         }
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
@@ -317,7 +317,9 @@ function ski_game({setGame}) {
 
             {!gameStarted && (
                 <button className={"launch-game-button"} onClick={() => {
-                    canvasRef.current.dataset.reset = "true";
+                    if (canvasRef.current) {
+                        canvasRef.current.dataset.reset = "true";
+                    }
                     setGameStarted(true);
                 }}>
                     Lancer le jeu !
