@@ -16,7 +16,6 @@ const sports = [
       bienfaits: "Améliore <b>l’équilibre</b>, renforce les <b>jambes</b> et procure des supers <b>sensations de glisse</b>.",
       saisonIdeale: "Le ski se pratique principalement <b>l'hiver</b>, une fois que la neige fait son apparition."
     },
-    miniJeu: "./games/ski_game.jsx"
   },
 
   {
@@ -36,7 +35,6 @@ const sports = [
       bienfaits: "Améliore <b>l’endurance</b>, renforce le <b>cœur</b> et les muscles des <b>jambes</b>.",
       saisonIdeale: "Le <b>trail</b> est une activité qui peut s'effectuer <b>toute l'année</b> mais l'hiver, la neige peut compliquer la pratique en montagne."
     },
-    miniJeu: "js/games/trail.js"
   },
 
   {
@@ -56,7 +54,6 @@ const sports = [
       bienfaits: "Renforce les <b>bras</b> et le <b>dos</b> et améliore la <b>souplesse</b>.",
       saisonIdeale: "L'escalade se pratique <b>toute l’année</b>. Les voies les plus en altitudes sont déconseillées l'hiver."
     },
-    miniJeu: "js/games/escalade.js"
   },
 
   {
@@ -76,7 +73,6 @@ const sports = [
       bienfaits: "Améliore <b>l’endurance</b>, renforce le <b>cœur</b> et les muscles des <b>jambes</b>.",
       saisonIdeale: "Le vélo se pratique <b>toute l'année</b> quand les conditions le permettent. Si la météo n'est pas favorable, il est aussi possible d'utiliser un <b>home trainer</b> pour tourner les jambes <b>chez soi</b>."
     },
-    miniJeu: "js/games/veloRoute.js"
   }
 ]
 
