@@ -48,13 +48,15 @@ function ski_game({setGame}) {
             Gate : {w : 140, h : 120},
             tree : {w : 130, h : 180},
             fan : {w : 100, h : 120},
-            finishLine : {w : 600, h :200 }
+            finishLine : {w : 600, h :200 },
+            player :{w : 100, h : 120}
         }
-
-        let obstacles = createObstacles();
 
         let playerX = 450;
         const playerY = 100;
+
+        let obstacles = createObstacles();
+
 
         const keys = {
             ArrowLeft: false,
@@ -129,6 +131,8 @@ function ski_game({setGame}) {
             obstacles.push({ type: "blueGate", x: 280, y: 500 });
             obstacles.push({ type: "redGate", x: 550, y: 1000 });
             obstacles.push({ type: "finishLine", x: 250, y: 900 });
+
+            obstacles.push({ type: "player", x: playerX, y: playerY });
 
             return obstacles;
         }
@@ -240,23 +244,41 @@ function ski_game({setGame}) {
         }
 
         function betterSort(obstacles) {
+            const playerBottom = playerY + eltSize["player"].h;
+
             return (obstacles.sort((a, b) =>{
                 let eltA;
                 let eltB;
+                const isPlayerA = a.type === "player";
+                const isPlayerB = b.type === "player";
 
-                if(a.type.includes("tree")){eltA = "tree"}
-                else if(a.type.includes("finishLine")){eltA = "finishLine"}
-                else if(a.type.includes("Gate")){eltA = "Gate"}
-                else if(a.type.includes("fan")){eltA = "fan"}
+                if (isPlayerB) {
+                    if(a.type.includes("tree")){eltA = "tree"}
+                    else if(a.type.includes("finishLine")){eltA = "finishLine"}
+                    else if(a.type.includes("Gate")){eltA = "Gate"}
+                    else if(a.type.includes("fan")){eltA = "fan"}
 
-                if(b.type.includes("tree")){eltB = "tree"}
-                else if(b.type.includes("finishLine")){eltB = "finishLine"}
-                else if(b.type.includes("Gate")){eltB = "Gate"}
-                else if(b.type.includes("fan")){eltB = "fan"}
+                    const aBottom = b.y + eltSize[eltA].h;
+                    return aBottom > playerBottom ? 1 : -1;
+                }
+
+                if (isPlayerA) {
+                    if(b.type.includes("tree")){eltB = "tree"}
+                    else if(b.type.includes("finishLine")){eltB = "finishLine"}
+                    else if(b.type.includes("Gate")){eltB = "Gate"}
+                    else if(b.type.includes("fan")){eltB = "fan"}
+
+                    const bBottom = b.y + eltSize[eltB].h;
+                    return bBottom > playerBottom ? -1 : 1;
+                }
+
+                eltA = a.type.includes("tree") ? "tree" : a.type.includes("finishLine") ? "finishLine" : a.type.includes("Gate") ? "Gate" : "fan";
+                eltB = b.type.includes("tree") ? "tree" : b.type.includes("finishLine") ? "finishLine" : b.type.includes("Gate") ? "Gate" : "fan";
 
                 return (eltSize[eltA].h + a.y) - (eltSize[eltB].h + b.y);
             }))
         }
+
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -278,17 +300,6 @@ function ski_game({setGame}) {
 
             const obstaclesSort = betterSort(obstacles)
 
-            if (imgSkier) {
-                let currentSkierImg = imgSkier;
-
-                if (directionSkier === 1 && imgSkierG) {
-                    currentSkierImg = imgSkierG;
-                } else if (directionSkier === 2 && imgSkierD) {
-                    currentSkierImg = imgSkierD;
-                }
-                ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
-            }
-
             obstaclesSort.forEach(obs => {
                 if (obs.type === "blueGate" && imgBlueGates) {
                     ctx.drawImage(imgBlueGates, obs.x, obs.y, eltSize["Gate"].w, eltSize["Gate"].h);
@@ -308,6 +319,15 @@ function ski_game({setGame}) {
                     ctx.drawImage(imgFan1, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
                 }else if (obs.type === "fan2" && imgFan2) {
                     ctx.drawImage(imgFan2, obs.x, obs.y, eltSize["fan"].w, eltSize["fan"].h);
+                }else if(obs.type === "player" && imgSkier){
+                    let currentSkierImg = imgSkier;
+
+                    if (directionSkier === 1 && imgSkierG) {
+                        currentSkierImg = imgSkierG;
+                    } else if (directionSkier === 2 && imgSkierD) {
+                        currentSkierImg = imgSkierD;
+                    }
+                    ctx.drawImage(currentSkierImg, playerX, playerY, 100, 120);
                 }
             });
 
