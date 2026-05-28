@@ -14,8 +14,7 @@ import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
 import defeatText from "../../assets/games_illustrations/road_bike/texte_defaite.svg";
 
-
-function roadBike_game({setGame}) {
+function roadBikeGame({setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
@@ -51,6 +50,27 @@ function roadBike_game({setGame}) {
         let roadSegments = [];
         const segmentHeight = 5;
         const roadWidth = 200;
+
+        const sources = {
+            biker0 : { name : biker0, w : 50 , h : 120},
+            biker1 : { name : biker1, w : 50 , h : 120},
+            biker2 : { name : biker2, w : 50, h : 120},
+
+            grass0:{name:grass0, w: 40, h:40},
+            grass1:{name:grass1, w: 40, h:40},
+            grass2:{name:grass2, w: 40, h:40},
+
+            treeDecor0: {name:tree0, w: 130, h:180},
+            treeDecor1: {name:tree1, w: 100, h:180},
+            treeDecor2: {name:tree2, w: 100, h:180},
+
+            finishLine: {name:finishLine, w: 600 , h:200},
+
+            victoryText : {name:victoryText, w: 950, h:850},
+            defeatText: {name:defeatText, w: 750, h:650},
+
+            roadPainting : {name:roadPainting, w: 5, h:15}
+        };
 
         function initRoad() {
             roadSegments = [];
@@ -94,8 +114,6 @@ function roadBike_game({setGame}) {
             for (let i = 0; i < 15; i++) {
                 obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
                 obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
-            }
-            for (let i = 0; i < 15; i++) {
                 obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
                 obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
             }
@@ -128,36 +146,17 @@ function roadBike_game({setGame}) {
             }
         };
 
-
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
 
-        const sources = {
-            biker0:biker0,
-            biker1:biker1,
-            biker2:biker2,
 
-            grass0:grass0,
-            grass1:grass1,
-            grass2:grass2,
-
-            treeDecor0: tree0,
-            treeDecor1: tree1,
-            treeDecor2: tree2,
-
-            finishLine: finishLine,
-            victoryText : victoryText,
-            defeatText: defeatText,
-
-            roadPainting : roadPainting
-        };
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
 
-        Object.entries(sources).forEach(([key, src]) => {
+        Object.entries(sources).forEach(([key, data]) => {
             const img = new Image();
-            img.src = src;
+            img.src = data.name;
             img.onload = () => {
                 imagesRef.current[key] = img;
                 loadedCount++;
@@ -328,57 +327,25 @@ function roadBike_game({setGame}) {
             const imgBiker1 = imagesRef.current.biker1;
             const imgBiker2 = imagesRef.current.biker2;
 
-            const imgTreeDecor0 = imagesRef.current.treeDecor0;
-            const imgTreeDecor1 = imagesRef.current.treeDecor1;
-            const imgTreeDecor2 = imagesRef.current.treeDecor2;
-
-            const imgGrass0 = imagesRef.current.grass0;
-            const imgGrass1 = imagesRef.current.grass1;
-            const imgGrass2 = imagesRef.current.grass2;
-
-            const imgFinishLine = imagesRef.current.finishLine;
-
-            const imgRoadPainting = imagesRef.current.roadPainting;
-
             const obstaclesSort = betterSort(obstacles);
 
-
-
-
             obstaclesSort.forEach(obs => {
-                if (obs.type === "finishLine" && imgFinishLine) {
-                    ctx.drawImage(imgFinishLine, obs.x, obs.y, 600, 200);
-                }
+                let img = imagesRef.current[obs.type];
 
-                else if (obs.type === "treeDecor0" && imgTreeDecor0) {
-                    ctx.drawImage(imgTreeDecor0, obs.x, obs.y, 130, 180);
-                }else if (obs.type === "treeDecor1" && imgTreeDecor1) {
-                    ctx.drawImage(imgTreeDecor1, obs.x, obs.y, 100, 180);
-                }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
-                    ctx.drawImage(imgTreeDecor2, obs.x, obs.y, 100, 180);
-                }else if (obs.type === "grass0" && imgGrass0) {
-                    ctx.drawImage(imgGrass0, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "grass1" && imgGrass1) {
-                    ctx.drawImage(imgGrass1, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "grass2" && imgGrass2) {
-                    ctx.drawImage(imgGrass2, obs.x, obs.y, 40, 40);
-                }else if (obs.type === "roadPainting" && imgRoadPainting) {
-                    ctx.drawImage(imgRoadPainting, obs.x, obs.y, 5, 15);
+                if(img){
+                    ctx.drawImage(img, obs.x, obs.y, sources[obs.type].w, sources[obs.type].h)
                 }
             });
 
             if (imgBiker0) {
                 let currentPlayerImg = imgBiker0;
 
-                // Gauche
                 if (playerDirection === 1 && imgBiker1) {
                     currentPlayerImg = imgBiker1;
                 }
-                // Droite
                 else  if (playerDirection === 2 && imgBiker2) {
                     currentPlayerImg = imgBiker2;
                 }
-                // Tout droit
                 else {
                     if (playerFrame === 1 && imgBiker1) {
                         currentPlayerImg = imgBiker1;
@@ -386,14 +353,14 @@ function roadBike_game({setGame}) {
                         currentPlayerImg = imgBiker2;
                     }
                 }
-                ctx.drawImage(currentPlayerImg, playerX, playerY, 50, 120);
+                ctx.drawImage(currentPlayerImg, playerX, playerY, sources["biker0"].w, sources["biker0"].h);
             }
 
             if(gameEnd){
                 if(win){
-                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
+                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, sources["victoryText"].w, sources["victoryText"].h);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 200, 200, 750, 650);
+                    ctx.drawImage(imagesRef.current.defeatText, 200, 200, sources["defeatText"].w, sources["defeatText"].h);
                 }
             }
         }
@@ -434,4 +401,4 @@ function roadBike_game({setGame}) {
     );
 }
 
-export default roadBike_game;
+export default roadBikeGame;
