@@ -257,12 +257,12 @@ function ski_game({setGame}) {
             const obstaclesSort = [...obstacles].sort((a, b) => a.y - b.y);
 
             if (imgSkier) {
-                let currentSkierImg = imagesRef.current.skier;
+                let currentSkierImg = imgSkier;
 
-                if (directionSkier === 1 && imagesRef.current.skierG) {
-                    currentSkierImg = imagesRef.current.skierG;
-                } else if (directionSkier === 2 && imagesRef.current.skierD) {
-                    currentSkierImg = imagesRef.current.skierD;
+                if (directionSkier === 1 && imgSkierG) {
+                    currentSkierImg = imgSkierG;
+                } else if (directionSkier === 2 && imgSkierD) {
+                    currentSkierImg = imgSkierD;
                 }
                 ctx.drawImage(currentSkierImg, skierX, skierY, 100, 120);
             }
