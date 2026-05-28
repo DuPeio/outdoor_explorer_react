@@ -40,7 +40,7 @@ function ClimbGame({setGame}){
 
         let fakeHolds = [];
 
-        const elmtSize = [
+        const holdsSizes = [
             {w:45, h:68.5},
             {w:41, h:49},
             {w:35.5, h:63.5},
@@ -127,7 +127,7 @@ function ClimbGame({setGame}){
                 let newHold = getRandomInt(0,6);
 
                 newHolds.push({
-                    x: isEven ?  playerX - 75 - elmtSize[newHold].w/2 : playerX + 80 - elmtSize[newHold].w/2,
+                    x: isEven ?  playerX - 75 - holdsSizes[newHold].w/2 : playerX + 80 - holdsSizes[newHold].w/2,
                     y: i,
                     letter: newLetter,
                     hold : newHold
@@ -238,8 +238,6 @@ function ClimbGame({setGame}){
             animationFrameIdRef.current = requestAnimationFrame(gameLoop);
         }
 
-
-
         function updatePositions(){
             if (canvas.dataset.started !== "true" || gameEnd) {
                 return;
@@ -282,7 +280,7 @@ function ClimbGame({setGame}){
 
                     let newHold = getRandomInt(0,6);
                     let newH = {
-                        x: (highestH.x > 500 ? playerX - 75 - elmtSize[newHold].w/2 : playerX + 85 - elmtSize[newHold].w/2),
+                        x: (highestH.x > 500 ? playerX - 75 - holdsSizes[newHold].w/2 : playerX + 85 - holdsSizes[newHold].w/2),
                         y: highestH.y - 100,
                         letter: newLetter,
                         hold : newHold
@@ -314,7 +312,7 @@ function ClimbGame({setGame}){
                 const imgHold = imagesRef.current[`hold${h.hold}`];
 
                 if(imgHold){
-                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, elmtSize[h.hold].w, elmtSize[h.hold].h);
+                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, holdsSizes[h.hold].w, holdsSizes[h.hold].h);
                 }
             });
 
@@ -322,22 +320,21 @@ function ClimbGame({setGame}){
                 const imgHold = imagesRef.current[`hold${h.hold}`];
 
                 if(imgHold){
-                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, elmtSize[h.hold].w, elmtSize[h.hold].h);
+                    ctx.drawImage(imgHold, h.x, h.y + currentScrollY, holdsSizes[h.hold].w, holdsSizes[h.hold].h);
                 }
             });
 
             if(!win){
                 let h = holds[currentHoldId]
-                ctx.fillText(h.letter.toUpperCase(), h.x+elmtSize[holds[currentHoldId].hold].w/2, h.y+elmtSize[holds[currentHoldId].hold].h*1.5+currentScrollY);
+                ctx.fillText(h.letter.toUpperCase(), h.x+holdsSizes[holds[currentHoldId].hold].w/2, h.y+holdsSizes[holds[currentHoldId].hold].h*1.5+currentScrollY);
 
                 ctx.beginPath();
-                ctx.arc(h.x+elmtSize[holds[currentHoldId].hold].w/2, h.y+elmtSize[holds[currentHoldId].hold].h/2+currentScrollY, elmtSize[holds[currentHoldId].hold].w, 0, Math.PI * 2);
+                ctx.arc(h.x+holdsSizes[holds[currentHoldId].hold].w/2, h.y+holdsSizes[holds[currentHoldId].hold].h/2+currentScrollY, holdsSizes[holds[currentHoldId].hold].w, 0, Math.PI * 2);
                 ctx.strokeStyle = "rgb(218 190 18 / 0.12)";
                 ctx.lineWidth = 5;
                 ctx.stroke();
                 ctx.closePath();
             }
-
 
             let currentClimber = imagesRef.current[`climber${playerFrame}`];
 
@@ -352,7 +349,6 @@ function ClimbGame({setGame}){
             if(!gameEnd){
                 ctx.fillText(`Score : ${score}`, canvas.width/2-45, canvas.height-15);
             }
-
 
             if(gameEnd){
                 if(win){
