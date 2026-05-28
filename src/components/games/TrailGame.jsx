@@ -30,7 +30,7 @@ import defeatText from "../../assets/games_illustrations/trail/texte_defaite.svg
 
 import {useGameContext} from "../../context/GameContext.jsx";
 
-function trail_game({setGame}) {
+function trailGame({setGame}) {
 
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
@@ -60,7 +60,6 @@ function trail_game({setGame}) {
 
         let playerDirection = 0;
 
-        // For the player animation
         let playerFrame = 0;
         let lastFrame = 1;
         let animationFrame = 0;
@@ -133,7 +132,7 @@ function trail_game({setGame}) {
             };
         });
 
-        const obs_types = ["tree0","tree1","tree2","rock0","rock1","rock2"];
+        const obsTypes = ["tree0","tree1","tree2","rock0","rock1","rock2"];
 
         const hitboxes = {
             tree0: { w: 130, h: 180, offsetX: 25,  offsetY: 60  },
@@ -157,27 +156,18 @@ function trail_game({setGame}) {
             player: { w: 40, h: 90, offsetX: 0, offsetY: 0}
         };
 
-        //Fonction différente
         function createObstacles(){
             let obstacles = [];
 
             for (let i = 0; i < 5; i++) {
                 obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(150, 850), y: getRandomInt(280, 750) });
+                obstacles.push({ type: `rock${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(280, 750) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 750) });
             }
 
             for (let i = 0; i < 15; i++) {
                 obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, 900) });
-            }
-            for (let i = 0; i < 15; i++) {
                 obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(860, 950), y: getRandomInt(-50, 900) });
-            }
-
-            for (let i = 0; i < 5; i++) {
-                obstacles.push({ type: `rock${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(280, 750) });
-            }
-
-            for (let i = 0; i < 5; i++) {
-                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 950), y: getRandomInt(-50, 750) });
             }
 
             obstacles.push({ type: "finishLine", x: 200, y: 900 });
@@ -187,7 +177,6 @@ function trail_game({setGame}) {
             return obstacles;
         }
 
-        // Fonction réutilisable
         function gameLoop() {
             if (canvas.dataset.reset === "true") {
                 gameEnd = false;
@@ -206,30 +195,30 @@ function trail_game({setGame}) {
 
         function checkCollision(playerX, playerY, obs) {
             const hb = hitboxes[obs.type];
-            const player_box = hitboxes["player"];
+            const playerBox = hitboxes["player"];
             if (!hb) return false;
 
-            const pw = player_box.w;
-            const ph = player_box.h;
+            const pw = playerBox.w;
+            const ph = playerBox.h;
 
-            const px_start = playerX + player_box.offsetX;
-            const px_end = playerX + pw - player_box.offsetX;
+            const pxStart = playerX + playerBox.offsetX;
+            const pxEnd = playerX + pw - playerBox.offsetX;
 
-            const py_end = playerY + ph;
+            const pyEnd = playerY + ph;
 
             const ow = hb.w;
             const oh = hb.h;
 
-            const ox_start = obs.x + hb.offsetX;
-            const ox_end = obs.x + ow - hb.offsetX;
+            const oxStart = obs.x + hb.offsetX;
+            const oxEnd = obs.x + ow - hb.offsetX;
 
-            const oy_start = obs.y + hb.offsetY;
-            const oy_end = obs.y + oh;
+            const oyStart = obs.y + hb.offsetY;
+            const oyEnd = obs.y + oh;
 
-            if((py_end > oy_start && py_end < oy_end)){
-                return ((px_start > ox_start && px_start < ox_end) ||
-                    (px_end > ox_start && px_end < ox_end) ||
-                    (px_start < ox_start && px_end > ox_end));
+            if((pyEnd > oyStart && pyEnd < oyEnd)){
+                return ((pxStart > oxStart && pxStart < oxEnd) ||
+                    (pxEnd > oxStart && pxEnd < oxEnd) ||
+                    (pxStart < oxStart && pxEnd > oxEnd));
             }
             return false;
         }
@@ -255,8 +244,7 @@ function trail_game({setGame}) {
                         obs.y -= speed;
                     }
 
-                    //Pour vérifier que les collisions
-                    if (obs_types.includes(obs.type)) {
+                    if (obsTypes.includes(obs.type)) {
                         if (checkCollision(playerX, playerY, obs)) {
                             win = false;
                             gameEnd = true;
@@ -265,20 +253,15 @@ function trail_game({setGame}) {
                         }
                     }
 
-                    // Pour faire une belle boucle
                     if (obs.y < -200) {
+                        if (obs.type.includes("treeDecor")) {
+                            obs.y = canvas.height + getRandomInt(50, 400);
+                            obs.x = obs.x > 500 ? getRandomInt(-50, 150) : getRandomInt(850, 950);
+                        }
+
                         if (obs.type.includes("tree") || obs.type.includes("rock")){
                             obs.y = canvas.height + getRandomInt(50, 400);
                             obs.x = getRandomInt(200, 800);
-                        }
-
-                        if (obs.type.includes("treeDecor")) {
-                            obs.y = canvas.height + getRandomInt(50, 400);
-                            if (obs.x < 500) {
-                                obs.x = getRandomInt(-50, 150);
-                            } else {
-                                obs.x = getRandomInt(850, 950);
-                            }
                         }
 
                         if(obs.type.includes("grass")){
@@ -377,98 +360,44 @@ function trail_game({setGame}) {
             const imgTrailerD2 = imagesRef.current.trailerD2;
             const imgTrailerD3 = imagesRef.current.trailerD3;
 
-            const imgTree0 = imagesRef.current.tree0;
-            const imgTree1 = imagesRef.current.tree1;
-            const imgTree2 = imagesRef.current.tree2;
-
-            const imgTreeDecor0 = imagesRef.current.treeDecor0;
-            const imgTreeDecor1 = imagesRef.current.treeDecor1;
-            const imgTreeDecor2 = imagesRef.current.treeDecor2;
-
-            const imgRock0 = imagesRef.current.rock0;
-            const imgRock1 = imagesRef.current.rock1;
-            const imgRock2 = imagesRef.current.rock2
-
-            const imgGrass0 = imagesRef.current.grass0;
-            const imgGrass1 = imagesRef.current.grass1;
-            const imgGrass2 = imagesRef.current.grass2;
-
-            const imgFinishLine = imagesRef.current.finishLine
-
             const obstaclesSort = betterSort(obstacles);
 
-
             obstaclesSort.forEach(obs => {
-                if (obs.type === "finishLine" && imgFinishLine) {
-                    ctx.drawImage(imgFinishLine, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }
+                let img = imagesRef.current[obs.type];
 
-                else if (obs.type === "tree0" && imgTree0) {
-                    ctx.drawImage(imgTree0, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if (obs.type === "tree1" && imgTree1) {
-                    ctx.drawImage(imgTree1, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if (obs.type === "tree2" && imgTree2) {
-                    ctx.drawImage(imgTree2, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }
+                if(img){
+                    if(obs.type === "player" && imgTrailer0){
 
-                else if(obs.type === "rock0" && imgRock0){
-                    ctx.drawImage(imgRock0, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if(obs.type === "rock1" && imgRock1){
-                    ctx.drawImage(imgRock1, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if(obs.type === "rock2" && imgRock2){
-                    ctx.drawImage(imgRock2, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }
+                        let currentPlayerImg = imgTrailer0;
 
-                else if (obs.type === "treeDecor0" && imgTreeDecor0) {
-                    ctx.drawImage(imgTreeDecor0, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if (obs.type === "treeDecor1" && imgTreeDecor1) {
-                    ctx.drawImage(imgTreeDecor1, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if (obs.type === "treeDecor2" && imgTreeDecor2) {
-                    ctx.drawImage(imgTreeDecor2, obs.x, obs.y,  hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }
-
-                else if(obs.type === "grass0" && imgGrass0){
-                    ctx.drawImage(imgGrass0, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if(obs.type === "grass1" && imgGrass1){
-                    ctx.drawImage(imgGrass1, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }else if(obs.type === "grass2" && imgGrass2){
-                    ctx.drawImage(imgGrass2, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
-                }
-
-                else if(obs.type === "player" && imgTrailer0){
-
-                    let currentPlayerImg = imagesRef.current.trailer0;
-
-                    // Gauche
-                    if (playerFrame === 3 && imgTrailerG1) {
-                        currentPlayerImg = imgTrailerG1;
-                    } else if (playerFrame === 4 && imgTrailerG2) {
-                        currentPlayerImg = imgTrailerG2;
-                    }else if (playerFrame === 5 && imgTrailerG3) {
-                        currentPlayerImg = imgTrailerG3;
-                    }
-
-                    // Droite
-                    else  if (playerFrame === 6 && imgTrailerD1) {
-                        currentPlayerImg = imgTrailerD1;
-                    } else if (playerFrame === 7 && imgTrailerD2) {
-                        currentPlayerImg = imgTrailerD2;
-                    }else if (playerFrame === 8 && imgTrailerD3) {
-                        currentPlayerImg = imgTrailerD3;
-                    }
-
-                    // Tout droit
-                    else {
-                        if (playerFrame === 1 && imgTrailer1) {
-                            currentPlayerImg = imgTrailer1;
-                        } else if (playerFrame === 2 && imgTrailer2) {
-                            currentPlayerImg = imgTrailer2;
+                        if (playerFrame === 3 && imgTrailerG1) {
+                            currentPlayerImg = imgTrailerG1;
+                        } else if (playerFrame === 4 && imgTrailerG2) {
+                            currentPlayerImg = imgTrailerG2;
+                        }else if (playerFrame === 5 && imgTrailerG3) {
+                            currentPlayerImg = imgTrailerG3;
                         }
 
-                    }
-                    ctx.drawImage(currentPlayerImg, playerX, playerY, hitboxes["player"].w, hitboxes["player"].h);
-                }
+                        else  if (playerFrame === 6 && imgTrailerD1) {
+                            currentPlayerImg = imgTrailerD1;
+                        } else if (playerFrame === 7 && imgTrailerD2) {
+                            currentPlayerImg = imgTrailerD2;
+                        }else if (playerFrame === 8 && imgTrailerD3) {
+                            currentPlayerImg = imgTrailerD3;
+                        }
 
+                        else {
+                            if (playerFrame === 1 && imgTrailer1) {
+                                currentPlayerImg = imgTrailer1;
+                            } else if (playerFrame === 2 && imgTrailer2) {
+                                currentPlayerImg = imgTrailer2;
+                            }
+
+                        }
+                        ctx.drawImage(currentPlayerImg, playerX, playerY, hitboxes["player"].w, hitboxes["player"].h);
+                    }
+                    else{ctx.drawImage(img, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);}
+                }
             });
 
             if(gameEnd){
@@ -508,7 +437,6 @@ function trail_game({setGame}) {
                 </button>
             )}
 
-
             <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
 
             <div className={"instruction"}>Eviter les obstacles avec les flèches &lt; gauche et droite &gt;.</div>
@@ -516,4 +444,4 @@ function trail_game({setGame}) {
     );
 }
 
-export default trail_game;
+export default trailGame;
