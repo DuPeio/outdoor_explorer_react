@@ -57,7 +57,6 @@ function ski_game({setGame}) {
 
         let obstacles = createObstacles();
 
-
         const keys = {
             ArrowLeft: false,
             ArrowRight: false

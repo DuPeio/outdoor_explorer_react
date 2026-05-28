@@ -5,8 +5,11 @@ import trailer2 from "../../assets/games_illustrations/trail/trailer2.svg";
 
 import trailerG1 from "../../assets/games_illustrations/trail/trailerG1.svg";
 import trailerG2 from "../../assets/games_illustrations/trail/trailerG2.svg";
+import trailerG3 from "../../assets/games_illustrations/trail/trailerG3.svg";
+
 import trailerD1 from "../../assets/games_illustrations/trail/trailerD1.svg";
 import trailerD2 from "../../assets/games_illustrations/trail/trailerD2.svg";
+import trailerD3 from "../../assets/games_illustrations/trail/trailerD3.svg";
 
 import tree0 from "../../assets/games_illustrations/share/tree0.svg";
 import tree1 from "../../assets/games_illustrations/share/tree1.svg";
@@ -61,7 +64,7 @@ function trail_game({setGame}) {
         let playerFrame = 0;
         let lastFrame = 1;
         let animationFrame = 0;
-        const animationSpeed = 12
+        const animationSpeed = 8;
 
         const keys = {
             ArrowLeft: false,
@@ -89,8 +92,10 @@ function trail_game({setGame}) {
             trailer2: trailer2,
             trailerG1: trailerG1,
             trailerG2: trailerG2,
+            trailerG3: trailerG3,
             trailerD1: trailerD1,
             trailerD2: trailerD2,
+            trailerD3: trailerD3,
 
             tree0: tree0,
             tree1: tree1,
@@ -235,7 +240,7 @@ function trail_game({setGame}) {
             if (canvas.dataset.started !== "true" || gameEnd) {
                 return;
             }
-            // speed += 0.003;
+            speed += 0.003;
             pixelPastedRef.current -= speed;
 
             if(pixelPastedRef.current <= -10000){
@@ -311,9 +316,19 @@ function trail_game({setGame}) {
                         }
 
                     } else if (playerDirection === 1){
-                        playerFrame = playerFrame === 3 ? 4 : 3;
+                        if (playerFrame === 4) {
+                            playerFrame = lastFrame === 3 ? 5 : 3;
+                            lastFrame = playerFrame;
+                        } else {
+                            playerFrame = 4;
+                        }
                     } else {
-                        playerFrame = playerFrame === 5 ? 6 : 5;
+                        if (playerFrame === 7) {
+                            playerFrame = lastFrame === 6 ? 8 : 6;
+                            lastFrame = playerFrame;
+                        } else {
+                            playerFrame = 7;
+                        }
                     }
                 }
             }
@@ -353,10 +368,14 @@ function trail_game({setGame}) {
             const imgTrailer0 = imagesRef.current.trailer0;
             const imgTrailer1 = imagesRef.current.trailer1;
             const imgTrailer2 = imagesRef.current.trailer2;
+
             const imgTrailerG1 = imagesRef.current.trailerG1;
             const imgTrailerG2 = imagesRef.current.trailerG2;
+            const imgTrailerG3 = imagesRef.current.trailerG3;
+
             const imgTrailerD1 = imagesRef.current.trailerD1;
             const imgTrailerD2 = imagesRef.current.trailerD2;
+            const imgTrailerD3 = imagesRef.current.trailerD3;
 
             const imgTree0 = imagesRef.current.tree0;
             const imgTree1 = imagesRef.current.tree1;
@@ -425,13 +444,17 @@ function trail_game({setGame}) {
                         currentPlayerImg = imgTrailerG1;
                     } else if (playerFrame === 4 && imgTrailerG2) {
                         currentPlayerImg = imgTrailerG2;
+                    }else if (playerFrame === 5 && imgTrailerG3) {
+                        currentPlayerImg = imgTrailerG3;
                     }
 
                     // Droite
-                    else  if (playerFrame === 5 && imgTrailerD1) {
+                    else  if (playerFrame === 6 && imgTrailerD1) {
                         currentPlayerImg = imgTrailerD1;
-                    } else if (playerFrame === 6 && imgTrailerD2) {
+                    } else if (playerFrame === 7 && imgTrailerD2) {
                         currentPlayerImg = imgTrailerD2;
+                    }else if (playerFrame === 8 && imgTrailerD3) {
+                        currentPlayerImg = imgTrailerD3;
                     }
 
                     // Tout droit
@@ -441,6 +464,7 @@ function trail_game({setGame}) {
                         } else if (playerFrame === 2 && imgTrailer2) {
                             currentPlayerImg = imgTrailer2;
                         }
+
                     }
                     ctx.drawImage(currentPlayerImg, playerX, playerY, hitboxes["player"].w, hitboxes["player"].h);
                 }
