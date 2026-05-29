@@ -422,6 +422,7 @@ button:hover{
 .game-container{
   width: 110%;
   height: 110%;
+  margin-top: -10%;
 }
 
 .game{
@@ -432,24 +433,19 @@ button:hover{
   align-items: center;
 }
 
+.game-buttons{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 75%;
+}
+
 .back-button{
   font-size: 12px;
-  padding: 5px 50px;
-  position: absolute;
-  top:50%;
-  left: -150px;
+  padding: 8px;
+  margin: 20px 30px;
 }
 
-.back-button.position{
-  font-size: 12px;
-  top:85%;
-  left: 45.5%;
-}
-
-.launch-game-button{
-  position: absolute;
-  bottom: 150px;
-}
 canvas{
   border-radius: 15px;
 }

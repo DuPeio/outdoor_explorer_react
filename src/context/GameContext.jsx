@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useRef } from "react";
+import {createContext, useContext, useState, useRef, useEffect} from "react";
 import { NUMBER_OF_SPORTS } from "../config/constants.js";
 import { db } from '/services/firebase.js';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
@@ -11,6 +11,16 @@ export function GameContextProvider({ children }) {
     const usernameRef = useRef('');
     const gamesDoneRef = useRef(Array(NUMBER_OF_SPORTS).fill(false));
     const [displayBook, setDisplayBook] = useState(true);
+
+    const [screenSize, setScreenSize] = useState({width: window.innerWidth, height: window.innerHeight});
+
+    useEffect(() => {
+        function handleResize() {setScreenSize({width: window.innerWidth, height: window.innerHeight});}
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     async function handleLogin(id) {
         try{
@@ -66,8 +76,9 @@ export function GameContextProvider({ children }) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+
     return (
-        <GameContext.Provider value={{ gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
+        <GameContext.Provider value={{ screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
             {children}
         </GameContext.Provider>
     );
