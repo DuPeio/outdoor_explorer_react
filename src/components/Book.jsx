@@ -19,6 +19,12 @@ function Book({setDisplayGame}){
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
+    const userAgent = navigator.userAgent;
+    console.log(userAgent);
+    if(userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('android')) {
+        alert("Ce site est optimisé pour une navigation sur ordinateur.");
+    }
+
     function handleCoverClick() {
         let newHidden;
         if (!coverFlipped) {
