@@ -19,9 +19,11 @@ function Book({setDisplayGame}){
     const [pagesHidden, setPagesHide] = useState(Array(NUMBER_OF_SPORTS + 1).fill(true));
     const [pagesLefted, setPagesLefted] = useState(Array(NUMBER_OF_SPORTS + 1).fill(false));
 
+    const [messageDisplayed, setMessageDisplayed] = useState(false);
+
     const userAgent = navigator.userAgent.toLowerCase();
-    console.log(userAgent);
-    if(userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('android')) {
+    if(!messageDisplayed && (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('android'))) {
+        setMessageDisplayed(true);
         alert("Ce site est optimisé pour une navigation sur ordinateur.");
     }
 
