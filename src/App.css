@@ -434,12 +434,22 @@ button:hover{
 
 .back-button{
   font-size: 12px;
-  padding:5px;
+  padding: 5px 50px;
   position: absolute;
   top:50%;
   left: -150px;
 }
 
+.back-button.position{
+  font-size: 12px;
+  top:85%;
+  left: 45.5%;
+}
+
+.launch-game-button{
+  position: absolute;
+  bottom: 150px;
+}
 canvas{
   border-radius: 15px;
 }
@@ -448,7 +458,4 @@ canvas{
   color: #000;
 }
 
-.launch-game-button{
-  position: absolute;
-  bottom: 100px;
-}
+

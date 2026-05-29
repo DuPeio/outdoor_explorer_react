@@ -434,7 +434,7 @@ function trailGame({setGame}) {
 
     return (
         <div className={"game"}>
-            <button className={"back-button"} onClick={() => {
+            <button className={`back-button ${!gameStarted ? 'position' : ''}`} onClick={() => {
                 setGame(false);
                 setDisplayBook(true);
                 setGameStarted(false);
