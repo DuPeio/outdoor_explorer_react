@@ -110,6 +110,7 @@ body{
 
 .img-cover{
   position: absolute;
+  width: 75%;
 }
 
 .rings {
