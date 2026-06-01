@@ -28,9 +28,8 @@ import victoryText from "../../assets/games_illustrations/share/texte_victoire.s
 import defeatText from "../../assets/games_illustrations/trail/texte_defaite.svg";
 
 import { useGameContext } from "../../context/GameContext.jsx";
+import { BASE_WIDTH, BASE_HEIGHT} from '../../config/constants.js';
 
-const BASE_WIDTH = 1200;
-const BASE_HEIGHT = 850;
 
 function trailGame({ setGame }) {
     const canvasRef = useRef(null);
@@ -145,12 +144,12 @@ function trailGame({ setGame }) {
         function createObstacles() {
             const obs = [];
             for (let i = 0; i < 5; i++) {
-                obs.push({ type: `tree${getRandomInt(0, 2)}`,  x: getRandomInt(150, BASE_WIDTH - 150),   y: getRandomInt(280, BASE_HEIGHT) });
-                obs.push({ type: `rock${getRandomInt(0, 2)}`,  x: getRandomInt(-50, BASE_WIDTH + 50),    y: getRandomInt(280, BASE_HEIGHT) });
-                obs.push({ type: `grass${getRandomInt(0, 2)}`, x: getRandomInt(-50, BASE_WIDTH + 50),    y: getRandomInt(-50, BASE_HEIGHT) });
+                obs.push({ type: `tree${getRandomInt(0, 2)}`, x: getRandomInt(150, BASE_WIDTH - 150), y: getRandomInt(280, BASE_HEIGHT) });
+                obs.push({ type: `rock${getRandomInt(0, 2)}`, x: getRandomInt(-50, BASE_WIDTH + 50), y: getRandomInt(280, BASE_HEIGHT) });
+                obs.push({ type: `grass${getRandomInt(0, 2)}`, x: getRandomInt(-50, BASE_WIDTH + 50), y: getRandomInt(-50, BASE_HEIGHT) });
             }
             for (let i = 0; i < 15; i++) {
-                obs.push({ type: `treeDecor${getRandomInt(0, 2)}`, x: getRandomInt(-50, 150),                          y: getRandomInt(-50, BASE_HEIGHT + 100) });
+                obs.push({ type: `treeDecor${getRandomInt(0, 2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, BASE_HEIGHT + 100) });
                 obs.push({ type: `treeDecor${getRandomInt(0, 2)}`, x: getRandomInt(BASE_WIDTH - 150, BASE_WIDTH + 150), y: getRandomInt(-50, BASE_HEIGHT + 100) });
             }
             obs.push({ type: "finishLine", x: BASE_WIDTH / 2 - hitboxes["finishLine"].w / 2, y: 900 });
@@ -181,28 +180,28 @@ function trailGame({ setGame }) {
             if (!hb) return false;
 
             const pxStart = px + pb.offsetX;
-            const pxEnd   = px + pb.w - pb.offsetX;
-            const pyEnd   = py + pb.h;
+            const pxEnd= px + pb.w - pb.offsetX;
+            const pyEnd = py + pb.h;
 
             const oxStart = obs.x + hb.offsetX;
-            const oxEnd   = obs.x + hb.w - hb.offsetX;
+            const oxEnd= obs.x + hb.w - hb.offsetX;
             const oyStart = obs.y + hb.offsetY;
-            const oyEnd   = obs.y + hb.h;
+            const oyEnd = obs.y + hb.h;
 
             if (pyEnd > oyStart && pyEnd < oyEnd) {
                 return (
                     (pxStart > oxStart && pxStart < oxEnd) ||
-                    (pxEnd   > oxStart && pxEnd   < oxEnd) ||
-                    (pxStart < oxStart && pxEnd   > oxEnd)
+                    (pxEnd > oxStart && pxEnd < oxEnd) ||
+                    (pxStart < oxStart && pxEnd > oxEnd)
                 );
             }
             return false;
         }
 
         function updatePositions() {
-            const hPlayerSpeed    = 5;
-            const frontPlayerSpeed = 2;
-            const backPlayerSpeed  = 5;
+            const hPlayerSpeed= 5;
+            const frontPlayerSpeed= 2;
+            const backPlayerSpeed= 5;
 
             if (canvas.dataset.started !== "true" || gameEnd) return;
 

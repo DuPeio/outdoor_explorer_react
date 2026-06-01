@@ -14,35 +14,60 @@ import fan2 from "../../assets/games_illustrations/ski/fan2.svg";
 import blueGate from "../../assets/games_illustrations/ski/blue_gates.svg";
 import redGate from "../../assets/games_illustrations/ski/red_gates.svg";
 
-import finishLine from "../../assets/games_illustrations/ski/finish_line.svg"
+import finishLine from "../../assets/games_illustrations/ski/finish_line.svg";
+import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
+import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg";
 
-import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg"
-import defeatText from "../../assets/games_illustrations/ski/texte_defaite.svg"
+import { useGameContext } from "../../context/GameContext.jsx";
+import { BASE_WIDTH, BASE_HEIGHT } from '../../config/constants.js';
 
-import {useGameContext} from "../../context/GameContext.jsx";
-
-function SkiGame({setGame}) {
+function SkiGame({ setGame }) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
-    const [gameStarted, setGameStarted] = useState(false);
     const animationFrameIdRef = useRef(null);
+    const currentScaleRef = useRef(1);
 
-    const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const [gameStarted, setGameStarted] = useState(false);
+
+    const { screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY, 1);
+
+        currentScaleRef.current = newScale;
+        canvas.width = BASE_WIDTH * newScale;
+        canvas.height = BASE_HEIGHT * newScale;
+    }, [screenSize]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const initialScale = Math.min(scaleX, scaleY, 1);
+        currentScaleRef.current = initialScale;
+        canvas.width = BASE_WIDTH * initialScale;
+        canvas.height = BASE_HEIGHT * initialScale;
+
         let win = false;
         let gameEnd = false;
-
-        canvas.width = 1000;
-        canvas.height = 700;
 
         let speed = 4;
 
         let directionSkier = 0;
+        let playerX = 450;
+        const playerY = 100;
 
         let eltSize = {
             Gate : {w : 140, h : 120},
@@ -50,10 +75,7 @@ function SkiGame({setGame}) {
             fan : {w : 100, h : 120},
             finishLine : {w : 600, h :200 },
             player :{w : 100, h : 120}
-        }
-
-        let playerX = 450;
-        const playerY = 100;
+        };
 
         let obstacles = createObstacles();
 
@@ -67,7 +89,6 @@ function SkiGame({setGame}) {
                 keys[e.key] = true;
             }
         };
-
         const handleKeyUp = (e) => {
             if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
                 keys[e.key] = false;
@@ -101,16 +122,13 @@ function SkiGame({setGame}) {
 
         let loadedCount = 0;
         const totalImages = Object.keys(sources).length;
-
         Object.entries(sources).forEach(([key, src]) => {
             const img = new Image();
             img.src = src;
             img.onload = () => {
                 imagesRef.current[key] = img;
                 loadedCount++;
-                if (loadedCount === totalImages) {
-                    gameLoop();
-                }
+                if (loadedCount === totalImages) {gameLoop();}
             };
         });
 
@@ -118,20 +136,18 @@ function SkiGame({setGame}) {
             let obstacles = [];
 
             for (let i = 0; i < 35; i++) {
-                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, 800) });
-                obstacles.push({ type: `tree${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 800) })
+                obstacles.push({ type: `tree${getRandomInt(0, 2)}`, x: getRandomInt(-50, 100), y: getRandomInt(-50, BASE_HEIGHT + 200) });
+                obstacles.push({ type: `tree${getRandomInt(0, 2)}`, x: getRandomInt(BASE_WIDTH - 150, BASE_WIDTH + 150), y: getRandomInt(-50, BASE_HEIGHT + 200) });
             }
 
             for (let i = 0; i < 5; i++) {
-                obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(140, 160), y: getRandomInt(-50, 800) });
-                obstacles.push({ type: `fan${getRandomInt(0,2)}`, x: getRandomInt(750, 780), y: getRandomInt(-50, 800) });
+                obstacles.push({ type: `fan${getRandomInt(0, 2)}`, x: getRandomInt(140, 160), y: getRandomInt(-50, BASE_HEIGHT + 200) });
+                obstacles.push({ type: `fan${getRandomInt(0, 2)}`, x: getRandomInt(BASE_WIDTH - 150, BASE_WIDTH - 100), y: getRandomInt(-50, BASE_HEIGHT + 200) });
             }
 
-            obstacles.push({ type: "blueGate", x: 280, y: 500 });
-            obstacles.push({ type: "redGate", x: 550, y: 1000 });
-
-            obstacles.push({ type: "finishLine", x: 250, y: 900 });
-
+            obstacles.push({ type: "blueGate", x: 280,  y: 500 });
+            obstacles.push({ type: "redGate",  x: 550,  y: BASE_HEIGHT + 100 });
+            obstacles.push({ type: "finishLine", x: 250, y: BASE_HEIGHT + 100});
             obstacles.push({ type: "player", x: playerX, y: playerY });
 
             return obstacles;
@@ -169,9 +185,8 @@ function SkiGame({setGame}) {
         function updatePositions() {
             const skierSpeed = 5;
 
-            if (canvas.dataset.started !== "true" || gameEnd) {
-                return;
-            }
+            if (canvas.dataset.started !== "true" || gameEnd) return;
+
             speed += 0.003;
             pixelPastedRef.current -= speed;
 
@@ -180,65 +195,57 @@ function SkiGame({setGame}) {
                 gameEnd = true;
                 setGameStarted(false);
                 handleGameResult(0, true);
-            }else{
-                obstacles.forEach(obs => {
+                return;
+            }
 
-                    if(obs.type !== "finishLine" || pixelPastedRef.current <= -9050){
-                        obs.y -= speed;
-                    }
+            obstacles.forEach(obs => {
+                if(obs.type !== "finishLine" || pixelPastedRef.current <= -9050) {
+                    obs.y -= speed;
+                }
 
-                    if ((obs.type === "blueGate" || obs.type === "redGate")) {
-                        checkCollisions(obs);
-                    }
+                if (obs.type === "blueGate" || obs.type === "redGate") {
+                    checkCollisions(obs);
+                }
 
-                    if (obs.y < -200) {
-                        if (obs.type === "tree0" || obs.type === "tree1" || obs.type === "tree2") {
-                            obs.y = canvas.height + getRandomInt(50, 400);
-                            if (obs.x < 500) {
-                                obs.x = getRandomInt(-50, 150);
-                            } else {
-                                obs.x = getRandomInt(800, 950);
-                            }
-                        }if(obs.type === "fan0" || obs.type === "fan1" || obs.type === "fan2"){
-                            obs.y = canvas.height + getRandomInt(50, 400);
-                            if(pixelPastedRef.current <= -9250){
-                                    obs.x = getRandomInt(140, 780);
-                            }
-                            else{
-                                if (obs.x < 500) {
-                                    obs.x = getRandomInt(140, 160);
-                                } else {
-                                    obs.x = getRandomInt(750, 780);
-                                }
-                            }
-                        }else if (obs.type === "blueGate" || obs.type === "redGate") {
-                            if(pixelPastedRef.current >= -9200){
-                                obs.y = canvas.height
-                                if(obs.type === "blueGate") {
-                                    obs.x = getRandomInt(350, 500);
-                                }else{
-                                    obs.x = getRandomInt(500, 675);
-                                }
+                if (obs.y < -200) {
+                    if (obs.type.includes("tree")) {
+                        obs.y = BASE_HEIGHT + getRandomInt(50, 400);
+                        obs.x = obs.x < 500 ? getRandomInt(-50, 100) : getRandomInt(BASE_WIDTH - 150, BASE_WIDTH + 150);
+                    }else if(obs.type.includes("fan")){
+                        obs.y =BASE_HEIGHT + getRandomInt(50, 400);
+
+                        if(pixelPastedRef.current <= -9450){
+                                obs.x = getRandomInt(140, BASE_WIDTH - 100);
+                        }else{
+                            obs.x= obs.x<500 ? getRandomInt(140, 160):getRandomInt(BASE_WIDTH - 150, BASE_WIDTH - 100);
+                        }
+                    }else if (obs.type.includes("Gate")) {
+                        if(pixelPastedRef.current >= -9200){
+                            obs.y = BASE_HEIGHT + 100
+                            if(obs.type === "blueGate") {
+                                obs.x = getRandomInt(350, 500);
+                            }else{
+                                obs.x = getRandomInt(500, 675);
                             }
                         }
                     }
-                });
-                directionSkier = 0;
-
-                if (keys.ArrowLeft) {
-                    if(playerX - skierSpeed > 200){
-                        playerX -= skierSpeed;
-                        directionSkier = 1;
-                    }
                 }
-                if (keys.ArrowRight) {
-                    if(playerX + skierSpeed < 750){
-                        playerX += skierSpeed;
-                        directionSkier = 2;
+                });
+            directionSkier = 0;
+
+            if (keys.ArrowLeft) {
+                if(playerX - skierSpeed > 200){
+                    playerX -= skierSpeed;
+                    directionSkier = 1;
+                }
+            }
+            if (keys.ArrowRight) {
+                if(playerX + skierSpeed < BASE_WIDTH-200){
+                    playerX += skierSpeed;
+                    directionSkier = 2;
                     }
                 }
             }
-        }
 
         function betterSort(obstacles) {
             const playerBottom = playerY + eltSize["player"].h;
@@ -277,20 +284,20 @@ function SkiGame({setGame}) {
         }
 
         function drawGame() {
+            const scale = currentScaleRef.current;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.scale(scale, scale);
 
             ctx.fillStyle = "#fff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
 
             const imgSkier = imagesRef.current.skier;
             const imgSkierD = imagesRef.current.skierD;
             const imgSkierG = imagesRef.current.skierG;
 
-            const obstaclesSort = betterSort(obstacles)
-
-            obstaclesSort.forEach(obs => {
-
-                if(obs.type.includes("player")){
+            betterSort(obstacles).forEach(obs => {
+                if (obs.type === "player" && imgSkier) {
                     let currentSkierImg = imgSkier;
 
                     if (directionSkier === 1 && imgSkierG) {
@@ -322,40 +329,37 @@ function SkiGame({setGame}) {
                     ctx.drawImage(imagesRef.current.defeatText, 25, 200, 950, 450);
                 }
             }
+            ctx.restore();
         }
+
         return () => {
             cancelAnimationFrame(animationFrameIdRef.current);
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
         };
-
     }, []);
 
     return (
         <div className={"game"}>
-            <button className={`back-button ${!gameStarted ? 'position' : ''}`} onClick={() => {
-                setGame(false);
-                setDisplayBook(true);
-                setGameStarted(false);
-            }}>
-                Revenir au livre
-            </button>
-
-            {!gameStarted && (
-                <button className={"launch-game-button"} onClick={() => {
-                    if (canvasRef.current) {
-                        canvasRef.current.dataset.reset = "true";
-                    }
-                    setGameStarted(true);
-                }}>
-                    Lancer le jeu !
-                </button>
-            )}
-
-
-            <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
-
+            <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
             <div className={"instruction"}>Passer entre les piquets avec les flèches &lt; gauche et droite &gt;.</div>
+            {!gameStarted && (
+                <div className={"game-buttons"}>
+                    <button className={"launch-game-button"} onClick={() => {
+                        if (canvasRef.current) canvasRef.current.dataset.reset = "true";
+                        setGameStarted(true);
+                    }}>
+                        Lancer le jeu !
+                    </button>
+                    <button className={"back-button"} onClick={() => {
+                        setGame(false);
+                        setDisplayBook(true);
+                        setGameStarted(false);
+                    }}>
+                        Revenir au livre
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
