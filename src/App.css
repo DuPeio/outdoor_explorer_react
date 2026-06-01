@@ -203,7 +203,7 @@ button:hover{
 /*Pour la partie connexion*/
 .connexion-title{
   font-family: 'Playfair Display', serif;
-  font-size: 60px;
+  font-size: 5em;
   color: #000;
   text-align: center;
   line-height: 1.2;
@@ -222,6 +222,14 @@ button:hover{
   justify-content: center;
   align-content: center;
   margin-top: 30px;
+  text-align: center;
+}
+
+.connexion-part.div{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
 }
 
 .connexion-part b{
