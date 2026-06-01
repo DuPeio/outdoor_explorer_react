@@ -13,24 +13,50 @@ import grass2 from "../../assets/games_illustrations/share/grass2.svg";
 import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
 import defeatText from "../../assets/games_illustrations/road_bike/texte_defaite.svg";
+import {BASE_HEIGHT, BASE_WIDTH} from "../../config/constants.js";
 
 function roadBikeGame({setGame}) {
     const canvasRef = useRef(null);
     const imagesRef = useRef({});
     const pixelPastedRef = useRef(0);
-    const [gameStarted, setGameStarted] = useState(false);
-    const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
     const animationFrameIdRef = useRef(null);
+    const currentScaleRef = useRef(1);
+
+    const [gameStarted, setGameStarted] = useState(false);
+
+    const { screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY, 1);
+
+        currentScaleRef.current = newScale;
+        canvas.width = BASE_WIDTH * newScale;
+        canvas.height = BASE_HEIGHT * newScale;
+    }, [screenSize]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const initialScale = Math.min(scaleX, scaleY, 1);
+        currentScaleRef.current = initialScale;
+        canvas.width = BASE_WIDTH * initialScale;
+        canvas.height = BASE_HEIGHT * initialScale;
+
         let win = false;
         let gameEnd = false;
-
-        canvas.width = 1000;
-        canvas.height = 700;
 
         let speed = 4;
 
@@ -80,7 +106,7 @@ function roadBikeGame({setGame}) {
             let initTargetDirection = 0;
             let initChangeTimer = 0;
 
-            for (let y = canvas.height + 200; y >= -5 ; y -= segmentHeight) {
+            for (let y = BASE_HEIGHT + 200; y >= -5 ; y -= segmentHeight) {
                 initChangeTimer--;
                 if (initChangeTimer <= 0) {
                     initTargetDirection = getRandomInt(-2, 2);
@@ -112,17 +138,17 @@ function roadBikeGame({setGame}) {
             let obstacles = [];
 
             for (let i = 0; i < 15; i++) {
-                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
-                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, 900) });
-                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
-                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(800, 950), y: getRandomInt(-50, 900) });
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, BASE_HEIGHT+100) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, BASE_HEIGHT+100) });
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH+50), y: getRandomInt(-50, BASE_HEIGHT+100) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH+50), y: getRandomInt(-50, BASE_HEIGHT+100) });
             }
 
             for(let i = 0; i<roadSegments.length; i+= 10){
                 obstacles.push({ type: `roadPainting`, x: roadSegments[i].x, y: roadSegments[i].y })
             }
 
-            obstacles.push({ type: "finishLine", x: 200, y: 900 });
+            obstacles.push({ type: "finishLine", x: 200, y: BASE_HEIGHT + 100 });
 
             return obstacles;
         }
@@ -148,7 +174,6 @@ function roadBikeGame({setGame}) {
 
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
-
 
 
         let loadedCount = 0;
@@ -279,16 +304,12 @@ function roadBikeGame({setGame}) {
                 playerDirection = 0;
 
                 if (keys.ArrowLeft) {
-                    if(playerX - playerSpeed > 150){
-                        playerX -= playerSpeed;
-                        playerDirection = 1;
-                    }
+                    playerX -= playerSpeed;
+                    playerDirection = 1;
                 }
                 if (keys.ArrowRight) {
-                    if(playerX + playerSpeed < 810){
-                        playerX += playerSpeed;
-                        playerDirection = 2;
-                    }
+                    playerX += playerSpeed;
+                    playerDirection = 2;
                 }
 
                 animationFrame++;
@@ -374,29 +395,25 @@ function roadBikeGame({setGame}) {
 
     return (
         <div className={"game"}>
-            <button className={`back-button ${!gameStarted ? 'position' : ''}`} onClick={() => {
-                setGame(false);
-                setDisplayBook(true);
-                setGameStarted(false);
-            }}>
-                Revenir au livre
-            </button>
-
-            {!gameStarted && (
-                <button className={"launch-game-button"} onClick={() => {
-                    if (canvasRef.current) {
-                        canvasRef.current.dataset.reset = "true";
-                    }
-                    setGameStarted(true);
-                }}>
-                    Lancer le jeu !
-                </button>
-            )}
-
-
-            <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
-
+            <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
             <div className={"instruction"}>Suivre la route avec les flêches &lt; gauche et droite &gt;.</div>
+            {!gameStarted && (
+                <div className={"game-buttons"}>
+                    <button className={"launch-game-button"} onClick={() => {
+                        if (canvasRef.current) canvasRef.current.dataset.reset = "true";
+                        setGameStarted(true);
+                    }}>
+                        Lancer le jeu !
+                    </button>
+                    <button className={"back-button"} onClick={() => {
+                        setGame(false);
+                        setDisplayBook(true);
+                        setGameStarted(false);
+                    }}>
+                        Revenir au livre
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
