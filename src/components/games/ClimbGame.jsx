@@ -18,6 +18,8 @@ import finishLine from "../../assets/games_illustrations/share/finish_line.svg";
 import victoryText from "../../assets/games_illustrations/share/texte_victoire.svg";
 import defeatText from "../../assets/games_illustrations/climb/texte_defaite.svg";
 
+import {BASE_HEIGHT, BASE_WIDTH} from "../../config/constants.js";
+
 function ClimbGame({setGame}){
 
     const canvasRef = useRef(null);
@@ -25,16 +27,39 @@ function ClimbGame({setGame}){
     const pixelPastedRef = useRef(0);
     const [gameStarted, setGameStarted] = useState(false);
     const animationFrameIdRef = useRef(null);
+    const currentScaleRef = useRef(1);
 
-    const { handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY, 1);
+
+        currentScaleRef.current = newScale;
+        canvas.width = BASE_WIDTH * newScale;
+        canvas.height = BASE_HEIGHT * newScale;
+    }, [screenSize]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-        canvas.width = 1000;
-        canvas.height = 700;
 
-        const playerX = canvas.width / 2;
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const initialScale = Math.min(scaleX, scaleY, 1);
+        currentScaleRef.current = initialScale;
+        canvas.width = BASE_WIDTH * initialScale;
+        canvas.height = BASE_HEIGHT * initialScale;
+
+        const playerX = BASE_WIDTH / 2;
 
         let score = 0;
 
@@ -140,7 +165,7 @@ function ClimbGame({setGame}){
                 })
 
                 fakeHolds.push({
-                    x: getRandomInt(650, canvas.width-80),
+                    x: getRandomInt(650, BASE_WIDTH-80),
                     y: i+getRandomInt(-45,45),
                     hold : getRandomInt(0,6)
                 })
@@ -253,7 +278,7 @@ function ClimbGame({setGame}){
                 animationStep = 1;
                 playerFrame = 0;
 
-                targetFrameAfterReset = currentHold.x > 500 ? 1 : 2;
+                targetFrameAfterReset = currentHold.x > BASE_WIDTH/2 ? 1 : 2;
 
                 targetScrollY += 100;
 
@@ -265,7 +290,7 @@ function ClimbGame({setGame}){
                         hold: getRandomInt(0, 6)
                     });
                     fakeHolds.push({
-                        x: getRandomInt(650, canvas.width - 80),
+                        x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH - 80),
                         y: highestFake.y - 100,
                         hold: getRandomInt(0, 6)
                     });
@@ -280,7 +305,7 @@ function ClimbGame({setGame}){
 
                     let newHold = getRandomInt(0,6);
                     let newH = {
-                        x: (highestH.x > 500 ? playerX - 75 - holdsSizes[newHold].w/2 : playerX + 85 - holdsSizes[newHold].w/2),
+                        x: (highestH.x > BASE_WIDTH/2 ? playerX - 75 - holdsSizes[newHold].w/2 : playerX + 85 - holdsSizes[newHold].w/2),
                         y: highestH.y - 100,
                         letter: newLetter,
                         hold : newHold
@@ -343,7 +368,7 @@ function ClimbGame({setGame}){
             }
 
             if (currentClimber) {
-                ctx.drawImage(currentClimber, canvas.width/2 - 100, 375, 200, 300);
+                ctx.drawImage(currentClimber, BASE_WIDTH / 2 - 100, 375, 200, 300);
             }
 
             if(!gameEnd){
@@ -366,32 +391,27 @@ function ClimbGame({setGame}){
         };
     }, []);
 
-    console.log(gameStarted);
     return (
         <div className={"game"}>
-            <button className={`back-button ${!gameStarted ? 'position' : ''}`} onClick={() => {
-                setGame(false);
-                setDisplayBook(true);
-                setGameStarted(false);
-            }}>
-                Revenir au livre
-            </button>
-
-            {!gameStarted && (
-                <button className={"launch-game-button"} onClick={() => {
-                    if (canvasRef.current) {
-                        canvasRef.current.dataset.reset = "true";
-                    }
-                    setGameStarted(true);
-                }}>
-                    Lancer le jeu !
-                </button>
-            )}
-
-
-            <canvas className="canvas" ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
-
+            <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
             <div className={"instruction"}>Appuyer sur les touches indiquées le plus rapidement possible. Il faut un score de 20 pour gagner !</div>
+            {!gameStarted && (
+                <div className={"game-buttons"}>
+                    <button className={"launch-game-button"} onClick={() => {
+                        if (canvasRef.current) canvasRef.current.dataset.reset = "true";
+                        setGameStarted(true);
+                    }}>
+                        Lancer le jeu !
+                    </button>
+                    <button className={"back-button"} onClick={() => {
+                        setGame(false);
+                        setDisplayBook(true);
+                        setGameStarted(false);
+                    }}>
+                        Revenir au livre
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
