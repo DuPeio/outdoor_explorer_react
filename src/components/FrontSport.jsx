@@ -2,7 +2,7 @@ function FrontSport({sport, gameDone}) {
     if(!sport) return null;
 
     return (
-        <div className="sport-container">
+        <div className="sport-right-container">
             <div className={`game-not-done ${gameDone ? 'hidden' : ''}`}>
                 Déverrouillez les informations en jouant au mini-jeu !
             </div>
