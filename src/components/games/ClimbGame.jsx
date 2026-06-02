@@ -141,13 +141,13 @@ function ClimbGame({setGame}){
                 });
 
                 fakeHolds.push({
-                    x: getRandomInt(0, 250),
+                    x: getRandomInt(0, 300),
                     y: i+getRandomInt(-45,45),
                     hold : getRandomInt(0,6)
                 })
 
                 fakeHolds.push({
-                    x: getRandomInt(650, BASE_WIDTH-80),
+                    x: getRandomInt(BASE_WIDTH-250, BASE_WIDTH-10),
                     y: i+getRandomInt(-45,45),
                     hold : getRandomInt(0,6)
                 })
@@ -267,12 +267,12 @@ function ClimbGame({setGame}){
                 let highestFake = fakeHolds[fakeHolds.length - 1];
                 if (highestFake.y + currentScrollY > -200) {
                     fakeHolds.push({
-                        x: getRandomInt(0, 250),
+                        x: getRandomInt(0, 300),
                         y: highestFake.y - 100,
                         hold: getRandomInt(0, 6)
                     });
                     fakeHolds.push({
-                        x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH - 80),
+                        x: getRandomInt(BASE_WIDTH-250, BASE_WIDTH - 10),
                         y: highestFake.y - 100,
                         hold: getRandomInt(0, 6)
                     });
@@ -307,9 +307,13 @@ function ClimbGame({setGame}){
         }
 
         function drawGame(){
+            const scale = currentScaleRef.current;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.scale(scale, scale);
+
             ctx.fillStyle = "#585858";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
 
             ctx.font = "bold 24px Arial";
             ctx.fillStyle = "#DABE12FF";
@@ -330,6 +334,8 @@ function ClimbGame({setGame}){
                     ctx.drawImage(imgHold, h.x, h.y + currentScrollY, holdsSizes[h.hold].w, holdsSizes[h.hold].h);
                 }
             });
+
+            if(!gameEnd){ctx.fillText(`Score : ${score}`, BASE_WIDTH/2-45, BASE_HEIGHT-10);}
 
             if(!win){
                 let h = holds[currentHoldId]
@@ -357,15 +363,15 @@ function ClimbGame({setGame}){
                 if(win){
                     const imgW = 950;
                     const imgH = 850;
-                    const x = (canvas.width - imgW) / 2;
-                    const y = (canvas.height / 2) - 150;
+                    const x = (BASE_WIDTH - imgW) / 2;
+                    const y = (BASE_HEIGHT / 2) - 150;
 
                     ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
                     const imgW = 850;
                     const imgH = 400;
-                    const x = ((canvas.width - imgW) / 2) + 100;
-                    const y = (canvas.height  - imgH) / 2;
+                    const x = ((BASE_WIDTH - imgW) / 2) + 100;
+                    const y = (BASE_HEIGHT  - imgH) / 2;
 
                     ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }

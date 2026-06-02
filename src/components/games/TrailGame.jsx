@@ -297,15 +297,15 @@ function trailGame({ setGame }) {
                 if(win){
                     const imgW = 950;
                     const imgH = 850;
-                    const x = (canvas.width - imgW) / 2;
-                    const y = (canvas.height / 2) - 150;
+                    const x = (BASE_WIDTH - imgW) / 2;
+                    const y = (BASE_HEIGHT / 2) - 150;
 
                     ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
                     const imgW = 750;
                     const imgH = 850;
-                    const x = ((canvas.width - imgW) / 2)+85;
-                    const y = (canvas.height / 2) - 150;
+                    const x = ((BASE_WIDTH- imgW) / 2)+85;
+                    const y = (BASE_HEIGHT / 2) - 150;
 
                     ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }
