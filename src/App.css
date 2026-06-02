@@ -21,6 +21,9 @@ body{
   width: 62.5em;
   height: 46.5em;
   perspective: 87.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .book-container{
@@ -444,8 +447,8 @@ button:hover{
 }
 
 .game-container{
-  width: 110%;
-  height: 110%;
+  width: 100%;
+  height: 100%;
 }
 
 .game {
@@ -481,7 +484,7 @@ canvas {
 .instruction {
   position: absolute;
   color: #000;
-  bottom: 0;
+  bottom: -5px;
   text-align: center;
   width: 100%;
 }
