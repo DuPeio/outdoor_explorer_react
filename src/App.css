@@ -336,7 +336,7 @@ button:hover{
   filter: invert(1);
   transition: 0.3s;
   letter-spacing: 0.15em;
-  padding-bottom: 27%;
+  padding-bottom: 18%;
 }
 
 .description{
