@@ -17,7 +17,7 @@ body{
 }
 
 .scene {
-  font-size: clamp(8px, 1vw, 20px);
+  font-size: clamp(8px, 1vw, 18px);
   width: 62.5em;
   height: 46.5em;
   perspective: 87.5em;
