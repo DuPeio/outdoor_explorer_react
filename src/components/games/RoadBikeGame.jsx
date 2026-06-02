@@ -379,11 +379,22 @@ function roadBikeGame({setGame}) {
 
             if(gameEnd){
                 if(win){
-                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, sources["victoryText"].w, sources["victoryText"].h);
+                    const imgW = 950;
+                    const imgH = 850;
+                    const x = (canvas.width - imgW) / 2;
+                    const y = (canvas.height / 2) - 150;
+
+                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 200, 200, sources["defeatText"].w, sources["defeatText"].h);
+                    const imgW = 850;
+                    const imgH = 850;
+                    const x = ((canvas.width - imgW) / 2) + 100;
+                    const y = (canvas.height / 2) - 200;
+
+                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }
             }
+            ctx.restore();
         }
         return () => {
             cancelAnimationFrame(animationFrameIdRef.current);

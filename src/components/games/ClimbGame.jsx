@@ -315,7 +315,7 @@ function ClimbGame({setGame}){
 
                 currentHoldId++;
 
-                if(score === 1){
+                if(score === 20){
                     win = true;
                     gameEnd = true;
                     setGameStarted(false);
