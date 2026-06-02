@@ -122,8 +122,8 @@ function roadBikeGame({setGame}) {
             for (let i = 0; i < 15; i++) {
                 obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, BASE_HEIGHT+100) });
                 obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(-50, 150), y: getRandomInt(-50, BASE_HEIGHT+100) });
-                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH+50), y: getRandomInt(-50, BASE_HEIGHT+100) });
-                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-150, BASE_WIDTH+50), y: getRandomInt(-50, BASE_HEIGHT+100) });
+                obstacles.push({ type: `treeDecor${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-300, BASE_WIDTH+100), y: getRandomInt(-50, BASE_HEIGHT+100) });
+                obstacles.push({ type: `grass${getRandomInt(0,2)}`, x: getRandomInt(BASE_WIDTH-300, BASE_WIDTH+100), y: getRandomInt(-50, BASE_HEIGHT+100) });
             }
 
             for(let i = 0; i<roadSegments.length; i+= 10){
@@ -273,11 +273,11 @@ function roadBikeGame({setGame}) {
 
                     if (obs.y < -200) {
                         if (obs.type.includes("treeDecor") || obs.type.includes("grass")) {
-                            obs.y = canvas.height + getRandomInt(50, 400);
+                            obs.y = canvas.height + getRandomInt(200, 400);
                             if (obs.x < 500) {
                                 obs.x = getRandomInt(-50, 150);
                             } else {
-                                obs.x = getRandomInt(850, 950);
+                                obs.x = getRandomInt(BASE_WIDTH-300, BASE_WIDTH+100);
                             }
                         }
                     }
@@ -316,10 +316,13 @@ function roadBikeGame({setGame}) {
         }
 
         function drawGame() {
+            const scale = currentScaleRef.current;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.scale(scale, scale);
 
             ctx.fillStyle = "#309E1A";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, BASE_WIDTH, BASE_HEIGHT);
 
             ctx.fillStyle = "#4A4A4A";
             roadSegments.forEach(seg => {
@@ -363,15 +366,15 @@ function roadBikeGame({setGame}) {
                 if(win){
                     const imgW = 950;
                     const imgH = 850;
-                    const x = (canvas.width - imgW) / 2;
-                    const y = (canvas.height / 2) - 150;
+                    const x = (BASE_WIDTH - imgW) / 2;
+                    const y = (BASE_HEIGHT / 2) - 150;
 
                     ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
                     const imgW = 850;
                     const imgH = 850;
-                    const x = ((canvas.width - imgW) / 2) + 100;
-                    const y = (canvas.height / 2) - 200;
+                    const x = ((BASE_WIDTH- imgW) / 2) + 100;
+                    const y = (BASE_HEIGHT / 2) - 200;
 
                     ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }
