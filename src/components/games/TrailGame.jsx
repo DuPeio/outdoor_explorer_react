@@ -313,12 +313,21 @@ function trailGame({ setGame }) {
 
             if(gameEnd){
                 if(win){
-                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
+                    const imgW = 950;
+                    const imgH = 850;
+                    const x = (canvas.width - imgW) / 2;
+                    const y = (canvas.height / 2) - 150;
+
+                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 675);
+                    const imgW = 750;
+                    const imgH = 850;
+                    const x = ((canvas.width - imgW) / 2)+85;
+                    const y = (canvas.height / 2) - 150;
+
+                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }
             }
-
             ctx.restore();
         }
 
