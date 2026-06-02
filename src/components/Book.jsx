@@ -181,7 +181,7 @@ function Book({setDisplayGame}){
                 return (
                     <div
                         className={`page ${pagesFlipped[pageIndex] ? 'flipping-forward' : ''} ${pagesHidden[pageIndex] ? 'hidden' : ''}`}
-                        key={id} id={`page${pageIndex}`} style={{right: pagesLefted[pageIndex] ? '35px' : '23px'}}
+                        key={id} id={`page${pageIndex}`} style={{right: pagesLefted[pageIndex] ? '2.5em' : '1.5em'}}
                         onClick={(e) => {
                             if (e.target.closest('button') || e.target.closest('a')) return;
                             handlePageClick(pageIndex);

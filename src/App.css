@@ -14,13 +14,12 @@ body{
   font-family: 'DM Sans', sans-serif;
   gap: clamp(20px, 5vw, 100px);
   overflow: auto;
-  padding: 1rem;
 }
 
 .scene {
-  font-size: clamp(8px, 1vw, 16px);
+  font-size: clamp(8px, 1vw, 20px);
   width: 62.5em;
-  height: 46.875em;
+  height: 46.5em;
   perspective: 87.5em;
 }
 
@@ -463,7 +462,7 @@ button:hover{
   display: flex;
   flex-direction: column;
   position: absolute;
-  bottom: 40px;
+  bottom: 5em;
 }
 
 .back-button{
