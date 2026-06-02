@@ -5,7 +5,7 @@ const sports = [
     alt: "person skiing",
     personage: "assets/personnages/ski.png",
     badge: "assets/badges/badge_ski.svg",
-    emplacement: "assets/badges/emplacement_badge_ski.svg",
+    emplacement: "assets/badges/emplacement_badge_trail.svg",
     description: "Découvre le ski : glisse sur des pistes enneigées en pleine nature.<br><br>Prêt à essayer le mini-jeu slalom ?",
     infos: {
       resume: "Le <b>ski alpin</b> est un sport d’hiver qui consiste à descendre des pistes <b>damées</b> avec des skis au pieds.<br> Il est pratiqué en station. Les remontées mécaniques sont utilisées pour rejoindre le haut des pistes, qui présentent plusieurs niveaux de difficultés. Les pistes les plus faciles sont celles de couleur <b>verte</b>, puis les <b>bleues</b>, les <b>rouges</b> et les pistes les plus compliquées sont celles de couleur <b>noire</b>.",
@@ -43,7 +43,7 @@ const sports = [
     alt: "person climbing outside",
     personage: "assets/personnages/escalade.png",
     badge: "assets/badges/badge_escalade.svg",
-    emplacement: "assets/badges/emplacement_badge_escalade.svg",
+    emplacement: "assets/badges/emplacement_badge_trail.svg",
     description: "Découvre l’escalade : grimpe des parois et développe ta force.<br><br>Prêt à essayer le mini-jeu d’escalade ?",
     infos: {
       resume: "<b> L’escalade</b>  consiste à grimper sur des <b> murs artificiels</b>  ou des <b> falaises naturelles</b>  à l’aide de prises, sur des parcours appelés <b> voies</b> .<br> <br>Il existe <b> plusieurs disciplines</b>  en escalade : <br><ul><li>La <b>voie</b> où le grimpeur monte <b>le plus haut possible</b> sur une grande paroi</li> <br> <li>Le <b>bloc</b> se pratique sur des murs <b>plus bas</b>, sans corde, avec des tapis de protection au sol. Souvent <b>plus physiques et techniques</b>.</li><br> <li>La <b>vitesse</b> où deux grimpeurs <b>s’affrontent</b> sur deux <b>voies identiques</b> pour atteindre le sommet le plus <b>rapidement</b> possible.</li> </ul> Chaque voie possède une <b>cotation</b> qui permet d’indiquer son <b>niveau de difficulté</b>. Les niveaux vont de <b>4</b> (facile) à <b>9</b> (très difficile).Chaque niveau est ensuite <b>divisé en trois sous-niveaux</b> : a, b et c, où <b>a</b> est le plus accessible et <b>c</b> le plus difficile.",
@@ -62,7 +62,7 @@ const sports = [
     alt: "person biking in the moutains",
     personage: "assets/personnages/velo_route.png",
     badge: "assets/badges/badge_velo_route.svg",
-    emplacement: "assets/badges/emplacement_badge_velo.svg",
+    emplacement: "assets/badges/emplacement_badge_trail.svg",
     description: "Découvre le vélo de route : roule sur de longues distances et améliore ton endurance.<br><br> Prêt à essayer le mini-jeu de vélo de route ?",
     infos: {
       resume: "Le <b>vélo de route</b> est un sport d’endurance pratiqué sur <b>routes asphaltées</b>. Il permet de parcourir de <b>longues distances</b> et <b>d’améliorer sa condition physique</b> tout en découvrant de nouveau paysages. C'est aussi un moyen très <b>écologique</b> de se <b>déplacer</b>.",

@@ -346,8 +346,8 @@ button:hover{
 }
 
 .badge{
-  width: 25%;
-  transform: rotate(30deg);
+  width: 11em;
+  height: 11em;
 }
 
 /*Page de droite*/
