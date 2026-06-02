@@ -29,35 +29,17 @@ function ClimbGame({setGame}){
     const animationFrameIdRef = useRef(null);
     const currentScaleRef = useRef(1);
 
-    const { screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const maxWidth = window.innerWidth - 40;
-        const maxHeight = window.innerHeight - 140;
-        const scaleX = maxWidth / BASE_WIDTH;
-        const scaleY = maxHeight / BASE_HEIGHT;
-        const newScale = Math.min(scaleX, scaleY, 1);
-
-        currentScaleRef.current = newScale;
-        canvas.width = BASE_WIDTH * newScale;
-        canvas.height = BASE_HEIGHT * newScale;
+        currentScaleRef.current = getCanvasScale(canvasRef.current);
     }, [screenSize]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
-        const maxWidth = window.innerWidth - 40;
-        const maxHeight = window.innerHeight - 140;
-        const scaleX = maxWidth / BASE_WIDTH;
-        const scaleY = maxHeight / BASE_HEIGHT;
-        const initialScale = Math.min(scaleX, scaleY, 1);
-        currentScaleRef.current = initialScale;
-        canvas.width = BASE_WIDTH * initialScale;
-        canvas.height = BASE_HEIGHT * initialScale;
+        currentScaleRef.current = getCanvasScale(canvasRef.current);
 
         const playerX = BASE_WIDTH / 2;
 

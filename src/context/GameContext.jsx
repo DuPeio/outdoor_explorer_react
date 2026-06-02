@@ -1,5 +1,5 @@
 import {createContext, useContext, useState, useRef, useEffect} from "react";
-import { NUMBER_OF_SPORTS } from "../config/constants.js";
+import {BASE_HEIGHT, BASE_WIDTH, NUMBER_OF_SPORTS} from "../config/constants.js";
 import { db } from '/services/firebase.js';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
@@ -76,9 +76,25 @@ export function GameContextProvider({ children }) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function getCanvasScale(canvas) {
+        if (!canvas) return 1;
+
+        const maxWidth = window.innerWidth - 40;
+        const maxHeight = window.innerHeight - 140;
+
+        const scaleX = maxWidth / BASE_WIDTH;
+        const scaleY = maxHeight / BASE_HEIGHT;
+        const newScale = Math.min(scaleX, scaleY, 1);
+
+        canvas.width = BASE_WIDTH * newScale;
+        canvas.height = BASE_HEIGHT * newScale;
+
+        return newScale;
+    }
+
 
     return (
-        <GameContext.Provider value={{ screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
+        <GameContext.Provider value={{getCanvasScale, screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
             {children}
         </GameContext.Provider>
     );
