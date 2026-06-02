@@ -315,7 +315,7 @@ function ClimbGame({setGame}){
 
                 currentHoldId++;
 
-                if(score === 20){
+                if(score === 1){
                     win = true;
                     gameEnd = true;
                     setGameStarted(false);
@@ -371,17 +371,24 @@ function ClimbGame({setGame}){
                 ctx.drawImage(currentClimber, BASE_WIDTH / 2 - 100, 375, 200, 300);
             }
 
-            if(!gameEnd){
-                ctx.fillText(`Score : ${score}`, canvas.width/2-45, canvas.height-15);
-            }
-
             if(gameEnd){
                 if(win){
-                    ctx.drawImage(imagesRef.current.victoryText, 25, 200, 950, 850);
+                    const imgW = 950;
+                    const imgH = 850;
+                    const x = (canvas.width - imgW) / 2;
+                    const y = (canvas.height / 2) - 150;
+
+                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
                 }else{
-                    ctx.drawImage(imagesRef.current.defeatText, 250, 200, 650, 400);
+                    const imgW = 850;
+                    const imgH = 400;
+                    const x = ((canvas.width - imgW) / 2) + 100;
+                    const y = (canvas.height  - imgH) / 2;
+
+                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
                 }
             }
+            ctx.restore();
         }
 
         return () => {
