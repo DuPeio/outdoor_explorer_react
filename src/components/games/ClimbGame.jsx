@@ -29,7 +29,7 @@ function ClimbGame({setGame}){
     const animationFrameIdRef = useRef(null);
     const currentScaleRef = useRef(1);
 
-    const { getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { drawEndGame, getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
     useEffect(() => {
         currentScaleRef.current = getCanvasScale(canvasRef.current);
@@ -359,23 +359,8 @@ function ClimbGame({setGame}){
                 ctx.drawImage(currentClimber, BASE_WIDTH / 2 - 100, 375, 200, 300);
             }
 
-            if(gameEnd){
-                if(win){
-                    const imgW = 950;
-                    const imgH = 850;
-                    const x = (BASE_WIDTH - imgW) / 2;
-                    const y = (BASE_HEIGHT / 2) - 150;
+            if(gameEnd){drawEndGame(ctx, win, imagesRef);}
 
-                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
-                }else{
-                    const imgW = 850;
-                    const imgH = 400;
-                    const x = ((BASE_WIDTH - imgW) / 2) + 100;
-                    const y = (BASE_HEIGHT  - imgH) / 2;
-
-                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
-                }
-            }
             ctx.restore();
         }
 

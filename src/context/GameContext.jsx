@@ -92,9 +92,17 @@ export function GameContextProvider({ children }) {
         return newScale;
     }
 
+    function drawEndGame(ctx, win, imagesRef){
+        const imgW = 600;
+        const imgH = 300;
+        const x = ((BASE_WIDTH - imgW) / 2);
+        const y = ((BASE_HEIGHT - imgH) / 2 - 100);
+
+        ctx.drawImage(win ? imagesRef.current.victoryText : imagesRef.current.defeatText, x, y, imgW, imgH);
+    }
 
     return (
-        <GameContext.Provider value={{getCanvasScale, screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
+        <GameContext.Provider value={{drawEndGame, getCanvasScale, screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
             {children}
         </GameContext.Provider>
     );

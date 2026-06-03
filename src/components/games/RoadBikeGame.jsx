@@ -24,7 +24,7 @@ function roadBikeGame({setGame}) {
 
     const [gameStarted, setGameStarted] = useState(false);
 
-    const { getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { drawEndGame, getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
 
     useEffect(() => {
@@ -362,23 +362,7 @@ function roadBikeGame({setGame}) {
                 ctx.drawImage(currentPlayerImg, playerX, playerY, sources["biker0"].w, sources["biker0"].h);
             }
 
-            if(gameEnd){
-                if(win){
-                    const imgW = 950;
-                    const imgH = 850;
-                    const x = (BASE_WIDTH - imgW) / 2;
-                    const y = (BASE_HEIGHT / 2) - 150;
-
-                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
-                }else{
-                    const imgW = 850;
-                    const imgH = 850;
-                    const x = ((BASE_WIDTH- imgW) / 2) + 100;
-                    const y = (BASE_HEIGHT / 2) - 200;
-
-                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
-                }
-            }
+            if(gameEnd){drawEndGame(ctx, win, imagesRef);}
             ctx.restore();
         }
         return () => {

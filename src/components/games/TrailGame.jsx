@@ -40,7 +40,7 @@ function trailGame({ setGame }) {
 
     const [gameStarted, setGameStarted] = useState(false);
 
-    const {getCanvasScale,  screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { drawEndGame, getCanvasScale,  screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
 
     useEffect(() => {
         currentScaleRef.current = getCanvasScale(canvasRef.current);
@@ -293,23 +293,7 @@ function trailGame({ setGame }) {
                 if (img) ctx.drawImage(img, obs.x, obs.y, hitboxes[obs.type].w, hitboxes[obs.type].h);
             });
 
-            if(gameEnd){
-                if(win){
-                    const imgW = 950;
-                    const imgH = 850;
-                    const x = (BASE_WIDTH - imgW) / 2;
-                    const y = (BASE_HEIGHT / 2) - 150;
-
-                    ctx.drawImage(imagesRef.current.victoryText, x, y, imgW, imgH);
-                }else{
-                    const imgW = 750;
-                    const imgH = 850;
-                    const x = ((BASE_WIDTH- imgW) / 2)+85;
-                    const y = (BASE_HEIGHT / 2) - 150;
-
-                    ctx.drawImage(imagesRef.current.defeatText, x, y, imgW, imgH);
-                }
-            }
+            if(gameEnd){ drawEndGame(ctx, win,imagesRef);}
             ctx.restore();
         }
 
