@@ -24,7 +24,7 @@ function roadBikeGame({setGame}) {
 
     const [gameStarted, setGameStarted] = useState(false);
 
-    const { drawEndGame, getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { returnGamePage, drawEndGame, getCanvasScale, screenSize, handleGameResult, getRandomInt } = useGameContext();
 
 
     useEffect(() => {
@@ -374,27 +374,7 @@ function roadBikeGame({setGame}) {
     }, []);
 
     return (
-        <div className={"game"}>
-            <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
-            <div className={"instruction"}>Suivre la route avec les flêches &lt; gauche et droite &gt;.</div>
-            {!gameStarted && (
-                <div className={"game-buttons"}>
-                    <button className={"launch-game-button"} onClick={() => {
-                        if (canvasRef.current) canvasRef.current.dataset.reset = "true";
-                        setGameStarted(true);
-                    }}>
-                        Lancer le jeu !
-                    </button>
-                    <button className={"back-button"} onClick={() => {
-                        setGame(false);
-                        setDisplayBook(true);
-                        setGameStarted(false);
-                    }}>
-                        Revenir au livre
-                    </button>
-                </div>
-            )}
-        </div>
+        returnGamePage("Suivre la route avec les flêches < gauche et droite >.", canvasRef, gameStarted, setGameStarted, setGame)
     );
 }
 

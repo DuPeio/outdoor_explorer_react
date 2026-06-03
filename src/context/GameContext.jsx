@@ -101,8 +101,34 @@ export function GameContextProvider({ children }) {
         ctx.drawImage(win ? imagesRef.current.victoryText : imagesRef.current.defeatText, x, y, imgW, imgH);
     }
 
+    function returnGamePage(instructions, canvasRef, gameStarted, setGameStarted, setGame){
+        return(
+            <div className={"game"}>
+                <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
+                <div className={"instruction"}>{instructions}</div>
+                {!gameStarted && (
+                    <div className={"game-buttons"}>
+                        <button className={"launch-game-button"} onClick={() => {
+                            if (canvasRef.current) canvasRef.current.dataset.reset = "true";
+                            setGameStarted(true);
+                        }}>
+                            Lancer le jeu !
+                        </button>
+                        <button className={"back-button"} onClick={() => {
+                            setGame(false);
+                            setDisplayBook(true);
+                            setGameStarted(false);
+                        }}>
+                            Revenir au livre
+                        </button>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
     return (
-        <GameContext.Provider value={{drawEndGame, getCanvasScale, screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
+        <GameContext.Provider value={{ returnGamePage, drawEndGame, getCanvasScale, screenSize, gamesDone, setGamesDone, username, setUsername, handleLogin, handleGameResult, displayBook, setDisplayBook, getRandomInt }}>
             {children}
         </GameContext.Provider>
     );

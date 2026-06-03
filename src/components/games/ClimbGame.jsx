@@ -29,7 +29,7 @@ function ClimbGame({setGame}){
     const animationFrameIdRef = useRef(null);
     const currentScaleRef = useRef(1);
 
-    const { drawEndGame, getCanvasScale, screenSize, handleGameResult, setDisplayBook, getRandomInt } = useGameContext();
+    const { returnGamePage, drawEndGame, getCanvasScale, screenSize, handleGameResult, getRandomInt } = useGameContext();
 
     useEffect(() => {
         currentScaleRef.current = getCanvasScale(canvasRef.current);
@@ -318,7 +318,6 @@ function ClimbGame({setGame}){
             ctx.font = "bold 24px Arial";
             ctx.fillStyle = "#DABE12FF";
 
-
             fakeHolds.forEach((h) => {
                 const imgHold = imagesRef.current[`hold${h.hold}`];
 
@@ -372,31 +371,8 @@ function ClimbGame({setGame}){
     }, []);
 
     return (
-        <div className={"game"}>
-            <canvas ref={canvasRef} data-started={gameStarted ? "true" : "false"} />
-            <div className={"instruction"}>Appuyer sur les touches indiquées le plus rapidement possible. Il faut un score de 20 pour gagner !</div>
-            {!gameStarted && (
-                <div className={"game-buttons"}>
-                    <button className={"launch-game-button"} onClick={() => {
-                        if (canvasRef.current) canvasRef.current.dataset.reset = "true";
-                        setGameStarted(true);
-                    }}>
-                        Lancer le jeu !
-                    </button>
-                    <button className={"back-button"} onClick={() => {
-                        setGame(false);
-                        setDisplayBook(true);
-                        setGameStarted(false);
-                    }}>
-                        Revenir au livre
-                    </button>
-                </div>
-            )}
-        </div>
+        returnGamePage("Appuyer sur les touches indiquées le plus rapidement possible. Il faut un score de 20 pour gagner !", canvasRef, gameStarted, setGameStarted, setGame)
     );
 }
-
-
-
 
 export default ClimbGame;
