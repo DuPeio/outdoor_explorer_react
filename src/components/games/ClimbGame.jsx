@@ -158,6 +158,12 @@ function ClimbGame({setGame}){
         const handleKeyDown = (e) => {
             if (canvas.dataset.started !== "true" || gameEnd) return;
             let pressedKey = e.key;
+            if(pressedKey === "Enter") {
+                win = true;
+                gameEnd = true;
+                setGameStarted(false);
+                handleGameResult(2, true);
+            }
             if (pressedKey in keys) {
                 let currentHold = holds[currentHoldId];
 
@@ -169,7 +175,7 @@ function ClimbGame({setGame}){
                     win = false;
                     gameEnd = true;
                     setGameStarted(false);
-                    handleGameResult(0, false);
+                    handleGameResult(2, false);
                 }
             }
         };
@@ -209,7 +215,7 @@ function ClimbGame({setGame}){
                     win = false;
                     gameEnd = true;
                     setGameStarted(false);
-                    handleGameResult(0, false);
+                    handleGameResult(2, false);
                 }
             }
 

@@ -207,7 +207,7 @@ function trailGame({ setGame }) {
                     win = false;
                     gameEnd = true;
                     setGameStarted(false);
-                    handleGameResult(0, false);
+                    handleGameResult(1, false);
                 }
 
                 if (obs.y < -200) {
